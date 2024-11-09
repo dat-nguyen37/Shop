@@ -27,12 +27,12 @@ export default function Header() {
             breadcrumbs={[
                 {
                     text:'Kênh người bán',
-                    href:'#',
+                    href:'/dangky_nguoiban',
                     style:{paddingInline:'10px'}
                 },
                 {
                     text:'Trở thành người bán',
-                    href:'#',
+                    href:'/dangky_nguoiban',
                 }
             ]}
             pageTitle={
@@ -121,7 +121,7 @@ export default function Header() {
                         <EuiFlexGroup direction='column' gutterSize='none'>
                         {categories.map(category => (
                             <EuiPopover
-                            panelPaddingSize="none"
+                            panelPaddingSize="s"
                             panelStyle={{outline:'none',marginLeft:'16px'}}
                             key={category.id}
                             button={
@@ -133,7 +133,6 @@ export default function Header() {
                             }
                             isOpen={hoveredCategory === category.id}
                             closePopover={() => setHoveredCategory(null)}
-                            panelPaddingSize="s"
                             anchorPosition="rightUp"
                             >
                                 <EuiText>
