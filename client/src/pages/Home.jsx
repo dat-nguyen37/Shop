@@ -1,10 +1,11 @@
 import React from 'react'
-import { EuiCard, EuiFlexGrid, EuiFlexGroup, EuiFlexItem, EuiIcon, EuiImage, EuiLink, EuiPageSection, EuiPageTemplate, EuiPanel, EuiText} from '@elastic/eui'
+import { EuiCard, EuiFlexGrid, EuiFlexGroup, EuiFlexItem, EuiIcon, EuiImage, EuiLink, EuiPageSection, EuiPageTemplate, EuiPanel, EuiText, useIsWithinBreakpoints} from '@elastic/eui'
 import Slide from '../components/slide/Slide'
 import Footer from '../components/footer/Footer'
 
 export default function Home() {
-  
+  const mobile=useIsWithinBreakpoints(['xs','s'])
+  const tablet=useIsWithinBreakpoints(['m','l'])
   return (
     <EuiPageTemplate style={{marginTop:'90px'}}>
       <EuiPageTemplate.Section color='transparent'>
@@ -17,7 +18,7 @@ export default function Home() {
                 <EuiText>Danh Mục</EuiText>
               </EuiFlexItem>
               <EuiFlexItem>
-                <EuiFlexGrid gutterSize='none' style={{gridTemplateColumns:'repeat(6, 1fr)'}}>
+                <EuiFlexGrid gutterSize='none' style={{gridTemplateColumns: mobile?'repeat(4,1fr)':'repeat(6,1fr)'}}>
                   {[1,2,3,4,5,6,7,8,9,10,11,12].map(item=>(<EuiFlexItem>
                     <EuiFlexGroup direction='column' alignItems='center' gutterSize='none' style={{border:'1px solid #FFF'}}>
                       <EuiImage src='/assets/brand.png' size='s'/>
@@ -39,7 +40,7 @@ export default function Home() {
                 </EuiFlexGroup>
               </EuiFlexItem>
               <EuiFlexItem>
-                <EuiFlexGrid gutterSize='s' style={{gridTemplateColumns:'repeat(6, 1fr)'}}>
+                <EuiFlexGrid gutterSize='s' style={{gridTemplateColumns: mobile?'repeat(2,1fr)': tablet?'repeat(4,1fr)':'repeat(6,1fr)'}}>
                   {[1,2,3,4,5,6].map(item=>(
                     <EuiFlexItem>
                       <EuiFlexGroup direction='column' alignItems='center' gutterSize='s'>
@@ -63,7 +64,7 @@ export default function Home() {
               </EuiPanel>
             </EuiFlexItem>
             <EuiFlexItem>
-              <EuiFlexGrid style={{gridTemplateColumns:'repeat(6,1fr)'}}>
+              <EuiFlexGrid style={{gridTemplateColumns: mobile?'repeat(2,1fr)': tablet?'repeat(4,1fr)':'repeat(6,1fr)'}}>
                 {[1,2,3,4,5,6,7,8,9,10,11,12].map(item=>(
                   <EuiCard
                   textAlign='left'
