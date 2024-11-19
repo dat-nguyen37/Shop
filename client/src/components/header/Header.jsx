@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
-import {EuiAvatar, EuiBreadcrumbs, EuiButton, EuiButtonEmpty, EuiFieldSearch, EuiFlexGroup, EuiFlexItem, EuiFormControlLayout, EuiHeader, EuiHeaderBreadcrumbs, EuiHeaderSection, EuiHeaderSectionItem, EuiHeaderSectionItemButton, EuiIcon, EuiImage, EuiLink, EuiListGroup, EuiListGroupItem, EuiPageHeader, EuiPageHeaderContent, EuiPageSidebar, EuiPopover, EuiSpacer, EuiText} from '@elastic/eui'
+import {EuiAvatar, EuiBreadcrumbs, EuiButton, EuiButtonEmpty, EuiFieldSearch, EuiFlexGroup, EuiFlexItem, EuiFormControlLayout, EuiHeader, EuiHeaderBreadcrumbs, EuiHeaderSection, EuiHeaderSectionItem, EuiHeaderSectionItemButton, EuiIcon, EuiImage, EuiLink, EuiListGroup, EuiListGroupItem, EuiPageHeader, EuiPageHeaderContent, EuiPageSidebar, EuiPopover, EuiPopoverFooter, EuiPopoverTitle, EuiSpacer, EuiText} from '@elastic/eui'
 import { css } from '@emotion/react'
 
 export default function Header() {
     const [isPopoverUser,setIsPopoverUSer]=useState(false)
     const [isPopoverNav,setIsPopoverNav]=useState(false)
+    const [isPopoverCart,setIsPopoverCart]=useState(false)
     const [hoveredCategory, setHoveredCategory] = useState(null);
 
     const openPopoverUser=()=>setIsPopoverUSer(!isPopoverUser)
@@ -60,13 +61,40 @@ export default function Header() {
                     <EuiHeaderSection side="right">
                         <EuiFlexGroup gutterSize='m'>
                             <EuiHeaderSectionItem>
-                                <EuiHeaderSectionItemButton notification={'2'}>
-                                    <EuiIcon type="/assets/shopping-cart.png" size='xl' style={{color:'white'}}/>
-                                </EuiHeaderSectionItemButton>
+                                <EuiPopover
+                                panelPaddingSize='s'
+                                panelStyle={{outline:'none',width:'300px'}}
+                                isOpen={isPopoverCart}
+                                closePopover={()=>setIsPopoverCart(false)}
+                                button={
+                                    <EuiHeaderSectionItemButton notification={'2'} onClick={()=>setIsPopoverCart(!isPopoverCart)}>
+                                        <EuiIcon type="/assets/shopping-cart.png" size='xl' style={{color:'white'}}/>
+                                    </EuiHeaderSectionItemButton>
+                                }>
+                                    <EuiPopoverTitle>
+                                        <EuiText>Sản phẩm mới thêm</EuiText>
+                                    </EuiPopoverTitle>
+                                    <EuiFlexGroup>
+                                        <EuiFlexItem>
+                                            <EuiFlexGroup gutterSize='s'>
+                                                <EuiImage src='/assets/brand.png' size='50px'/>
+                                                <EuiFlexItem>
+                                                    <EuiText size='s'>Áo khoác gió</EuiText>
+                                                    <EuiText>x1 &nbsp;&nbsp;&nbsp;<strong style={{color:'red'}}>20,000đ</strong></EuiText>
+                                                </EuiFlexItem>
+                                            </EuiFlexGroup>
+                                        </EuiFlexItem>
+                                    </EuiFlexGroup>
+                                    <EuiPopoverFooter>
+                                        <EuiFlexGroup justifyContent='flexEnd'>
+                                            <EuiButton fill href='/cart'>Xem giỏ hàng</EuiButton>
+                                        </EuiFlexGroup>
+                                    </EuiPopoverFooter>
+                                </EuiPopover>
                             </EuiHeaderSectionItem>
                             <EuiHeaderSectionItem>
                                 <EuiHeaderSectionItemButton notification={'2'}>
-                                    <EuiIcon type="editorComment" size='xl' color='white'/>
+                                    <EuiIcon type="bell" size='l' color='white'/>
                                 </EuiHeaderSectionItemButton>
                             </EuiHeaderSectionItem>
                             <EuiHeaderSectionItem>
@@ -83,8 +111,8 @@ export default function Header() {
                                             </EuiFlexItem>
                                             <EuiFlexItem>
                                                 <EuiText><p>Dat Nguyen</p></EuiText>
-                                                <EuiFlexGroup>
-                                                    <EuiLink>Chỉnh sửa hồ sơ</EuiLink>
+                                                <EuiFlexGroup alignItems='center'>
+                                                    <EuiLink href='/profile'>Chỉnh sửa hồ sơ</EuiLink>
                                                     <EuiButtonEmpty>Đăng xuất</EuiButtonEmpty>
                                                 </EuiFlexGroup>
                                             </EuiFlexItem>

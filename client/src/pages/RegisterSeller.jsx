@@ -1,10 +1,22 @@
-import { EuiAvatar, EuiButton, EuiButtonEmpty, EuiButtonIcon, EuiFieldText, EuiFlexGroup, EuiFlexItem, EuiForm, EuiFormRow, EuiHeader, EuiHeaderSection, EuiHeaderSectionItem, EuiHeaderSectionItemButton, EuiIcon, EuiImage, EuiPageHeader, EuiPageHeaderContent, EuiPageTemplate, EuiPopover, EuiPopoverTitle, EuiProgress, EuiSpacer, EuiStep, EuiSteps, EuiSwitch, EuiText } from '@elastic/eui'
+import { EuiAvatar, EuiButton, EuiButtonEmpty, EuiButtonIcon, EuiFieldText, EuiFlexGroup, EuiFlexItem, EuiForm, EuiFormControlLayout, EuiFormRow, EuiHeader, EuiHeaderSection, EuiHeaderSectionItem, EuiHeaderSectionItemButton, EuiIcon, EuiImage, EuiPageHeader, EuiPageHeaderContent, EuiPageTemplate, EuiPopover, EuiPopoverFooter, EuiPopoverTitle, EuiProgress, EuiSelect, EuiSelectable, EuiSpacer, EuiStep, EuiSteps, EuiSwitch, EuiText } from '@elastic/eui'
 import React, { useState } from 'react'
 
 export default function RegisterSeller() {
     const [isPoperUser,setisPopoverUser]=useState(false)
-    const [currentStep, setCurrentStep] = useState(0);
+    const [isPoperCategory,setisPopoverCategory]=useState(false)
+    const [options,setOptions]=useState([
+        {label:'Thời trang nam'},
+        {label:'Điện thoại & phụ kiện'},
+        {label:'Thiết bị điện tử'},
+        {label:'máy tính & laptop'},
+        {label:'Đồng hồ'},
+        {label:'Giày dép nam'}
+    ])
+    const selectOption=options.filter(option=>option.checked==='on')
 
+
+
+    const [currentStep, setCurrentStep] = useState(0);
   const totalSteps = 3;
 
   const steps = [
@@ -16,6 +28,28 @@ export default function RegisterSeller() {
             <EuiFormRow label="*Tên Shop">
                 <EuiFieldText placeholder='Tên shop'/>
             </EuiFormRow>
+            <EuiFormRow label="*Chọn danh mục đăng kí" >
+                <EuiPopover
+                panelStyle={{outline:'none',width:'400px'}}
+                hasArrow={false}
+                isOpen={isPoperCategory}
+                closePopover={()=>setisPopoverCategory(false)}
+                button={
+                    <EuiFormControlLayout isDropdown style={{width:'500px'}} onClick={()=>setisPopoverCategory(!isPoperCategory)}>
+                        <EuiFieldText placeholder='Danh mục' value={selectOption[0]?.label}/>
+                    </EuiFormControlLayout>
+                }>
+                    <EuiSelectable
+                    options={options}
+                    onChange={(option)=>setOptions(option)}
+                    singleSelection
+                    searchable
+                    searchProps={{placeholder:'Tìm kiếm danh mục'}}
+                    >
+                    {(list,search)=>(<>{search}{list}</>)}
+                    </EuiSelectable>
+                </EuiPopover>
+            </EuiFormRow>   
             <EuiFormRow label="*Địa chỉ lấy hàng">
                 <EuiFieldText placeholder='Địa chỉ lấy hàng'/>
             </EuiFormRow>
@@ -97,6 +131,7 @@ export default function RegisterSeller() {
   return (
     <EuiPageTemplate>
         <EuiPageHeader
+        style={{position:'fixed',top:0,zIndex:1000,width:'100%',background:'white'}}
         pageTitle={
             <EuiPageHeaderContent>
                 <EuiHeader style={{width:'100%'}}>

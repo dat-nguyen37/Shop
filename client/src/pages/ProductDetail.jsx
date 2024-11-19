@@ -53,7 +53,7 @@ export default function ProductDetail() {
   
 
   return (
-    <EuiPageTemplate style={{marginTop:'90px'}}>
+    <>
         <EuiPageTemplate.Header
         breadcrumbs={[
             {
@@ -220,7 +220,7 @@ export default function ProductDetail() {
                             <EuiText size='s'>Online 1 giờ trước</EuiText>
                             <EuiFlexGroup>
                                 <EuiButton iconType="discuss">Chat Ngay</EuiButton>
-                                <EuiButton iconType="/assets/shop.png">Xem Shop</EuiButton>
+                                <EuiButton iconType="/assets/shop.png" href='/shop28382'>Xem Shop</EuiButton>
                             </EuiFlexGroup>
                         </EuiFlexGroup>
                     </EuiFlexItem>
@@ -495,9 +495,6 @@ export default function ProductDetail() {
                 </EuiFlexGroup>
             </EuiFlexGroup>
         </EuiPageTemplate.Section>
-        <EuiPageTemplate.Section color='plain' grow={false} style={{borderTop:'1px solid'}}>
-            <Footer/>
-        </EuiPageTemplate.Section>
         {isModalComment && 
         <EuiModal style={{width:'600px'}} onClose={closeModalComment}>
             <EuiModalHeader>
@@ -516,7 +513,7 @@ export default function ProductDetail() {
                                     starSpacing='0'
                                     starHoverColor='#ffd700'
                                     changeRating={changeRating}/>
-                            <EuiText>{rating==5 ? 'Tuyệt vời' : rating ==4 ? 'Hài lòng' : rating ==3 ? 'Bình thường' : rating ==2 ? 'Không hài lòng' :'Tệ'}</EuiText>
+                            <EuiText>{rating===5 ? 'Tuyệt vời' : rating ===4 ? 'Hài lòng' : rating ===3 ? 'Bình thường' : rating ===2 ? 'Không hài lòng' :'Tệ'}</EuiText>
                         </EuiFlexGroup>
                     </EuiFlexItem>
                     <EuiFlexItem>
@@ -533,6 +530,6 @@ export default function ProductDetail() {
                 </EuiFlexGroup>
             </EuiModalFooter>
         </EuiModal>}
-    </EuiPageTemplate>
+    </>
   )
 }

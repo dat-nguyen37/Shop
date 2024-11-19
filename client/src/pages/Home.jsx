@@ -7,7 +7,7 @@ export default function Home() {
   const mobile=useIsWithinBreakpoints(['xs','s'])
   const tablet=useIsWithinBreakpoints(['m','l'])
   return (
-    <EuiPageTemplate style={{marginTop:'90px'}}>
+    <>
       <EuiPageTemplate.Section color='transparent'>
         <Slide/>
       </EuiPageTemplate.Section>
@@ -108,9 +108,6 @@ export default function Home() {
             <EuiText textAlign='center'><EuiLink><b>Xem thêm</b></EuiLink></EuiText>
           </EuiFlexGroup>
         </EuiPageTemplate.Section>
-        <EuiPageTemplate.Section color='plain'>
-          <Footer/>
-        </EuiPageTemplate.Section>
-    </EuiPageTemplate>
+    </>
   )
 }
