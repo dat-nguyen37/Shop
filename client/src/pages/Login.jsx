@@ -1,20 +1,76 @@
-import React from 'react'
+import React, { useContext, useState } from 'react'
 import { EuiButton, EuiButtonEmpty, EuiButtonIcon, EuiFieldPassword, EuiFieldText, EuiFlexGroup, EuiFlexItem, EuiFormRow, EuiLink, EuiPageTemplate, EuiText } from "@elastic/eui"
+import {validator} from '../Validator'
+import axios from '../axios'
+import Swal from 'sweetalert2'
+import {useNavigate} from 'react-router-dom'
+import {AuthContext} from '../context/AuthContext'
 
 export default function Login() {
+    const {error,loading,dispatch}=useContext(AuthContext)
+    const [errors,setErrors]=useState({
+        email:'',
+        password:''
+    })
+    const [data,setData]=useState({
+        email:'',
+        password:''
+    })
+    const handleChange=(field)=>(e)=>{
+        setData({
+            ...data,
+            [field]:e.target.value
+        })
+    }
+
+    const navigate=useNavigate()
+    const handleLogin=async()=>{
+        const {errors} =validator(data)
+        setErrors(errors)
+        if(Object.keys(errors).length===0){
+            dispatch({type:'LOGIN_START'})
+            try {
+                const res=await axios.post('/login',data)
+                dispatch({type:'LOGIN_SUCCESS',payload:res.data})
+                Swal.fire({
+                    icon: 'success',           
+                    title: 'Đăng nhập thành công', 
+                    confirmButtonText: 'Đồng ý',  
+                    customClass: {
+                      icon: 'swal-icon-success', 
+                    }
+                  });
+                  navigate('/')
+            } catch (err) {
+                dispatch({type:'LOGIN_FAILURE'})
+                if(err.response && err.response.data.errors){
+                    setErrors(err.response.data.errors)
+                }else{
+                    Swal.fire({
+                        icon: 'errors',           
+                        title: 'Lỗi server!', 
+                        confirmButtonText: 'Đồng ý',  
+                        customClass: {
+                          icon: 'swal-icon-success', 
+                        }
+                      });
+                }
+            }
+        }
+    }
   return (
     <EuiPageTemplate style={{backgroundImage:'url("/assets/bg.png")',width:'100vw',height:'100vh',backgroundRepeat:'no-repeat',backgroundSize:'cover'}}>
         <EuiFlexGroup alignItems='center' justifyContent='center' style={{width:'100%',height:'100%'}}>
             <EuiFlexItem grow={false}>
                 <EuiFlexGroup direction='column' gutterSize='s'>
                     <EuiText textAlign='center' color='black'><h3>Đăng nhập</h3></EuiText>
-                    <EuiFormRow label="Email" fullWidth>
-                        <EuiFieldText placeholder='info@gmail.com' fullWidth/>
+                    <EuiFormRow label="Email" fullWidth isInvalid={!!errors.email} error={errors.email}>
+                        <EuiFieldText placeholder='info@gmail.com' onChange={handleChange('email')} isInvalid={!!errors.email} fullWidth/>
                     </EuiFormRow>
-                    <EuiFormRow label="Mật khẩu" fullWidth>
-                        <EuiFieldPassword type='dual' placeholder='Mật khẩu' fullWidth/>
+                    <EuiFormRow label="Mật khẩu" fullWidth isInvalid={!!errors.password} error={errors.password}>
+                        <EuiFieldPassword type='dual' placeholder='Mật khẩu' onChange={handleChange('password')} isInvalid={!!errors.password} fullWidth/>
                     </EuiFormRow>
-                    <EuiButton fill>Đăng nhập</EuiButton>
+                    <EuiButton fill onClick={handleLogin} isLoading={loading}>Đăng nhập</EuiButton>
                     <EuiFlexGroup justifyContent='center' responsive={false}>
                         <EuiFlexItem>
                             <EuiButton fill iconType="/assets/facebook.png">Facebook</EuiButton>

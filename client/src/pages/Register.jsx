@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { EuiButton, EuiButtonEmpty, EuiButtonIcon, EuiFieldPassword, EuiFieldText, EuiFlexGroup, EuiFlexItem, EuiForm, EuiFormRow, EuiLink, EuiPageTemplate, EuiText } from "@elastic/eui"
 import axios from '../axios'
 import { validator } from '../Validator';
-
+import Swal from "sweetalert2";
 
 
 export default function Register() {
+    const [isLoading,setIsLoading]=useState(false)
     const [formData, setFormData] = useState({
-        name: '',
         email: '',
+        name: '',
         password:'',
         reEnterPassword:''
       });
@@ -29,11 +30,35 @@ export default function Register() {
           const {errors} =validator(formData)
           setErrors(errors);
           if(Object.keys(errors).length===0){
+            setIsLoading(true)
             try {
                 await axios.post('/register',formData)
-                alert("success")
+                setIsLoading(false)
+                Swal.fire({
+                  icon: 'success',           
+                  title: 'Đăng ký thành công!', 
+                  text: `Chúng tôi đã gửi email kích hoạt đến ${formData.email} của bạn.Bạn vui lòng truy cập vào hòm thư để kích hoạt.`, 
+                  confirmButtonText: 'Đồng ý',  
+                  customClass: {
+                    icon: 'swal-icon-success', 
+                  }
+                });
             } catch (err) {
-                console.log(err)
+              setIsLoading(false)
+              if(err.response && err.response.data.errors){
+                setErrors(err.response.data.errors);
+              }
+              else{
+                Swal.fire({
+                  icon: 'error',           
+                  title: 'Đăng ký thất bại!', 
+                  text: `Bạn vui lòng thử lại hoặc liên hệ admin để được hỗ trợ`, 
+                  confirmButtonText: 'Đồng ý',  
+                  customClass: {
+                    icon: 'swal-icon-success', 
+                  }
+                });
+              }
             }
           }
     }
@@ -56,7 +81,7 @@ export default function Register() {
                     <EuiFormRow label="Nhập lại mật khẩu" fullWidth isInvalid={!!errors.reEnterPassword} error={errors.reEnterPassword}>
                         <EuiFieldPassword type='dual' placeholder='Nhập lại mật khẩu' onChange={handleChange('reEnterPassword')} fullWidth isInvalid={!!errors.reEnterPassword}/>
                     </EuiFormRow>
-                    <EuiButton fill onClick={handleRegister}>Đăng ký</EuiButton>
+                    <EuiButton fill isLoading={isLoading} onClick={handleRegister}>Đăng ký</EuiButton>
                     <EuiFlexGroup justifyContent='center' responsive={false}>
                         <EuiFlexItem>
                             <EuiButton fill iconType="/assets/facebook.png">Facebook</EuiButton>

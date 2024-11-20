@@ -1,15 +1,25 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import {EuiAvatar, EuiBreadcrumbs, EuiButton, EuiButtonEmpty, EuiFieldSearch, EuiFlexGroup, EuiFlexItem, EuiFormControlLayout, EuiHeader, EuiHeaderBreadcrumbs, EuiHeaderSection, EuiHeaderSectionItem, EuiHeaderSectionItemButton, EuiIcon, EuiImage, EuiLink, EuiListGroup, EuiListGroupItem, EuiPageHeader, EuiPageHeaderContent, EuiPageSidebar, EuiPopover, EuiPopoverFooter, EuiPopoverTitle, EuiSpacer, EuiText} from '@elastic/eui'
 import { css } from '@emotion/react'
+import { AuthContext } from '../../context/AuthContext'
+import axios from '../../axios'
 
 export default function Header() {
     const [isPopoverUser,setIsPopoverUSer]=useState(false)
-    const [isPopoverNav,setIsPopoverNav]=useState(false)
     const [isPopoverCart,setIsPopoverCart]=useState(false)
-    const [hoveredCategory, setHoveredCategory] = useState(null);
+    const {user,dispatch}=useContext(AuthContext)
 
     const openPopoverUser=()=>setIsPopoverUSer(!isPopoverUser)
     const closePopoverUser=()=>setIsPopoverUSer(false)
+
+    const handleLogout=async()=>{
+        try {
+            await axios.get('/logout')
+            dispatch({type:'LOGOUT'})
+        } catch (err) {
+            console.log(err)
+        }
+    }
 
   return (
     <div>
@@ -105,18 +115,26 @@ export default function Header() {
                                         closePopover={closePopoverUser}
                                         button={<EuiAvatar onClick={openPopoverUser} name='EL' color="#68C4A2" size='m' />}
                                     >
-                                        <EuiFlexGroup gutterSize='s'>
+                                        {user?(<EuiFlexGroup gutterSize='s' alignItems='center'>
                                             <EuiFlexItem grow={false}>
-                                                <EuiAvatar name='EL' color="#68C4A2" size='m' />
+                                                <EuiAvatar name='EL' color="#68C4A2" size='xl' />
                                             </EuiFlexItem>
                                             <EuiFlexItem>
-                                                <EuiText><p>Dat Nguyen</p></EuiText>
+                                                <EuiText><b>{user.name}</b></EuiText>
                                                 <EuiFlexGroup alignItems='center'>
                                                     <EuiLink href='/profile'>Chỉnh sửa hồ sơ</EuiLink>
-                                                    <EuiButtonEmpty>Đăng xuất</EuiButtonEmpty>
+                                                    <EuiButtonEmpty onClick={handleLogout}>Đăng xuất</EuiButtonEmpty>
                                                 </EuiFlexGroup>
                                             </EuiFlexItem>
-                                        </EuiFlexGroup>
+                                        </EuiFlexGroup>):(
+                                            <EuiFlexGroup gutterSize='s' alignItems='center'>
+                                                <EuiFlexItem grow={false}>
+                                                    <EuiAvatar name='EL' color="#68C4A2" size='m' />
+                                                </EuiFlexItem>
+                                                <EuiLink href='/dang_nhap'>Đăng nhập</EuiLink>
+                                                <EuiLink href='/dang_ky'>Đăng ký</EuiLink>
+                                            </EuiFlexGroup>
+                                        )}
                                     </EuiPopover>
                                 </EuiHeaderSectionItemButton>
                             </EuiHeaderSectionItem>

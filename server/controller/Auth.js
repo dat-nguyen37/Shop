@@ -14,11 +14,12 @@ const transporter = nodemailer.createTransport({
 
 exports.register=async(req,res)=>{
     try {
+        let errors={};
         const { email, name, password } = req.body;
-
         const user=await User.findOne({email:email})
         if(user){
-            return res.status(409).send("Email đã được sử dụng")
+            errors.email="Email đã được sử dụng"
+            return res.status(409).send({errors})
         }
         const verificationToken = jwt.sign(
             { email, name, password },
@@ -59,3 +60,28 @@ exports.verifyEmail = async (req, res) => {
         res.status(400).send("Liên kết xác minh không hợp lệ hoặc đã hết hạn.");
     }
 };
+exports.login=async(req,res)=>{
+    try {
+        let errors={}
+        const user=await User.findOne({email:req.body.email})
+        if(!user){
+            errors.email="Email chưa được đăng kí"
+            return res.status(404).send({errors})
+        }
+        const IsPassword=await bcrypt.compare(req.body.password,user.password)
+        if(!IsPassword){
+            errors.password="Mật khẩu không chính xác"
+            return res.status(404).send({errors})
+        }
+        const token= jwt.sign({userId:user._id,role:user.role},process.env.SECRET,{
+            expiresIn:60*60*24*2
+        })
+        const {password,role,...others}=user._doc
+        res.cookie("access_token", token,{httpOnly:true}).status(200).json(others); 
+    } catch (err) {
+        res.status(500).send(err)
+    }
+}
+exports.logout=(req,res)=>{
+    res.clearCookie("access_token").status(200).json("User has been logged out.")
+}

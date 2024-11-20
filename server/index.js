@@ -3,7 +3,7 @@ const connect=require('./config/db')
 const cookieParser=require('cookie-parser')
 const cors=require('cors')
 const bodyParser = require('body-parser');
-require('dotenv')
+require('dotenv').config()
 
 const app=express()
 
