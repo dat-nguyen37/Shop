@@ -17,13 +17,17 @@ import Setting from './components/setting/Setting';
 import Password from './components/password/Password';
 import Order from './components/order/Order';
 import ActivateAccount from './pages/ActivateAccount';
+import { useContext } from 'react';
+import { AuthContext } from './context/AuthContext';
+import {Navigate} from 'react-router-dom'
 
 function App() {
+  const {user}=useContext(AuthContext)
 
   return (
     <>
       <Routes>
-        <Route path="/dangky_nguoiban" element={<RegisterSeller />} />
+        <Route path="/dangky_nguoiban" element={user?<RegisterSeller />:<Navigate to="/dang_nhap"/>} />
         <Route path="/dang_ky" element={<Register />} />
         <Route path="/dang_nhap" element={<Login />} />
         <Route path="/kich_hoat" element={<ActivateAccount />} />
@@ -31,9 +35,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/chi_tiet_san_pham" element={<ProductDetail />} />
           <Route path="/shop28382" element={<ShopView />} />
-          <Route path="/cart" element={<Cart />} />
+          <Route path="/cart" element={user?<Cart />:<Navigate to="/dang_nhap"/>} />
           <Route path="/payment" element={<Payment />} />
-          <Route path="/profile" element={<Profile/>}>
+          <Route path="/profile" element={user?<Profile/>:<Navigate to="/dang_nhap"/>}>
             <Route index element={<Acount />} />
             <Route path="address" element={<ListAddress />} />
             <Route path="setting" element={<Setting />} />

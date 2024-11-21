@@ -45,7 +45,7 @@ export default function Profile() {
                 </EuiFlexGroup>
             </EuiPageSection>
         </EuiPageTemplate.Sidebar>
-        <EuiPageTemplate.Section color='transparent'>
+        <EuiPageTemplate.Section color='transparent' grow={false}>
             <EuiPanel style={{minHeight:'80vh'}}>
                 <Outlet/>
             </EuiPanel>

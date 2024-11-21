@@ -1,16 +1,8 @@
 const User=require('../model/User')
 const bcrypt =require("bcrypt")
-const nodemailer = require("nodemailer");
 const jwt =require('jsonwebtoken')
+const sendMail=require('../until/sendMail')
 
-
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: process.env.EMAIL,
-        pass: process.env.PASSWORD,
-    },
-});
 
 exports.register=async(req,res)=>{
     try {
@@ -27,7 +19,7 @@ exports.register=async(req,res)=>{
             { expiresIn: "1h" }
         );
         const verificationLink = `http://localhost:3000/kich_hoat?token=${verificationToken}`;
-        await transporter.sendMail({
+        await sendMail({
             from: process.env.EMAIL,
             to: email,
             subject: "Kích hoạt tài khoản",
@@ -84,4 +76,23 @@ exports.login=async(req,res)=>{
 }
 exports.logout=(req,res)=>{
     res.clearCookie("access_token").status(200).json("User has been logged out.")
+}
+
+exports.verifyPassword=async(req,res)=>{
+    try {
+        let errors={};
+        const user=await User.findById(req.userId)
+        if(!user){
+            errors.message='Không tìm thấy người dùng'
+            return res.status(404).send({message:'Không tìm thấy người dùng'})
+        }
+        const isPassword=await bcrypt.compare(req.body.password,user.password)
+        if(!isPassword){
+            errors.password='Mật khẩu không chính xác'
+            return res.status(400).send({errors})
+        }
+        res.status(200).send('Xác minh thành công')
+    } catch (err) {
+        res.status(500).send(err)
+    }
 }

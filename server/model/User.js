@@ -16,6 +16,9 @@ const userSchema=mongoose.Schema({
     phone:{
         type:String
     },
+    imageUrl:{
+        type:String
+    },
     address:{
         type:String
     },

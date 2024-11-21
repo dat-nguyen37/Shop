@@ -20,10 +20,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 
 const AuthRoute=require('./route/Auth')
+const UserRoute=require('./route/User')
+const OtpRoute=require('./route/Otp')
+
+
 
 
 
 app.use('/',AuthRoute)
+app.use('/',UserRoute)
+app.use('/',OtpRoute)
+
 
 app.listen(5000,()=>{
     console.log("Sever is running on port 5000")

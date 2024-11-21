@@ -1,13 +1,21 @@
-import { EuiButton, EuiButtonEmpty, EuiButtonIcon, EuiFieldPassword, EuiFlexGroup, EuiImage, EuiPanel, EuiSpacer, EuiStepsHorizontal, EuiText } from '@elastic/eui'
-import React, { useEffect, useState } from 'react'
+import { EuiButton, EuiButtonEmpty, EuiButtonIcon, EuiFieldPassword, EuiFlexGroup, EuiFormRow, EuiImage, EuiPanel, EuiSpacer, EuiStepsHorizontal, EuiText } from '@elastic/eui'
+import React, { useContext, useEffect, useState } from 'react'
 import VerifyPassword from './VerifyPassword'
 import VerifyEmail from './VerifyEmail'
 import VerifyPhone from './VerifyPhone'
+import { validator } from '../../Validator'
+import {toast,ToastContainer} from 'react-toastify'
+import {AuthContext} from '../../context/AuthContext'
+import axios from '../../axios'
+import Swal from 'sweetalert2'
+import {useNavigate} from 'react-router-dom'
+
 
 export default function Password() {
     const [currentStep ,setCurrentStep ]=useState('step1')
     const [tab,setTab]=useState("")
     const [isVerify,setIsVerify]=useState(false)
+    const {user}=useContext(AuthContext)
 
     useEffect(()=>{
         if(isVerify){
@@ -20,8 +28,50 @@ export default function Password() {
         setIsVerify(false)
         setCurrentStep('step1')
     }
+
+      const [data, setData] = useState({
+        password:'',
+        reEnterPassword:''
+      });
+      const [errors, setErrors] = useState({
+        password:'',
+        reEnterPassword:''
+      });
+      const handleChange = (field) => (e) => {
+        setData({
+          ...data,
+          [field]: e.target.value,
+        });
+      };
+      const handleUpdatePassword=async()=>{
+        const {errors}=validator(data)
+        setErrors(errors)
+        if(Object.keys(errors).length===0){
+            try {
+                await axios.patch('/update/'+user._id,data)
+                setCurrentStep('step3')
+            } catch (err) {
+                if(err.response && err.response.data.message){
+                    toast.error(err.response.data.message,{
+                        position: "top-right",
+                        autoClose: 3000,
+                        closeOnClick: true,
+                        draggable: true,
+                      })
+                }else(
+                    toast.error('Lỗi server',{
+                        position: "top-right",
+                        autoClose: 3000,
+                        closeOnClick: true,
+                        draggable: true,
+                      })
+                )
+            }
+        }
+    }
   return (
     <>
+    <ToastContainer/>
         <EuiStepsHorizontal
         steps={[{
             title: 'Xác minh',
@@ -56,11 +106,15 @@ export default function Password() {
                 <EuiPanel style={{maxWidth:'300px'}}>
                     <EuiFlexGroup direction='column'>
                         <EuiText color='blue'>Xác minh thành công</EuiText>
-                        <EuiFieldPassword type='dual' placeholder='Nhập mật khẩu mới'/>
-                        <EuiFieldPassword type='dual' placeholder='Nhập lại mật khẩu'/>
+                        <EuiFormRow isInvalid={!!errors.password} error={errors.password}>
+                            <EuiFieldPassword type='dual' placeholder='Nhập mật khẩu mới' onChange={handleChange('password')} isInvalid={!!errors.password}/>
+                        </EuiFormRow>
+                        <EuiFormRow isInvalid={!!errors.reEnterPassword} error={errors.reEnterPassword}>
+                            <EuiFieldPassword type='dual' placeholder='Nhập lại mật khẩu' onChange={handleChange('reEnterPassword')} isInvalid={!!errors.reEnterPassword}/>
+                        </EuiFormRow>
                         <EuiFlexGroup>
                             <EuiButton onClick={handleCancel}>Hủy</EuiButton>
-                            <EuiButton fill onClick={()=>setCurrentStep('step3')}>Xác nhận</EuiButton>
+                            <EuiButton fill onClick={handleUpdatePassword}>Xác nhận</EuiButton>
                         </EuiFlexGroup>
                     </EuiFlexGroup>
                 </EuiPanel>
@@ -69,7 +123,7 @@ export default function Password() {
             {tab===''&&currentStep==='step3'&&
             <EuiFlexGroup direction='column' alignItems='center' justifyContent='center'>
                 <EuiImage src='/assets/encrypted.png' size='s'/>
-                <EuiText color='blue'>Đổi mật khẩu thành công</EuiText>
+                <EuiText color='blue'><h3>Đổi mật khẩu thành công</h3></EuiText>
             </EuiFlexGroup>
             }
         <EuiFlexGroup justifyContent='center'>
