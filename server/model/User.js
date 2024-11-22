@@ -19,9 +19,18 @@ const userSchema=mongoose.Schema({
     imageUrl:{
         type:String
     },
-    address:{
-        type:String
-    },
+    address:[
+            {
+                name: String,
+                phone: String,
+                address: String,
+                addressDetail: String,
+                status:{
+                    type:Boolean,
+                    default:false
+                }
+            }
+        ],
     role:{
         type:String,
         default:'User'
