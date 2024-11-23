@@ -20,6 +20,9 @@ import ActivateAccount from './pages/ActivateAccount';
 import { useContext } from 'react';
 import { AuthContext } from './context/AuthContext';
 import {Navigate} from 'react-router-dom'
+import Dashboard from './components/admin/Dashboard/Dashboard';
+import ListShop from './components/admin/shop/ListShop';
+import Account from './components/admin/account/Account';
 
 function App() {
   const {user}=useContext(AuthContext)
@@ -31,6 +34,10 @@ function App() {
         <Route path="/dang_ky" element={<Register />} />
         <Route path="/dang_nhap" element={<Login />} />
         <Route path="/kich_hoat" element={<ActivateAccount />} />
+        <Route path="/dashboard" element={<Dashboard />}>
+          <Route path="danh_sach_cua_hang" element={<ListShop />}/>
+          <Route path="danh_sach_nguoi_dung" element={<Account />}/>
+        </Route>
         <Route path="/" element={<Nested />} >
           <Route path="/" element={<Home />} />
           <Route path="/chi_tiet_san_pham" element={<ProductDetail />} />

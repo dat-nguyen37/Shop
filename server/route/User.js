@@ -10,4 +10,5 @@ route.delete('/deleteAddress/:id',checkLogin,UserController.deleteAddress)
 route.patch('/updateAddress/:id',checkLogin,UserController.updateAddress)
 
 
+
 module.exports=route

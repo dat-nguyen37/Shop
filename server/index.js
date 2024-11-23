@@ -22,6 +22,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 const AuthRoute=require('./route/Auth')
 const UserRoute=require('./route/User')
 const OtpRoute=require('./route/Otp')
+const ShipRoute=require('./route/Ship')
+const categoryRoute=require('./route/Category')
+const shopRoute=require('./route/Shop')
+
 
 
 
@@ -30,6 +34,11 @@ const OtpRoute=require('./route/Otp')
 app.use('/',AuthRoute)
 app.use('/',UserRoute)
 app.use('/',OtpRoute)
+app.use('/ship',ShipRoute)
+app.use('/category',categoryRoute)
+app.use('/shop',shopRoute)
+
+
 
 
 app.listen(5000,()=>{

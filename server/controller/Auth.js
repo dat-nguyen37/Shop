@@ -65,9 +65,7 @@ exports.login=async(req,res)=>{
             errors.password="Mật khẩu không chính xác"
             return res.status(404).send({errors})
         }
-        const token= jwt.sign({userId:user._id,role:user.role},process.env.SECRET,{
-            expiresIn:60*60*24*2
-        })
+        const token= jwt.sign({userId:user._id,role:user.role},process.env.SECRET)
         const {password,role,...others}=user._doc
         res.cookie("access_token", token,{httpOnly:true}).status(200).json(others); 
     } catch (err) {

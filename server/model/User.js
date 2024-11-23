@@ -1,7 +1,7 @@
 
 const mongoose=require('mongoose')
 
-const userSchema=mongoose.Schema({
+const userSchema=new mongoose.Schema({
     name:{
         type:String
     },
@@ -31,9 +31,29 @@ const userSchema=mongoose.Schema({
                 }
             }
         ],
+    shop:[
+        {
+            name:String,
+            categoryId:String,
+            address:String,
+            ownerName: String,
+            email:String,
+            phone:String,
+            ship:[String],
+            isActivated:{
+                type:Boolean,
+                default:false
+            },
+            createdAt: { type: Date}
+        }
+    ],
     role:{
         type:String,
         default:'User'
+    },
+    status:{
+        type:Boolean,
+        default:false
     }
 },
 {
