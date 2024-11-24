@@ -65,8 +65,11 @@ exports.login=async(req,res)=>{
             errors.password="Mật khẩu không chính xác"
             return res.status(404).send({errors})
         }
+        if(!user.status){
+            return res.status(400).send({message:'Tài khoản của bạn đã bị khóa. Vui lòng liện hệ admin'})
+        }
         const token= jwt.sign({userId:user._id,role:user.role},process.env.SECRET)
-        const {password,role,...others}=user._doc
+        const {password,role,shop,status,...others}=user._doc
         res.cookie("access_token", token,{httpOnly:true}).status(200).json(others); 
     } catch (err) {
         res.status(500).send(err)

@@ -37,7 +37,7 @@ export default function ActivateAccount() {
         const token = queryParams.get('token');
         if (token) {
           axios
-            .get(`/verifyEmail?token=${token}`)
+            .get(`/auth/verifyEmail?token=${token}`)
             .then((res) => {
               setIsModalVisible(true)
               setIsSuccess(true)

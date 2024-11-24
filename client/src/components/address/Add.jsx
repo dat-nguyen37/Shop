@@ -26,7 +26,7 @@ export default function Add({setModalAdd,getAddress}) {
 
     const handleAddress=async()=>{
             try {
-                await axios.post('/addAddress',{
+                await axios.post('/user/addAddress',{
                     name:data.name,
                     phone:data.phone,
                     address:data.address,

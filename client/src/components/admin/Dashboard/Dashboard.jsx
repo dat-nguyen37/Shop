@@ -39,9 +39,9 @@ export default function Dashboard() {
                                 <EuiLink color='text'>Quản lý</EuiLink>
                             </EuiFlexGroup>}>
                             <EuiListGroup flush style={{paddingInline:'30px'}}>
-                                <EuiListGroupItem href='/profile' label='Danh mục'/>
-                                <EuiListGroupItem href='/profile/address' label='Sản phẩm'/>
-                                <EuiListGroupItem href='/profile/password' label='Đơn hàng'/>
+                                <EuiListGroupItem href='/dashboard/danh_sach_danh_muc' label='Danh mục'/>
+                                <EuiListGroupItem href='/dashboard/danh_sach_san_pham' label='Sản phẩm'/>
+                                <EuiListGroupItem href='/dashboard/danh_sach_don_hang' label='Đơn hàng'/>
                                 <EuiListGroupItem href='/dashboard/danh_sach_cua_hang' label='Cửa hàng'/>
                                 <EuiListGroupItem href='/dashboard/danh_sach_nguoi_dung' label='Tài khoản'/>
                             </EuiListGroup>

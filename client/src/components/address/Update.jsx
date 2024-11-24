@@ -26,7 +26,7 @@ export default function Update({setModalUpdate,getAddress,item}) {
 
     const handleUpdate=async()=>{
         try {
-          const res=await axios.patch('/updateAddress/'+item._id,{
+          const res=await axios.patch('/user/updateAddress/'+item._id,{
             name:data.name,
             phone:data.phone,
             address:data.address,

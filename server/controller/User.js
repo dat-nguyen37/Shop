@@ -2,6 +2,14 @@ const User=require('../model/User')
 const bcrypt=require('bcrypt')
 
 
+exports.getAll=async(req,res)=>{
+    try {
+        const users=await User.find()
+        res.status(200).send(users)
+    } catch (err) {
+        res.status(500).send(err)
+    }
+}
 exports.update=async(req,res)=>{
     try {
         const updateUser=req.body

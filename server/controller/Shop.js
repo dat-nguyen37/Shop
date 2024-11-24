@@ -64,7 +64,7 @@ exports.getAll=async(req,res)=>{
 exports.update=async(req,res)=>{
     try {
         const {name,categoryId,address,ownerName,email,phone,ship,isActivated}=req.body
-        await User.findOneAndUpdate({
+        const user=await User.findOneAndUpdate({
             "shop._id": req.params.id
             }
             ,{$set:{
@@ -78,6 +78,13 @@ exports.update=async(req,res)=>{
                 "shop.$.isActivated": isActivated,
                 "shop.$.createdAt": new Date(),
             }},{new:true})
+            if(!isActivated){
+                const userUpdate=await User.findByIdAndUpdate(
+                    user._id,               
+                    { $set: {role:"Seller"} }, 
+                    { new: true }        
+                  );
+            }
         res.status(200).send("Cập nhật thành công")
     } catch (err) {
         res.status(500).send(err)

@@ -3,6 +3,7 @@ const route=require('express').Router()
 const checkLogin=require('../verifyToken')
 
 
+route.get('/getAll',UserController.getAll)
 route.patch('/update/:id',UserController.update)
 route.post('/addAddress',checkLogin,UserController.addAddress)
 route.get('/getAddress',checkLogin,UserController.getAddress)

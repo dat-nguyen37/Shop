@@ -32,7 +32,7 @@ export default function Register() {
           if(Object.keys(errors).length===0){
             setIsLoading(true)
             try {
-                await axios.post('/register',formData)
+                await axios.post('/auth/register',formData)
                 setIsLoading(false)
                 Swal.fire({
                   icon: 'success',           

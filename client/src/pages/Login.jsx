@@ -30,7 +30,7 @@ export default function Login() {
         if(Object.keys(errors).length===0){
             dispatch({type:'LOGIN_START'})
             try {
-                const res=await axios.post('/login',data)
+                const res=await axios.post('/auth/login',data)
                 dispatch({type:'LOGIN_SUCCESS',payload:res.data})
                 Swal.fire({
                     icon: 'success',           
@@ -45,6 +45,15 @@ export default function Login() {
                 dispatch({type:'LOGIN_FAILURE'})
                 if(err.response && err.response.data.errors){
                     setErrors(err.response.data.errors)
+                }else if(err.response && err.response.data.message){
+                    Swal.fire({
+                        icon: 'errors',           
+                        title: err.response.data.message, 
+                        confirmButtonText: 'Đồng ý',  
+                        customClass: {
+                          icon: 'swal-icon-success', 
+                        }
+                      });
                 }else{
                     Swal.fire({
                         icon: 'errors',           

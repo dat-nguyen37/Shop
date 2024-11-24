@@ -32,7 +32,7 @@ export default function Header() {
             breadcrumbs={[
                 {
                     text:'Kênh người bán',
-                    href:'/dangky_nguoiban',
+                    href:'/nguoi_ban',
                     style:{paddingInline:'10px'}
                 },
                 {

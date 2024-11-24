@@ -21,7 +21,7 @@ export default function VerifyPassword({setTab,setIsVerify}) {
     setErrors(errors)
     if(Object.keys(errors).length===0){
       try {
-        await axios.post('/verifyPassword',data)
+        await axios.post('/auth/verifyPassword',data)
         setTab(false)
         setIsVerify(true)
       } catch (err) {

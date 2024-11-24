@@ -24,7 +24,7 @@ export default function VerifyEmail({setTab,setIsVerify}) {
   const sendOtp=async()=>{
       setLoading(true)
       try {
-        await axios.post('/sendOTP',data)
+        await axios.post('/otp/sendOTP',data)
         setLoading(false)
         setErrors({})
         toast.success('Otp đã được gửi đi. Vui lòng kiểm tra hòm thư của bạn',{
@@ -49,7 +49,7 @@ export default function VerifyEmail({setTab,setIsVerify}) {
   }
   const handleVerify=async()=>{
       try {
-        await axios.post('/verifyOTP',data)
+        await axios.post('/otp/verifyOTP',data)
         setErrors({})
         setTab(false)
         setIsVerify(true)

@@ -20,9 +20,11 @@ import ActivateAccount from './pages/ActivateAccount';
 import { useContext } from 'react';
 import { AuthContext } from './context/AuthContext';
 import {Navigate} from 'react-router-dom'
-import Dashboard from './components/admin/Dashboard/Dashboard';
+import DashboardAdmin from './components/admin/Dashboard/Dashboard';
 import ListShop from './components/admin/shop/ListShop';
 import Account from './components/admin/account/Account';
+import DashboardSeller from './components/seller/Dashboard/Dashboard';
+import ListCategory from './components/admin/category/ListCategory';
 
 function App() {
   const {user}=useContext(AuthContext)
@@ -34,9 +36,15 @@ function App() {
         <Route path="/dang_ky" element={<Register />} />
         <Route path="/dang_nhap" element={<Login />} />
         <Route path="/kich_hoat" element={<ActivateAccount />} />
-        <Route path="/dashboard" element={<Dashboard />}>
+        <Route path="/dashboard" element={<DashboardAdmin />}>
           <Route path="danh_sach_cua_hang" element={<ListShop />}/>
           <Route path="danh_sach_nguoi_dung" element={<Account />}/>
+          <Route path="danh_sach_danh_muc" element={<ListCategory />}/>
+        </Route>
+        <Route path="/nguoi_ban" element={<DashboardSeller />}>
+          <Route path="danh_sach_cua_hang" element={<ListShop />}/>
+          <Route path="danh_sach_nguoi_dung" element={<Account />}/>
+          <Route path="danh_sach_danh_muc" element={<ListCategory />}/>
         </Route>
         <Route path="/" element={<Nested />} >
           <Route path="/" element={<Home />} />

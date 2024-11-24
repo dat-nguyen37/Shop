@@ -31,9 +31,9 @@ const shopRoute=require('./route/Shop')
 
 
 
-app.use('/',AuthRoute)
-app.use('/',UserRoute)
-app.use('/',OtpRoute)
+app.use('/auth',AuthRoute)
+app.use('/user',UserRoute)
+app.use('/otp',OtpRoute)
 app.use('/ship',ShipRoute)
 app.use('/category',categoryRoute)
 app.use('/shop',shopRoute)

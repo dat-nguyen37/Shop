@@ -22,7 +22,7 @@ export default function Acount() {
     }
     const handleUpdate=async()=>{
         try {
-            const res=await axios.patch('/update/'+user._id,data)
+            const res=await axios.patch('/user/update/'+user._id,data)
             dispatch({type:'LOGIN_SUCCESS',payload:res.data})
             toast.success('Cập nhật thành công!', {
                 position: "top-right",

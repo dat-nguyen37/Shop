@@ -2,7 +2,6 @@ import { EuiButton, EuiButtonEmpty, EuiButtonIcon, EuiFieldPassword, EuiFlexGrou
 import React, { useContext, useEffect, useState } from 'react'
 import VerifyPassword from './VerifyPassword'
 import VerifyEmail from './VerifyEmail'
-import VerifyPhone from './VerifyPhone'
 import { validator } from '../../Validator'
 import {toast,ToastContainer} from 'react-toastify'
 import {AuthContext} from '../../context/AuthContext'
@@ -48,7 +47,7 @@ export default function Password() {
         setErrors(errors)
         if(Object.keys(errors).length===0){
             try {
-                await axios.patch('/update/'+user._id,data)
+                await axios.patch('/user/update/'+user._id,data)
                 setCurrentStep('step3')
             } catch (err) {
                 if(err.response && err.response.data.message){
@@ -97,7 +96,6 @@ export default function Password() {
                         <EuiText>Để tăng cường bảo mật cho tài khoản của bạn, hãy xác minh thông tin bằng một trong những cách sau.</EuiText>
                         <EuiButtonEmpty onClick={()=>setTab('password')}>Xác minh bằng mật khẩu</EuiButtonEmpty>
                         <EuiButtonEmpty onClick={()=>setTab('email')}>Xác minh bằng email</EuiButtonEmpty>
-                        <EuiButtonEmpty onClick={()=>setTab('phone')}>Xác minh bằng số điện thoại</EuiButtonEmpty>
                     </EuiFlexGroup>
                 </EuiPanel>
             </EuiFlexGroup>}
@@ -127,7 +125,7 @@ export default function Password() {
             </EuiFlexGroup>
             }
         <EuiFlexGroup justifyContent='center'>
-            {tab==='password'?<VerifyPassword setTab={setTab} setIsVerify={setIsVerify}/>:tab==='email'?<VerifyEmail setTab={setTab} setIsVerify={setIsVerify}/>:tab==='phone'&&<VerifyPhone setTab={setTab} setIsVerify={setIsVerify}/>}
+            {tab==='password'?<VerifyPassword setTab={setTab} setIsVerify={setIsVerify}/>:tab==='email'&&<VerifyEmail setTab={setTab} setIsVerify={setIsVerify}/>}
         </EuiFlexGroup>
     </>
   )

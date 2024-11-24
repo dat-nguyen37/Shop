@@ -13,7 +13,7 @@ export default function ListAddress() {
 
     const getAddress=async()=>{
       try {
-        const res=await axios.get('/getAddress')
+        const res=await axios.get('/user/getAddress')
         setData(res.data)
       } catch (err) {
         console.log(err)
@@ -34,7 +34,7 @@ export default function ListAddress() {
     }
     const handleUpdate=async(id,name,phone,address,addressDetail)=>{
       try {
-        const res=await axios.patch('/updateAddress/'+id,{
+        const res=await axios.patch('/user/updateAddress/'+id,{
           name:name,
           phone:phone,
           address:address,
