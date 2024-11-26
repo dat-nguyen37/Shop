@@ -25,6 +25,10 @@ import ListShop from './components/admin/shop/ListShop';
 import Account from './components/admin/account/Account';
 import DashboardSeller from './components/seller/Dashboard/Dashboard';
 import ListCategory from './components/admin/category/ListCategory';
+import Statistical from './components/seller/Statistical/Statistical';
+import ListProduct from './components/seller/Product/ListProduct';
+import HomeSeller from './components/seller/Home/HomeSeller';
+
 
 function App() {
   const {user}=useContext(AuthContext)
@@ -42,12 +46,13 @@ function App() {
           <Route path="danh_sach_danh_muc" element={<ListCategory />}/>
         </Route>
         <Route path="/nguoi_ban" element={<DashboardSeller />}>
-          <Route path="danh_sach_cua_hang" element={<ListShop />}/>
-          <Route path="danh_sach_nguoi_dung" element={<Account />}/>
+          <Route index element={<Statistical />}/>
+          <Route path="danh_sach_san_pham" element={<ListProduct />}/>
           <Route path="danh_sach_danh_muc" element={<ListCategory />}/>
         </Route>
         <Route path="/" element={<Nested />} >
           <Route path="/" element={<Home />} />
+          <Route path="/cua_hang_cua_toi" element={<HomeSeller />} />
           <Route path="/chi_tiet_san_pham" element={<ProductDetail />} />
           <Route path="/shop28382" element={<ShopView />} />
           <Route path="/cart" element={user?<Cart />:<Navigate to="/dang_nhap"/>} />

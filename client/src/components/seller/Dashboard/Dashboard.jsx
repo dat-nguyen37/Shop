@@ -1,8 +1,21 @@
 import { EuiAvatar, EuiButtonIcon, EuiFlexGroup,EuiPopover,EuiPopoverTitle,EuiButtonEmpty,EuiFlexItem, EuiHeader, EuiHeaderSection, EuiHeaderSectionItem, EuiHeaderSectionItemButton, EuiIcon, EuiPageHeader, EuiPageHeaderContent, EuiPageTemplate, EuiSpacer, EuiText, EuiFlyout, EuiPageSidebar, EuiAccordion, EuiListGroup, EuiListGroupItem, EuiLink, EuiPanel, EuiFlexGrid, EuiStat } from '@elastic/eui'
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { Outlet } from 'react-router-dom'
+import {ShopContext} from '../../../context/ShopContext'
+
 
 export default function Dashboard() {
     const [isPoperUser,setisPopoverUser]=useState(false)
+    const {shop}=useContext(ShopContext)
+    const [dots, setDots] = useState('');
+
+    useEffect(() => {
+      const interval = setInterval(() => {
+        setDots((prev) => (prev.length < 3 ? prev + '.' : ''));
+      }, 500);
+  
+      return () => clearInterval(interval);
+    }, []);
 
   return (
       <>
@@ -69,6 +82,7 @@ export default function Dashboard() {
             </EuiHeader>
         </EuiPageHeaderContent>
       </EuiPageHeader>
+        {shop?(
         <EuiPageTemplate style={{marginTop:'3rem'}}>
             <EuiPageTemplate.Sidebar minWidth='200px' style={{background:'white'}}>
                 <EuiFlexGroup direction='column'>
@@ -84,7 +98,7 @@ export default function Dashboard() {
                         <EuiLink color='text'>Quản lý</EuiLink>
                     </EuiFlexGroup>}>
                         <EuiListGroup flush style={{}}>
-                            <EuiListGroupItem href='/dashboard/danh_sach_danh_muc' label='Sản phẩm'/>
+                            <EuiListGroupItem href='/nguoi_ban/danh_sach_san_pham' label='Sản phẩm'/>
                             <EuiListGroupItem href='/dashboard/danh_sach_san_pham' label='Đơn hàng'/>
                             <EuiListGroupItem href='/dashboard/danh_sach_don_hang' label='Khuyến mãi'/>
                         </EuiListGroup>
@@ -129,12 +143,16 @@ export default function Dashboard() {
                 </EuiPanel>
             </EuiPageTemplate.Section>
             <EuiPageTemplate.Section color='subdued'>
-                <EuiPanel>
-                    <EuiText><h3>Phân tích bán hàng</h3></EuiText>
-                    <EuiText>Tổng quan dữ liệu của shop đối với đơn hàng đã xác nhận</EuiText>
-                </EuiPanel>
+                <Outlet/>
             </EuiPageTemplate.Section>
+            </EuiPageTemplate>
+        ):(
+        <EuiPageTemplate style={{marginTop:'3rem'}}>
+            <EuiFlexGroup alignItems='center' justifyContent='center'>
+                <EuiText><h2>Loading {dots}</h2></EuiText>
+            </EuiFlexGroup>
         </EuiPageTemplate>
+        )}
     </>
   )
 }

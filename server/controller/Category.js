@@ -27,7 +27,7 @@ exports.update=async(req,res)=>{
             errors.name="Nhập tên danh mục"
             return res.status(400).send({errors})
         }
-        await Category.findByIdAndUpdate(req.params.id,{$set:{name:name,image:image}})
+        await Category.findByIdAndUpdate(req.params.id,{$set:{name:name,image:image}},{new:true})
         res.status(200).send('Cập nhật thành công')
     } catch (err) {
         res.status(500).send(err)
@@ -39,7 +39,7 @@ exports.delete=async(req,res)=>{
         if(!category){
             return res.status(404).send({errors:'Không tìm thấy danh mục'})
         }
-        await Category.findByIdAndDelete(req.params.id)
+        await Category.findByIdAndDelete(req.params.id,{new:true})
         res.status(200).send('Xóa thành công')
     } catch (err) {
         res.status(500).send(err)

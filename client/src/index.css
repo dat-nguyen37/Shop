@@ -11,3 +11,6 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.euiPopover ,.euiPopover__anchor {
+  display: block !important;
+  width: 100% !important;}

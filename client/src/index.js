@@ -6,12 +6,15 @@ import { EuiProvider } from '@elastic/eui';
 import "@elastic/eui/dist/eui_theme_light.css";
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthContextProvider } from './context/AuthContext';
+import { ShopContextProvider } from './context/ShopContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <EuiProvider >
     <AuthContextProvider>
-      <App /> 
+      <ShopContextProvider>
+        <App /> 
+      </ShopContextProvider>
     </AuthContextProvider>
   </EuiProvider>
 );

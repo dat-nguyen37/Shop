@@ -6,7 +6,7 @@ import {imgDb} from '../../../firebase'
 import { ref, uploadBytesResumable,getDownloadURL } from 'firebase/storage'
 
 export default function UpdateCategory({setModalUpdate,getCategory,selectedItem}) {
-    const [image,setImage]=useState('')
+    const [image,setImage]=useState(selectedItem.image)
     const [name,setName]=useState(selectedItem.name)
     const [errors,setErrors]=useState({
         name:''
@@ -33,7 +33,6 @@ export default function UpdateCategory({setModalUpdate,getCategory,selectedItem}
         }
     }
     const handleUpdate=async()=>{
-        console.log(image)
         try {
             await axios.patch('/category/update/'+selectedItem._id,{
                 name:name,
