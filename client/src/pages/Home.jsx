@@ -1,11 +1,37 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { EuiCard, EuiFlexGrid, EuiFlexGroup, EuiFlexItem, EuiIcon, EuiImage, EuiLink, EuiPageSection, EuiPageTemplate, EuiPanel, EuiText, useIsWithinBreakpoints} from '@elastic/eui'
 import Slide from '../components/slide/Slide'
 import Footer from '../components/footer/Footer'
+import axios from '../axios'
+import ProductItem from '../components/productItem/ProductItem'
 
 export default function Home() {
   const mobile=useIsWithinBreakpoints(['xs','s'])
   const tablet=useIsWithinBreakpoints(['m','l'])
+  const [products,setProducts]=useState([])
+  const [categories,setCategories]=useState([])
+
+
+  const getProducts=async()=>{
+    try {
+      const res=await axios.get('/product/getAll')
+      setProducts(res.data)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  const getCategories=async()=>{
+    try {
+      const res=await axios.get('/category/getAll')
+      setCategories(res.data)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  useEffect(()=>{
+    getProducts()
+    getCategories()
+  },[])
   return (
     <>
       <EuiPageTemplate.Section color='transparent'>
@@ -19,10 +45,10 @@ export default function Home() {
               </EuiFlexItem>
               <EuiFlexItem>
                 <EuiFlexGrid gutterSize='none' style={{gridTemplateColumns: mobile?'repeat(4,1fr)':'repeat(6,1fr)'}}>
-                  {[1,2,3,4,5,6,7,8,9,10,11,12].map(item=>(<EuiFlexItem>
+                  {categories.map(category=>(<EuiFlexItem>
                     <EuiFlexGroup direction='column' alignItems='center' gutterSize='none' style={{border:'1px solid #FFF'}}>
-                      <EuiImage src='/assets/brand.png' size='s'/>
-                      <EuiText>Thời trang nam</EuiText>
+                      <EuiImage src={category.image} size='s'/>
+                      <EuiText>{category.name}</EuiText>
                     </EuiFlexGroup>
                   </EuiFlexItem>))}
                 </EuiFlexGrid>
@@ -65,44 +91,9 @@ export default function Home() {
             </EuiFlexItem>
             <EuiFlexItem>
               <EuiFlexGrid style={{gridTemplateColumns: mobile?'repeat(2,1fr)': tablet?'repeat(4,1fr)':'repeat(6,1fr)'}}>
-                {[1,2,3,4,5,6,7,8,9,10,11,12].map(item=>(
-                  <EuiCard
-                  textAlign='left'
-                  hasBorder={true}
-                  image="/assets/brand.png"
-                  title={
-                  <EuiLink href='/chi_tiet_san_pham?masp=1'>
-                    <EuiText size='s' 
-                    style={{
-                      display: '-webkit-box',
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden',
-                      WebkitLineClamp: 2,}}>
-                      Đai Chống Gù Lưng Nam Nữ , Đai Nâng Ngực Nữ Có Nẹp Chỉnh Cột Sống, Đai Bảo Vệ Vòng 1
-                    </EuiText>
-                  </EuiLink>}
-                  description={
-                    <EuiFlexGroup direction='column' gutterSize='none'>
-                      <EuiFlexItem>
-                        <EuiText color='red'>50.000 đ</EuiText>
-                      </EuiFlexItem>
-                      <EuiFlexItem>
-                        <EuiFlexGroup alignItems='center' responsive={false}>
-                          <EuiFlexGroup gutterSize='s' alignItems='center' responsive={false}>
-                            <EuiIcon type="starFilled" color='yellow'/>
-                            <EuiText size='xs'>4.5</EuiText>
-                          </EuiFlexGroup>
-                          <EuiText size='xs'>Đã bán 16,5k</EuiText>
-                        </EuiFlexGroup>
-                      </EuiFlexItem>
-                      <EuiFlexItem>
-                        <EuiFlexGroup gutterSize='none' alignItems='center' responsive={false}>
-                          <EuiIcon type="mapMarker"/>
-                          <EuiText size='xs'>Tp. Hồ Chí Minh</EuiText>
-                        </EuiFlexGroup>
-                      </EuiFlexItem>
-                    </EuiFlexGroup>
-                  }/>))}
+                {products.map(product=>(
+                  <ProductItem product={product}/>
+                ))}
               </EuiFlexGrid>
             </EuiFlexItem>
             <EuiText textAlign='center'><EuiLink><b>Xem thêm</b></EuiLink></EuiText>

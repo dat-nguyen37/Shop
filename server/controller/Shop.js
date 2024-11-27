@@ -61,6 +61,16 @@ exports.getAll=async(req,res)=>{
     }
 }
 
+exports.getOne=async(req,res)=>{
+    try {
+        const users = await User.find({ "shop.0": { $exists: true } }, 'shop').lean()
+        const shops = users.flatMap(user => user.shop)
+        res.status(200).send(shops)
+    } catch (err) {
+        res.status(500).send(err)
+    }
+}
+
 exports.update=async(req,res)=>{
     try {
         const {name,categoryId,address,ownerName,email,phone,ship,isActivated}=req.body
@@ -90,3 +100,4 @@ exports.update=async(req,res)=>{
         res.status(500).send(err)
     }
 }
+

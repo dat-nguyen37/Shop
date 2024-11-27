@@ -21,6 +21,7 @@ export default function AddProduct({setModalAdd,getProduct}) {
     const [nameSize,setNameSize]=useState('')
     const [sizePrice,setSizePrice]=useState()
     const [errors,setErrors]=useState({})
+    const [percent,setPercent]=useState(0)
 
 
     const addSize=()=>{
@@ -46,6 +47,7 @@ export default function AddProduct({setModalAdd,getProduct}) {
                 "state_changed",
                 (snapshot)=>{
                     const percent=Math.round((snapshot.bytesTransferred/snapshot.totalBytes)*100)
+                    setPercent(percent)
                 },
                 (err)=>console.log(err),
                 async()=>{
@@ -158,7 +160,7 @@ export default function AddProduct({setModalAdd,getProduct}) {
             </EuiFlexItem>
             <EuiFlexItem>
                 <EuiFormRow label="Ảnh" fullWidth isInvalid={!!errors.image} error={errors.image}>
-                    <EuiFilePicker onChange={changeFile} multiple fullWidth isInvalid={!!errors.image}/>
+                    <EuiFilePicker onChange={changeFile} multiple fullWidth isInvalid={!!errors.image} isLoading={percent<100}/>
                 </EuiFormRow>
             </EuiFlexItem>
         </EuiFlexGroup>

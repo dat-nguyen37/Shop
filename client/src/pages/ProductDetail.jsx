@@ -2,12 +2,20 @@ import { EuiAvatar, EuiBreadcrumbs, EuiButton, EuiButtonEmpty, EuiButtonIcon, Eu
 import React, { useEffect, useState } from 'react'
 import StarRatings from 'react-star-ratings';
 import Footer from '../components/footer/Footer'
+import {useLocation} from 'react-router-dom'
+import axios from '../axios'
+import {toast,ToastContainer} from 'react-toastify'
 
 export default function ProductDetail() {
     const mobile=useIsWithinBreakpoints(['xs','s'])
     const tablet=useIsWithinBreakpoints(['m','l'])
+    const [product,setProduct]=useState(null)
+    const [shop,setShop]=useState(null)
+    const [comments,setComments]=useState([])
     const [rating, setRating] = useState(5);
+    const [commentText,setCommentText]=useState('')
     const [popoverReport,setPopoverReport]=useState(false)
+    const [isModalComment,setIsModalComment]=useState(false)
     const [optionReport, setOptionReport]=useState([
         {label:'Sản phẩm bị cấm buôn bán'},
         {label:'Sản phẩm có dấu hiệu lừa đảo'},
@@ -17,43 +25,81 @@ export default function ProductDetail() {
         {label:'Sản phẩm có dấu hiệu tăng đơn ảo'},
     ])
 
-    const openPopoverReport=()=>setPopoverReport(!popoverReport)
-    const closePopoverReport=()=>setPopoverReport(false)
+    const [activePage,setActivePage]=useState(0)
+    const [pageCount,setPageCount]=useState(1)
+    const [pageSize,setPageSize]=useState(5)
 
-  const changeRating = (newRating) => {
-    setRating(newRating);
-  };
+    const changeRating = (newRating) => {
+        setRating(newRating);
+    };
 
-  const [isModalComment,setIsModalComment]=useState(false)
-  const openModalComment=()=>setIsModalComment(true)
-  const closeModalComment=()=>setIsModalComment(false)
+    // getProduct
+    const location=useLocation()
+    const [productId,setProductId]=useState(null)
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const masp = queryParams.get('masp');
+        setProductId(masp);
+    }, [location.search]);
+    const getProduct = async () => {
+        try {
+            const res = await axios.get('/product/getOne/' + productId);
+            console.log(res.data)
+            setProduct(res.data.product);
+            setShop(res.data.shop)
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
-  const [activePage,setActivePage]=useState(0)
-  const [pageCount,setPageCount]=useState(1)
-  const [pageSize,setPageSize]=useState(5)
-  const comments=[
-    {name:'Dat Nguyen',rating:5,date:'2023-11-28 15:05',des:'Hàng nhẹ nhàng, siêu rẻ. Mua thử. Đi được nhưng k biết được mấy lần. Giá rẻ nhưng k mong gì hơn.'},
-    {name:'Dat Nguyen',rating:5,date:'2023-11-28 15:05',des:'Hàng nhẹ nhàng, siêu rẻ. Mua thử. Đi được nhưng k biết được mấy lần. Giá rẻ nhưng k mong gì hơn.'},
-    {name:'Dat Nguyen',rating:5,date:'2023-11-28 15:05',des:'Hàng nhẹ nhàng, siêu rẻ. Mua thử. Đi được nhưng k biết được mấy lần. Giá rẻ nhưng k mong gì hơn.'},
-    {name:'Dat Nguyen',rating:5,date:'2023-11-28 15:05',des:'Hàng nhẹ nhàng, siêu rẻ. Mua thử. Đi được nhưng k biết được mấy lần. Giá rẻ nhưng k mong gì hơn.'},
-    {name:'Dat Nguyen',rating:5,date:'2023-11-28 15:05',des:'Hàng nhẹ nhàng, siêu rẻ. Mua thử. Đi được nhưng k biết được mấy lần. Giá rẻ nhưng k mong gì hơn.'},
-    {name:'Dat Nguyen',rating:5,date:'2023-11-28 15:05',des:'Hàng nhẹ nhàng, siêu rẻ. Mua thử. Đi được nhưng k biết được mấy lần. Giá rẻ nhưng k mong gì hơn.'},
-    {name:'Dat Nguyen',rating:5,date:'2023-11-28 15:05',des:'Hàng nhẹ nhàng, siêu rẻ. Mua thử. Đi được nhưng k biết được mấy lần. Giá rẻ nhưng k mong gì hơn.'},
-    {name:'Dat Nguyen',rating:5,date:'2023-11-28 15:05',des:'Hàng nhẹ nhàng, siêu rẻ. Mua thử. Đi được nhưng k biết được mấy lần. Giá rẻ nhưng k mong gì hơn.'},
-    {name:'Dat Nguyen',rating:5,date:'2023-11-28 15:05',des:'Hàng nhẹ nhàng, siêu rẻ. Mua thử. Đi được nhưng k biết được mấy lần. Giá rẻ nhưng k mong gì hơn.'},
-  ]
+    //comment
+    const getComment = async () => {
+        try {
+            const res = await axios.get('/comment/getAll/' + productId);
+            setComments(res.data);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+    useEffect(() => {
+        const totalPageCount = Math.ceil(comments?.length / pageSize);
+        setPageCount(totalPageCount);
+    }, [comments, pageSize]);
+    
+    const itemOfPage = comments?.slice(activePage * pageSize, (activePage + 1) * pageSize);
 
-  useEffect(() => {
-    const totalPageCount = Math.ceil(comments.length / pageSize);
-    setPageCount(totalPageCount);
-  }, [comments, pageSize]);
-  
-  const itemOfPage = comments.slice(activePage * pageSize, (activePage + 1) * pageSize);
+    useEffect(() => {
+        if (productId) {
+            getProduct();
+            getComment()
+        }
+    }, [productId]);
 
+    const handleComment=async()=>{
+        try {
+            await axios.post('/Comment/create',{
+                productId:productId,
+                commentText:commentText,
+                rating:rating
+            })
+            toast.success('Đánh giá thành công')
+            setIsModalComment(false)
+            getComment()
+            getProduct()
+        } catch (err) {
+            if(err.response&&err.response.status===401){
+                toast.error('Lỗi xác thực')
+            }else{
+                console.log(err)
+                toast.error('Lỗi server')
+            }
+        }
+    }
   
 
   return (
     <>
+    <ToastContainer/>
         <EuiPageTemplate.Header
         breadcrumbs={[
             {
@@ -65,7 +111,7 @@ export default function ProductDetail() {
                 href:'/'
             },
             {
-                text:'Dây Sạc Tự Ngắt - Dây Cáp Sạc Dữ Liệu Sạc Nhanh 100W Micro USB Type C 3 Trong 1 6A',
+                text: product?.name,
             },
         ]}
         bottomBorder={false}
@@ -75,7 +121,7 @@ export default function ProductDetail() {
                 <EuiFlexGroup>
                     <EuiFlexItem grow={1}>
                         <EuiFlexGroup direction='column'>
-                            <EuiImage src='/assets/brand.png' style={{border:'1px solid'}}/>
+                            <EuiImage src={product?.image} height="300px" style={{border:'1px solid'}}/>
                             <EuiFlexItem grow={false}>
                                 <EuiFlexGroup>
                                     <EuiImage src='/assets/brand.png' size='50px' style={{border:'1px solid'}}/>
@@ -84,7 +130,7 @@ export default function ProductDetail() {
                                 </EuiFlexGroup>
                             </EuiFlexItem>
                             <EuiFlexItem grow={false}>
-                                <EuiFlexGroup justifyContent='spaceBetween'>
+                                <EuiFlexGroup justifyContent='spaceBetween' responsive={false}>
                                     <EuiFlexItem >
                                         <EuiFlexGroup gutterSize='s' alignItems='center'>
                                             <EuiText>Chia sẻ:</EuiText>
@@ -102,30 +148,31 @@ export default function ProductDetail() {
                     </EuiFlexItem>
                     <EuiFlexItem grow={2}>
                         <EuiFlexGroup direction='column' gutterSize='m'>
-                            <EuiText><h3>Dây Sạc Tự Ngắt - Dây Cáp Sạc Dữ Liệu Sạc Nhanh 100W Micro USB Type C 3 Trong 1 6A</h3></EuiText>
+                            <EuiText><h3>{product?.name}</h3></EuiText>
                             <EuiFlexItem grow={false}>
-                                <EuiFlexGroup gutterSize='s'>
+                                <EuiFlexGroup gutterSize='s' alignItems='center'>
+                                    <EuiFlexItem>
                                     <EuiFlexGroup alignItems='center' responsive={false}>
-                                        <EuiFlexItem grow={false}>
                                             <EuiFlexGroup alignItems='center' gutterSize='s'>
                                                 <StarRatings 
-                                                    rating={rating} 
+                                                    rating={product?.rating}
                                                     starRatedColor="#ffd700" 
                                                     numberOfStars={5} 
                                                     starDimension="15px"
                                                     starSpacing='0'/>
-                                                <EuiText>{rating}</EuiText>
+                                                <EuiText>{product?.rating}</EuiText>
                                             </EuiFlexGroup>
-                                        </EuiFlexItem>
-                                        <EuiText>3,1k Đánh giá</EuiText>
-                                        <EuiText>13,5k Đã bán</EuiText>
+                                        <EuiText>{comments?.length} Đánh giá</EuiText>
+                                        <EuiText>{product?.quantitySold} Đã bán</EuiText>                                    
                                     </EuiFlexGroup>
+                                    </EuiFlexItem>
+                                    <EuiFlexItem grow={false}>
                                     <EuiPopover
                                     isOpen={popoverReport}
-                                    closePopover={closePopoverReport}
+                                    closePopover={()=>setPopoverReport(false)}
                                     panelStyle={{outline:'none'}}
                                     anchorPosition='leftUp'
-                                    button={<EuiButtonEmpty onClick={openPopoverReport}>Tố cáo</EuiButtonEmpty>}>
+                                    button={<EuiLink onClick={()=>setPopoverReport(true)}>Tố cáo</EuiLink>}>
                                         <EuiPopoverTitle paddingSize='s'>
                                             <EuiText>Chọn lý do</EuiText>
                                         </EuiPopoverTitle>
@@ -143,11 +190,12 @@ export default function ProductDetail() {
                                             </EuiFlexGroup>
                                         </EuiPopoverFooter>
                                     </EuiPopover>
+                                    </EuiFlexItem>
                                 </EuiFlexGroup>
                             </EuiFlexItem>
                             <EuiFlexItem grow={false} style={{background:'rgba(208,1,27,.08)',padding:'10px'}}>
                                 <EuiFlexGroup>
-                                    <EuiText color='danger'><h3>₫200.000</h3></EuiText>
+                                    <EuiText color='danger'><h3>₫{product?.price}</h3></EuiText>
                                     <EuiText color='subdued'><s>₫304.000</s></EuiText>
                                 </EuiFlexGroup>
                             </EuiFlexItem>
@@ -158,28 +206,26 @@ export default function ProductDetail() {
                                     <EuiText>Trả hàng miễn phí</EuiText>
                                 </EuiFlexGroup>
                             </EuiFlexItem>
-                            <EuiFlexItem grow={false}>
+                            {product&&product.color&&<EuiFlexItem grow={false}>
                                 <EuiFlexGroup alignItems='center'>
                                     <EuiText>Màu sắc</EuiText>
                                     <EuiFlexGroup gutterSize='s' responsive={false}>
-                                        <EuiFlexItem grow={false} style={{border:'2px solid',textAlign:'center',minWidth:'50px'}}><EuiText>Trắng</EuiText></EuiFlexItem>
-                                        <EuiFlexItem grow={false} style={{border:'2px solid',textAlign:'center',minWidth:'50px'}}><EuiText>Đen</EuiText></EuiFlexItem>
-                                        <EuiFlexItem grow={false} style={{border:'2px solid',textAlign:'center',minWidth:'50px'}}><EuiText>Xanh</EuiText></EuiFlexItem>  
-                                        <EuiFlexItem grow={false} style={{border:'2px solid',textAlign:'center',minWidth:'50px'}}><EuiText>Xám</EuiText></EuiFlexItem>
+                                        {product.color.map(c=>(
+                                            <EuiFlexItem grow={false} style={{border:'2px solid',textAlign:'center',minWidth:'100px',paddingInline:4}}><EuiText>{c}</EuiText></EuiFlexItem>
+                                        ))}
                                     </EuiFlexGroup>
                                 </EuiFlexGroup>
-                            </EuiFlexItem>
-                            <EuiFlexItem grow={false}>
+                            </EuiFlexItem>}
+                            {product&&product.size&&<EuiFlexItem grow={false}>
                                 <EuiFlexGroup alignItems='center'>
                                     <EuiText>Kích thước</EuiText>
                                     <EuiFlexGroup gutterSize='s' responsive={false}>
-                                        <EuiFlexItem grow={false} style={{border:'2px solid',textAlign:'center',width:'50px'}}><EuiText>39</EuiText></EuiFlexItem>
-                                        <EuiFlexItem grow={false} style={{border:'2px solid',textAlign:'center',width:'50px'}}><EuiText>40</EuiText></EuiFlexItem>
-                                        <EuiFlexItem grow={false} style={{border:'2px solid',textAlign:'center',width:'50px'}}><EuiText>41</EuiText></EuiFlexItem>  
-                                        <EuiFlexItem grow={false} style={{border:'2px solid',textAlign:'center',width:'50px'}}><EuiText>42</EuiText></EuiFlexItem>
+                                        {product.size.map(s=>(
+                                            <EuiFlexItem grow={false} style={{border:'2px solid',textAlign:'center',minWidt:'100px',paddingInline:4}}><EuiText>{s.name}</EuiText></EuiFlexItem>
+                                        ))}
                                     </EuiFlexGroup>
                                 </EuiFlexGroup>
-                            </EuiFlexItem>
+                            </EuiFlexItem>}
                             <EuiFlexItem grow={false}>
                                 <EuiFlexGroup alignItems='center'>
                                     <EuiText>Số lượng</EuiText>
@@ -216,11 +262,11 @@ export default function ProductDetail() {
                     </EuiFlexItem>
                     <EuiFlexItem grow={false}>
                         <EuiFlexGroup direction='column' gutterSize='s'>
-                            <EuiText>BOUTIAUE</EuiText>
+                            <EuiText>{shop?.name}</EuiText>
                             <EuiText size='s'>Online 1 giờ trước</EuiText>
                             <EuiFlexGroup>
                                 <EuiButton iconType="discuss">Chat Ngay</EuiButton>
-                                <EuiButton iconType="/assets/shop.png" href='/shop28382'>Xem Shop</EuiButton>
+                                <EuiButton iconType="/assets/shop.png" href={`/shop?id=${shop?._id}`}>Xem Shop</EuiButton>
                             </EuiFlexGroup>
                         </EuiFlexGroup>
                     </EuiFlexItem>
@@ -332,14 +378,9 @@ export default function ProductDetail() {
                     <EuiText style={{background:'rgba(0,0,0,.02)', padding:10}}>MÔ TẢ SẢN PHẨM</EuiText>
                     <EuiFlexGroup direction='column' gutterSize='s'>
                         <EuiText>
-                            <span>Chất lượng sản phẩm được đảm bảo và sẽ được kiểm tra trước khi xuất xưởng.</span>
-                            <span>Chúng tôi có kinh nghiệm phong phú và sản phẩm chất lượng cao, tập trung vào chất lượng và giá thấp!mang lại cho bạn trải nghiệm mua sắm tốt nhất!</span>
-                            <span>Tham khảo ý kiến cửa hàng cho bất kỳ câu hỏi.</span>
-                            <span>Sản phẩm đến từ Trung Quốc và phải mất một thời gian để vận chuyển.</span>
-                            <span>Nếu bạn thích sản phẩm của chúng tôi Vui lòng thêm giỏ hàng Cảm ơn rất nhiều.</span>
-                            <span> Luôn cập nhật những tin tức mới nhất trong cửa hàng của chúng tôi. Chúng tôi sẽ gửi cho bạn phiếu giảm giá và giảm giá sản phẩm.</span>
+                            <span>{product?.description}</span>
                         </EuiText>
-                        <EuiImage src='/assets/brand.png'/>
+                        <EuiImage src={product?.image}/>
                     </EuiFlexGroup>
                 </EuiFlexGroup>
             </EuiPanel>
@@ -350,7 +391,7 @@ export default function ProductDetail() {
                     <EuiText>ĐÁNH GIÁ SẢN PHẨM</EuiText>
                     <EuiFlexGroup style={{background:'rgba(208,1,27,.08)',padding:'10px'}}>
                         <EuiFlexItem grow={false}>
-                            <EuiText color='danger'><h4>{rating} trên 5</h4></EuiText>
+                            <EuiText color='danger'><h4>{product?.rating} trên 5</h4></EuiText>
                             <StarRatings 
                                 rating={rating} 
                                 starRatedColor="#ffd700" 
@@ -366,14 +407,14 @@ export default function ProductDetail() {
                                     <EuiFlexItem grow={false} style={{border:'2px solid #B6C4CB',width:'90px',height:'30px',textAlign:'center'}}><EuiText>3 sao (200)</EuiText></EuiFlexItem>
                                     <EuiFlexItem grow={false} style={{border:'2px solid #B6C4CB',width:'90px',height:'30px',textAlign:'center'}}><EuiText>2 sao (100)</EuiText></EuiFlexItem>
                                     <EuiFlexItem grow={false} style={{border:'2px solid #B6C4CB',width:'90px',height:'30px',textAlign:'center'}}><EuiText>1 sao (100)</EuiText></EuiFlexItem>
-                                <EuiButton onClick={openModalComment} fill iconType="documentEdit">Đánh giá</EuiButton>
+                                <EuiButton onClick={()=>setIsModalComment(true)} fill iconType="documentEdit">Đánh giá</EuiButton>
                             </EuiFlexGroup>
                         </EuiFlexItem>
                     </EuiFlexGroup>
-                    <EuiFlexGroup direction='column'>
-                        {itemOfPage.map(item=>(<EuiFlexItem style={{borderBlockEnd:'1px solid'}}>
+                    {comments?(<EuiFlexGroup direction='column'>
+                        {itemOfPage?.map(item=>(<EuiFlexItem style={{borderBlockEnd:'1px solid'}}>
                             <EuiFlexGroup gutterSize='s' responsive={false}>
-                                <EuiAvatar name='D' imageUrl=''/>
+                                <EuiAvatar name='D' imageUrl={item?.image}/>
                                 <EuiFlexItem>
                                         <p>{item.name}</p>
                                         <StarRatings 
@@ -382,9 +423,9 @@ export default function ProductDetail() {
                                             numberOfStars={5} 
                                             starDimension="15px"
                                             starSpacing='0'/>
-                                        <EuiText size='xs' color='subdued'>{item.date}</EuiText>
+                                        <EuiText size='xs' color='subdued'>{item.createdAt}</EuiText>
                                         <EuiSpacer size='s'/>
-                                        <EuiText>{item.des}</EuiText>
+                                        <EuiText>{item.commentText}</EuiText>
                                         <EuiSpacer size='s'/>
                                 </EuiFlexItem>
                             </EuiFlexGroup>
@@ -395,7 +436,9 @@ export default function ProductDetail() {
                             activePage={activePage}
                             onPageClick={(activePage) => setActivePage(activePage)}/>
                         </EuiFlexGroup>
-                    </EuiFlexGroup>
+                    </EuiFlexGroup>):(
+                        <EuiText>Chưa có đánh giá nào.</EuiText>
+                    )}
                 </EuiFlexGroup>
             </EuiPanel>
         </EuiPageTemplate.Section>
@@ -496,7 +539,7 @@ export default function ProductDetail() {
             </EuiFlexGroup>
         </EuiPageTemplate.Section>
         {isModalComment && 
-        <EuiModal style={{width:'600px'}} onClose={closeModalComment}>
+        <EuiModal style={{width:'600px'}} onClose={()=>setIsModalComment(false)}>
             <EuiModalHeader>
                 <EuiModalHeaderTitle>Viết đánh giá</EuiModalHeaderTitle>
             </EuiModalHeader>
@@ -518,15 +561,15 @@ export default function ProductDetail() {
                     </EuiFlexItem>
                     <EuiFlexItem>
                         <EuiFormRow label="Để lại đánh giá" fullWidth>
-                            <EuiTextArea placeholder='Viết gì đó ...' fullWidth/>
+                            <EuiTextArea placeholder='Viết gì đó ...' onChange={(e)=>setCommentText(e.target.value)} fullWidth/>
                         </EuiFormRow>
                     </EuiFlexItem>
                 </EuiFlexGroup>
             </EuiModalBody>
             <EuiModalFooter>
                 <EuiFlexGroup justifyContent='flexEnd'>
-                    <EuiButtonEmpty onClick={closeModalComment} >Hủy</EuiButtonEmpty>
-                    <EuiButton fill>Gửi</EuiButton>
+                    <EuiButtonEmpty onClick={()=>setIsModalComment(false)} >Hủy</EuiButtonEmpty>
+                    <EuiButton fill onClick={handleComment}>Gửi</EuiButton>
                 </EuiFlexGroup>
             </EuiModalFooter>
         </EuiModal>}

@@ -26,6 +26,8 @@ const ShipRoute=require('./route/Ship')
 const categoryRoute=require('./route/Category')
 const shopRoute=require('./route/Shop')
 const productRoute=require('./route/Product')
+const commentRoute=require('./route/Comment')
+
 
 
 
@@ -40,6 +42,8 @@ app.use('/ship',ShipRoute)
 app.use('/category',categoryRoute)
 app.use('/shop',shopRoute)
 app.use('/product',productRoute)
+app.use('/comment',commentRoute)
+
 
 
 

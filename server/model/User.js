@@ -40,6 +40,7 @@ const userSchema=new mongoose.Schema({
             email:String,
             phone:String,
             ship:[String],
+            follower:[String],
             isActivated:{
                 type:Boolean,
                 default:false

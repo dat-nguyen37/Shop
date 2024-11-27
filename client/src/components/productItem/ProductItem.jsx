@@ -1,35 +1,35 @@
-import { EuiCard, EuiFlexGroup, EuiFlexItem, EuiIcon, EuiLink, EuiText } from '@elastic/eui'
+import { EuiCard, EuiFlexGroup, EuiFlexItem, EuiIcon, EuiImage, EuiLink, EuiText } from '@elastic/eui'
 import React from 'react'
 
-export default function ProductItem() {
+export default function ProductItem({product}) {
   return (
     <EuiCard
     textAlign='left'
     hasBorder={true}
-    image="/assets/brand.png"
+    image={<EuiImage src={product?.image} alt={product?.name} height="200px" style={{width:'100%'}}/>}
     title={
-    <EuiLink href='/chi_tiet_san_pham?masp=1'>
+    <EuiLink href={`/chi_tiet_san_pham?masp=${product?._id}`}>
     <EuiText size='s' 
     style={{
         display: '-webkit-box',
         WebkitBoxOrient: 'vertical',
         overflow: 'hidden',
         WebkitLineClamp: 2,}}>
-        Đai Chống Gù Lưng Nam Nữ , Đai Nâng Ngực Nữ Có Nẹp Chỉnh Cột Sống, Đai Bảo Vệ Vòng 1
+        {product?.name}
     </EuiText>
     </EuiLink>}
     description={
     <EuiFlexGroup direction='column' gutterSize='none'>
         <EuiFlexItem>
-            <EuiText color='red'>50.000 đ</EuiText>
+            <EuiText color='red'>{product?.price} đ</EuiText>
         </EuiFlexItem>
         <EuiFlexItem>
             <EuiFlexGroup alignItems='center' responsive={false}>
                 <EuiFlexGroup gutterSize='s' alignItems='center' responsive={false}>
                 <EuiIcon type="starFilled" color='yellow'/>
-                <EuiText size='xs'>4.5</EuiText>
+                <EuiText size='xs'>{product?.rating}</EuiText>
                 </EuiFlexGroup>
-                <EuiText size='xs'>Đã bán 16,5k</EuiText>
+                <EuiText size='xs'>Đã bán {product?.quantitySold}</EuiText>
             </EuiFlexGroup>
         </EuiFlexItem>
         <EuiFlexItem>

@@ -28,6 +28,7 @@ import ListCategory from './components/admin/category/ListCategory';
 import Statistical from './components/seller/Statistical/Statistical';
 import ListProduct from './components/seller/Product/ListProduct';
 import HomeSeller from './components/seller/Home/HomeSeller';
+import ProductManagement from './components/admin/product/ProductManagement';
 
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
           <Route path="danh_sach_cua_hang" element={<ListShop />}/>
           <Route path="danh_sach_nguoi_dung" element={<Account />}/>
           <Route path="danh_sach_danh_muc" element={<ListCategory />}/>
+          <Route path="danh_sach_san_pham" element={<ProductManagement />}/>
         </Route>
         <Route path="/nguoi_ban" element={<DashboardSeller />}>
           <Route index element={<Statistical />}/>
@@ -54,7 +56,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/cua_hang_cua_toi" element={<HomeSeller />} />
           <Route path="/chi_tiet_san_pham" element={<ProductDetail />} />
-          <Route path="/shop28382" element={<ShopView />} />
+          <Route path="/shop" element={<ShopView />} />
           <Route path="/cart" element={user?<Cart />:<Navigate to="/dang_nhap"/>} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/profile" element={user?<Profile/>:<Navigate to="/dang_nhap"/>}>
