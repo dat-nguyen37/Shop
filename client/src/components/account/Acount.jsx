@@ -4,13 +4,18 @@ import {AuthContext} from '../../context/AuthContext'
 import validator from '../../Validator'
 import { ToastContainer, toast } from 'react-toastify';
 import axios from '../../axios'
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import { imgDb } from '../../firebase';
 
 export default function Acount() {
     const {user,dispatch}=useContext(AuthContext)
+    const [percent,setPercent]=useState(0)
+
     const [data,setData]=useState({
         name:user?.name,
         email:user?.email,
         phone:user?.phone,
+        imageUrl:user?.imageUrl
 
     })
 
@@ -19,6 +24,26 @@ export default function Acount() {
             ...data,
             [field]:value
         })
+    }
+    const changeFile=async(files)=>{
+        const file=Array.from(files)[0]
+        try {
+            const imgRef = ref(imgDb, `/avata/${file.name}`);
+            const uploadTask = uploadBytesResumable(imgRef, file);
+            uploadTask.on(
+                "state_changed",
+                (snapshot) => {
+                    setPercent(Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100));
+                },
+                (err) => console.log(err),
+                async () => {
+                    const url = await getDownloadURL(uploadTask.snapshot.ref);
+                    data.imageUrl=url;
+                }
+            );
+        } catch (err) {
+            console.error("Error uploading image:", err);
+        }
     }
     const handleUpdate=async()=>{
         try {
@@ -61,8 +86,8 @@ export default function Acount() {
                 </EuiFlexGroup>
             </EuiFlexGroup>
             <EuiFlexGroup direction='column' alignItems='center'>
-                <EuiAvatar name='DN' size='xl'/>
-                <EuiFilePicker isLoading/>
+                <EuiAvatar name='DN' size='xl' imageUrl={data.imageUrl}/>
+                <EuiFilePicker isLoading={percent<100?true:false} onChange={changeFile}/>
             </EuiFlexGroup>
         </EuiFlexGroup>
         <EuiSpacer/>

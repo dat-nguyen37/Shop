@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { EuiCard, EuiFlexGrid, EuiFlexGroup, EuiFlexItem, EuiIcon, EuiImage, EuiLink, EuiPageSection, EuiPageTemplate, EuiPanel, EuiText, useIsWithinBreakpoints} from '@elastic/eui'
+import { EuiButton, EuiCard, EuiFlexGrid, EuiFlexGroup, EuiFlexItem, EuiIcon, EuiImage, EuiLink, EuiPageSection, EuiPageTemplate, EuiPanel, EuiPopover, EuiText, useIsWithinBreakpoints} from '@elastic/eui'
 import Slide from '../components/slide/Slide'
 import Footer from '../components/footer/Footer'
 import axios from '../axios'
@@ -14,7 +14,7 @@ export default function Home() {
 
   const getProducts=async()=>{
     try {
-      const res=await axios.get('/product/getAll')
+      const res=await axios.get('/product/getByActive')
       setProducts(res.data)
     } catch (err) {
       console.log(err)
@@ -33,7 +33,7 @@ export default function Home() {
     getCategories()
   },[])
   return (
-    <>
+    <div>
       <EuiPageTemplate.Section color='transparent'>
         <Slide/>
       </EuiPageTemplate.Section>
@@ -46,10 +46,12 @@ export default function Home() {
               <EuiFlexItem>
                 <EuiFlexGrid gutterSize='none' style={{gridTemplateColumns: mobile?'repeat(4,1fr)':'repeat(6,1fr)'}}>
                   {categories.map(category=>(<EuiFlexItem>
-                    <EuiFlexGroup direction='column' alignItems='center' gutterSize='none' style={{border:'1px solid #FFF'}}>
-                      <EuiImage src={category.image} size='s'/>
-                      <EuiText>{category.name}</EuiText>
-                    </EuiFlexGroup>
+                    <EuiLink href={`/danh_muc?ma=${category._id}`}>
+                      <EuiFlexGroup direction='column' alignItems='center' gutterSize='none' style={{border:'1px solid #FFF'}}>
+                        <EuiImage src={category.image} size='s'/>
+                        <EuiText>{category.name}</EuiText>
+                      </EuiFlexGroup>
+                    </EuiLink>
                   </EuiFlexItem>))}
                 </EuiFlexGrid>
               </EuiFlexItem>
@@ -92,13 +94,14 @@ export default function Home() {
             <EuiFlexItem>
               <EuiFlexGrid style={{gridTemplateColumns: mobile?'repeat(2,1fr)': tablet?'repeat(4,1fr)':'repeat(6,1fr)'}}>
                 {products.map(product=>(
-                  <ProductItem product={product}/>
+                  <ProductItem product={product} key={product._id}/>
                 ))}
               </EuiFlexGrid>
             </EuiFlexItem>
             <EuiText textAlign='center'><EuiLink><b>Xem thêm</b></EuiLink></EuiText>
           </EuiFlexGroup>
         </EuiPageTemplate.Section>
-    </>
+        
+    </div>
   )
 }

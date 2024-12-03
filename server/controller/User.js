@@ -77,6 +77,18 @@ exports.getAddress=async(req,res)=>{
         res.status(500).send(err)
     }
 }
+exports.getAddressOne=async(req,res)=>{
+    try {
+        const user=await User.findById(req.userId)
+        if(!user){
+            return res.status(404).send("Không tìm thấy người dùng")
+        }
+        const address = user.address.find(addr => addr._id.toString() === req.params.id);
+        res.status(200).send(address)
+    } catch (err) {
+        res.status(500).send(err)
+    }
+}
 exports.deleteAddress=async(req,res)=>{
     try {
         const user=await User.findById(req.userId)

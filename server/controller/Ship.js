@@ -1,4 +1,6 @@
 const Ship=require('../model/Ship')
+const User=require('../model/User')
+
 
 exports.create=async(req,res)=>{
     try {
@@ -27,6 +29,19 @@ exports.getAll=async(req,res)=>{
     try {
         const ships=await Ship.find()
         res.status(200).send(ships)
+    } catch (err) {
+        res.status(500).send(err)
+    }
+}
+
+exports.getByShop=async(req,res)=>{
+    try {
+        const users = await User.find({ "shop.0": { $exists: true } }, 'shop').lean()
+        const shops = users.flatMap(user => user.shop)
+        const shop=shops.find(shop=>shop._id.toString()===req.params.id)
+        const ships=shop.ship
+        const result = await Ship.find({ _id: { $in: ships } }).lean();
+        res.status(200).send(result)
     } catch (err) {
         res.status(500).send(err)
     }

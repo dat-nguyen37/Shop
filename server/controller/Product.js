@@ -27,7 +27,7 @@ exports.create=async(req,res)=>{
 
 exports.getByShop=async(req,res)=>{
     try {
-        const products=await Product.find({shopId:req.params.id})
+        const products=await Product.find({shopId:req.params.id,IsActivate:true})
         res.status(200).send(products)
     } catch (err) {
         res.status(200).send(err)
@@ -72,19 +72,100 @@ exports.getAll=async(req,res)=>{
         res.status(500).send(err)
     }
 }
-
-exports.getOne=async(req,res)=>{
+exports.getByActive=async(req,res)=>{
     try {
-        const product=await Product.findById(req.params.id)
-        if(product){
-            const users = await User.find({ "shop.0": { $exists: true } }, 'shop').lean()
-            const shops =  users.flatMap(user => user.shop)
-            const shop = shops.find(shop => shop._id.toString() === product.shopId.toString());
-            res.status(200).send({product,shop})
-        }else{
-            res.status(404).send('Không tìm thấy sản phẩm')
-        }
+        const product=await Product.find({IsActivate:true})
+        res.status(200).send(product)
     } catch (err) {
         res.status(500).send(err)
     }
 }
+
+
+exports.getOne=async(req,res)=>{
+    try {
+        const product=await Product.findById(req.params.id)
+        res.status(200).send(product)
+    } catch (err) {
+        res.status(500).send(err)
+    }
+}
+
+exports.getBestSellingByShop=async(req,res)=>{
+    try {
+        const products = await Product.find({ shopId: req.params.id,IsActivate:true})
+        .sort({ productSold: -1 })
+        .lean();        
+        res.status(200).send(products)
+    } catch (err) {
+        res.status(500).send(err)
+    }
+}
+exports.search = async (req, res) => {
+    try {
+        const { q, categoryId, shipId,shopId, min, max, rating, sort } = req.query;
+
+        let query = {IsActivate: true};
+
+        let shopIds = [];
+        if (categoryId&&categoryId!=='undefined') {
+            const users = await User.find({ "shop.categoryId": categoryId }, "shop").lean();
+            shopIds = users.flatMap(user =>
+                user.shop.filter(shop => shop.categoryId === categoryId).map(shop => shop._id)
+            );
+            
+            query.shopId = { $in: shopIds };
+        }
+
+           if (shipId&&shipId!=='undefined') {
+            const users = await User.find({ "shop.ship": shipId }, "shop").lean();
+            const shipShopIds = users.flatMap(user =>
+                user.shop.filter(shop => shop.ship.includes(shipId)).map(shop => shop._id)
+            );
+            query.shopId = { $in: shipShopIds };
+
+            // Kết hợp shopId từ shipId và categoryId (nếu có cả hai)
+            if (categoryId&&categoryId!=='undefined'&&shipId&&shipId!=='undefined') {
+                const shopIdStrings = shopIds.map(id => id.toString());
+                const shipShopIdStrings = shipShopIds.map(id => id.toString());
+
+                // Lấy giao giữa hai danh sách
+                const commonShopIds = shopIdStrings.filter(id => shipShopIdStrings.includes(id));
+                if(commonShopIds.length>0){
+                    query.shopId = { $in: commonShopIds };
+                }else{
+                    query.shopId = { $in: [] };
+                }
+            }
+        }
+
+        // Các điều kiện lọc sản phẩm
+        if (shopId) {
+            query.shopId = shopId
+        }
+        if (q) {
+            query.name = { $regex: q, $options: "i" };
+        }
+        if (min) {
+            query.price = query.price || {};
+            query.price.$gte = parseFloat(min);
+        }
+        if (max) {
+            query.price = query.price || {};
+            query.price.$lte = parseFloat(max);
+        }
+        if (rating&&rating!=='undefined') {
+            query.rating = { $gte: parseFloat(rating) };
+        }
+
+
+        const products = await Product.find(query)
+            .sort({ price: sort === "desc" ? -1 : 1, createdAt: sort === "new" ? -1 : 1 ,productSold:sort==='bestSell'? -1 : 1})
+            .lean();
+
+        res.status(200).send(products);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send({ message: "Lỗi server", error: err });
+    }
+};

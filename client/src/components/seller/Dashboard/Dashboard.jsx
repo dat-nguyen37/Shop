@@ -2,11 +2,13 @@ import { EuiAvatar, EuiButtonIcon, EuiFlexGroup,EuiPopover,EuiPopoverTitle,EuiBu
 import React, { useContext, useEffect, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import {ShopContext} from '../../../context/ShopContext'
+import { AuthContext } from '../../../context/AuthContext'
 
 
 export default function Dashboard() {
     const [isPoperUser,setisPopoverUser]=useState(false)
     const {shop}=useContext(ShopContext)
+    const {user}=useContext(AuthContext)
     const [dots, setDots] = useState('');
 
     useEffect(() => {
@@ -56,7 +58,7 @@ export default function Dashboard() {
                                         button={
                                             <EuiFlexGroup alignItems='center' responsive={false} gutterSize='s' onClick={()=>setisPopoverUser(!isPoperUser)}>
                                                 <EuiFlexItem>
-                                                    <EuiText>Dat Nguyen</EuiText>
+                                                    <EuiText>{user?.name}</EuiText>
                                                 </EuiFlexItem>
                                                 <EuiFlexItem>
                                                     <EuiIcon type="arrowDown"/>
@@ -66,7 +68,7 @@ export default function Dashboard() {
                                             <EuiPopoverTitle>
                                                 <EuiFlexGroup direction='column' gutterSize='s' alignItems='center'>
                                                     <EuiAvatar name='D' imageUrl=''/>
-                                                    <EuiText>Dat nguyen</EuiText>
+                                                    <EuiText>{user?.name}</EuiText>
                                                 </EuiFlexGroup>
                                             </EuiPopoverTitle>
                                             <EuiButtonEmpty iconType="globe" href='/'>Đến website</EuiButtonEmpty>
@@ -83,12 +85,12 @@ export default function Dashboard() {
         </EuiPageHeaderContent>
       </EuiPageHeader>
         {shop?(
-        <EuiPageTemplate style={{marginTop:'3rem'}}>
+        <EuiPageTemplate style={{paddingTop:'3rem'}}>
             <EuiPageTemplate.Sidebar minWidth='200px' style={{background:'white'}}>
                 <EuiFlexGroup direction='column'>
                     <EuiFlexGroup>
                         <EuiIcon type="visLine"/>
-                        <EuiLink color='text'>Thống kê</EuiLink>
+                        <EuiLink color='text' href='/nguoi_ban'>Thống kê</EuiLink>
                     </EuiFlexGroup>
                     <EuiAccordion 
                     paddingSize='s'
@@ -99,13 +101,13 @@ export default function Dashboard() {
                     </EuiFlexGroup>}>
                         <EuiListGroup flush style={{}}>
                             <EuiListGroupItem href='/nguoi_ban/danh_sach_san_pham' label='Sản phẩm'/>
-                            <EuiListGroupItem href='/dashboard/danh_sach_san_pham' label='Đơn hàng'/>
-                            <EuiListGroupItem href='/dashboard/danh_sach_don_hang' label='Khuyến mãi'/>
+                            <EuiListGroupItem href='/nguoi_ban/danh_sach_don_hang' label='Đơn hàng'/>
+                            <EuiListGroupItem href='/nguoi_ban/danh_sach_don_hang' label='Khuyến mãi'/>
                         </EuiListGroup>
                     </EuiAccordion>
                     <EuiFlexGroup>
                         <EuiIcon type="discuss"/>
-                        <EuiLink color='text'>Chat</EuiLink>
+                        <EuiLink color='text' href='/nguoi_ban/chat'>Chat</EuiLink>
                     </EuiFlexGroup>
                     <EuiFlexGroup>
                         <EuiIcon type="bell"/>
@@ -113,41 +115,12 @@ export default function Dashboard() {
                     </EuiFlexGroup>
                 </EuiFlexGroup>
             </EuiPageTemplate.Sidebar>
-            <EuiPageTemplate.Section color='subdued' grow={false}>
-                <EuiPanel>
-                    <EuiFlexGroup direction='column' gutterSize='s'>
-                        <EuiText><h3>Danh sách cần làm</h3></EuiText>
-                        <EuiText>Những việc bạn sẽ phải làm</EuiText>
-                    </EuiFlexGroup>
-                    <EuiSpacer/>
-                    <EuiFlexGrid columns={4}>
-                        <EuiFlexItem>
-                            <EuiStat title="1" titleColor="primary" titleSize='s' style={{borderRight:'1px solid'}} reverse={true} textAlign='center' description="Chờ xác nhận" />
-                        </EuiFlexItem>
-                        <EuiFlexItem>
-                            <EuiStat title="1" titleColor="primary" titleSize='s' style={{borderRight:'1px solid'}} reverse={true} textAlign='center' description="Chờ lấy hàng" />
-                        </EuiFlexItem>
-                        <EuiFlexItem>
-                            <EuiStat title="1" titleColor="primary" titleSize='s' style={{borderRight:'1px solid'}} reverse={true} textAlign='center' description="Chờ xử lý" />
-                        </EuiFlexItem>
-                        <EuiFlexItem>
-                            <EuiStat title="1" titleColor="primary" titleSize='s' style={{borderRight:'1px solid'}} reverse={true} textAlign='center' description="Đơn hàng" />
-                        </EuiFlexItem>
-                        <EuiFlexItem>
-                            <EuiStat title="1" titleColor="primary" titleSize='s' style={{borderRight:'1px solid'}} reverse={true} textAlign='center' description="Sản phẩm bị tạm khóa" />
-                        </EuiFlexItem>
-                        <EuiFlexItem>
-                            <EuiStat title="1" titleColor="primary" titleSize='s' style={{borderRight:'1px solid'}} reverse={true} textAlign='center' description="Sản phẩm hết hàng" />
-                        </EuiFlexItem>
-                    </EuiFlexGrid>
-                </EuiPanel>
-            </EuiPageTemplate.Section>
-            <EuiPageTemplate.Section color='subdued'>
+            <EuiPageTemplate.Section color='subdued' paddingSize='none'>
                 <Outlet/>
             </EuiPageTemplate.Section>
             </EuiPageTemplate>
         ):(
-        <EuiPageTemplate style={{marginTop:'3rem'}}>
+        <EuiPageTemplate style={{paddingTop:'3rem'}}>
             <EuiFlexGroup alignItems='center' justifyContent='center'>
                 <EuiText><h2>Loading {dots}</h2></EuiText>
             </EuiFlexGroup>

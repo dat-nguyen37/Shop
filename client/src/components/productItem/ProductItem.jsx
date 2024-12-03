@@ -6,7 +6,9 @@ export default function ProductItem({product}) {
     <EuiCard
     textAlign='left'
     hasBorder={true}
-    image={<EuiImage src={product?.image} alt={product?.name} height="200px" style={{width:'100%'}}/>}
+    image={<>
+    <img src={product?.image} style={{width:'100%',height:'200px',objectFit:'contain'}}/>
+    </>}
     title={
     <EuiLink href={`/chi_tiet_san_pham?masp=${product?._id}`}>
     <EuiText size='s' 
@@ -21,7 +23,7 @@ export default function ProductItem({product}) {
     description={
     <EuiFlexGroup direction='column' gutterSize='none'>
         <EuiFlexItem>
-            <EuiText color='red'>{product?.price} đ</EuiText>
+            <EuiText color='red'>{(product?.price)?.toLocaleString()} đ</EuiText>
         </EuiFlexItem>
         <EuiFlexItem>
             <EuiFlexGroup alignItems='center' responsive={false}>

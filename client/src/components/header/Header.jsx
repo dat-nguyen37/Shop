@@ -8,10 +8,16 @@ export default function Header() {
     const [isPopoverUser,setIsPopoverUSer]=useState(false)
     const [isPopoverCart,setIsPopoverCart]=useState(false)
     const {user,dispatch}=useContext(AuthContext)
+    const [valueSearch,setValueSearch]=useState('')
 
     const openPopoverUser=()=>setIsPopoverUSer(!isPopoverUser)
     const closePopoverUser=()=>setIsPopoverUSer(false)
 
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter' && valueSearch.trim()) {
+          window.location.href = `/search?key=${encodeURIComponent(valueSearch)}`;
+        }
+      };
     const handleLogout=async()=>{
         try {
             await axios.get('/logout')
@@ -30,7 +36,7 @@ export default function Header() {
                     display: none;
                 }`}
             breadcrumbs={[
-                {
+                {   
                     text:'Kênh người bán',
                     href:'/cua_hang_cua_toi',
                     style:{paddingInline:'10px'}
@@ -52,7 +58,7 @@ export default function Header() {
                             <EuiFlexGroup>
                                 <EuiHeaderSectionItem>
                                     <EuiFormControlLayout style={{fontSize:'14px'}} fullWidth>
-                                        <EuiFieldSearch placeholder='Tìm kiếm sản phẩm' style={{width:'500px'}}/>
+                                        <EuiFieldSearch placeholder='Tìm kiếm sản phẩm' onChange={(e) => setValueSearch(e.target.value)} onKeyDown={handleKeyPress} style={{width:'500px'}}/>
                                     </EuiFormControlLayout>
                                 </EuiHeaderSectionItem>
                                 <EuiHeaderSectionItem>
@@ -113,11 +119,11 @@ export default function Header() {
                                         panelStyle={{outline:'none'}}
                                         isOpen={isPopoverUser}
                                         closePopover={closePopoverUser}
-                                        button={<EuiAvatar onClick={openPopoverUser} name='EL' color="#68C4A2" size='m' />}
+                                        button={<EuiAvatar onClick={openPopoverUser} name='EL' color="#68C4A2" size='m' imageUrl={user?.imageUrl}/>}
                                     >
                                         {user?(<EuiFlexGroup gutterSize='s' alignItems='center'>
                                             <EuiFlexItem grow={false}>
-                                                <EuiAvatar name='EL' color="#68C4A2" size='xl' />
+                                                <EuiAvatar name='EL' color="#68C4A2" size='xl' imageUrl={user?.imageUrl}/>
                                             </EuiFlexItem>
                                             <EuiFlexItem>
                                                 <EuiText><b>{user.name}</b></EuiText>

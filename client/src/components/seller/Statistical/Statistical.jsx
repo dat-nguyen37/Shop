@@ -67,10 +67,40 @@ export default function Statistical() {
           },
     })
   return (
-    <EuiPanel>
-        <EuiText><h3>Phân tích bán hàng</h3></EuiText>
-        <EuiText>Tổng quan dữ liệu của shop đối với đơn hàng đã xác nhận</EuiText>
-        <Chart options={chartOptions} series={chartOptions.series} type="area" height={350} />
-    </EuiPanel>
+    <>
+          <EuiPanel>
+              <EuiFlexGroup direction='column' gutterSize='s'>
+                  <EuiText><h3>Danh sách cần làm</h3></EuiText>
+                  <EuiText>Những việc bạn sẽ phải làm</EuiText>
+              </EuiFlexGroup>
+              <EuiSpacer/>
+              <EuiFlexGrid columns={4}>
+                  <EuiFlexItem>
+                      <EuiStat title="1" titleColor="primary" titleSize='s' style={{borderRight:'1px solid'}} reverse={true} textAlign='center' description="Chờ xác nhận" />
+                  </EuiFlexItem>
+                  <EuiFlexItem>
+                      <EuiStat title="1" titleColor="primary" titleSize='s' style={{borderRight:'1px solid'}} reverse={true} textAlign='center' description="Chờ lấy hàng" />
+                  </EuiFlexItem>
+                  <EuiFlexItem>
+                      <EuiStat title="1" titleColor="primary" titleSize='s' style={{borderRight:'1px solid'}} reverse={true} textAlign='center' description="Chờ xử lý" />
+                  </EuiFlexItem>
+                  <EuiFlexItem>
+                      <EuiStat title="1" titleColor="primary" titleSize='s' style={{borderRight:'1px solid'}} reverse={true} textAlign='center' description="Đơn hàng" />
+                  </EuiFlexItem>
+                  <EuiFlexItem>
+                      <EuiStat title="1" titleColor="primary" titleSize='s' style={{borderRight:'1px solid'}} reverse={true} textAlign='center' description="Sản phẩm bị tạm khóa" />
+                  </EuiFlexItem>
+                  <EuiFlexItem>
+                      <EuiStat title="1" titleColor="primary" titleSize='s' style={{borderRight:'1px solid'}} reverse={true} textAlign='center' description="Sản phẩm hết hàng" />
+                  </EuiFlexItem>
+              </EuiFlexGrid>
+          </EuiPanel>
+          <EuiSpacer/>
+          <EuiPanel>
+              <EuiText><h3>Phân tích bán hàng</h3></EuiText>
+              <EuiText>Tổng quan dữ liệu của shop đối với đơn hàng đã xác nhận</EuiText>
+              <Chart options={chartOptions} series={chartOptions.series} type="area" height={350} />
+          </EuiPanel>
+    </>
 )
 }

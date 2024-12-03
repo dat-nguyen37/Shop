@@ -41,6 +41,8 @@ const userSchema=new mongoose.Schema({
             phone:String,
             ship:[String],
             follower:[String],
+            avatar:String,
+            background:String,
             isActivated:{
                 type:Boolean,
                 default:false

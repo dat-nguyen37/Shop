@@ -1,11 +1,13 @@
 import { EuiAvatar, EuiButton, EuiButtonEmpty, EuiButtonIcon, EuiFieldText, EuiFlexGroup, EuiFlexItem, EuiForm, EuiFormControlLayout, EuiFormRow, EuiHeader, EuiHeaderSection, EuiHeaderSectionItem, EuiHeaderSectionItemButton, EuiIcon, EuiImage, EuiPageHeader, EuiPageHeaderContent, EuiPageTemplate, EuiPopover, EuiPopoverFooter, EuiPopoverTitle, EuiProgress, EuiSelect, EuiSelectable, EuiSpacer, EuiStep, EuiSteps, EuiSwitch, EuiText } from '@elastic/eui'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import axios from '../axios'
+import { AuthContext } from '../context/AuthContext'
 
 export default function RegisterSeller() {
     const [isPoperUser,setisPopoverUser]=useState(false)
     const [isPoperCategory,setisPopoverCategory]=useState(false)
     const [categories,setCategories]=useState([])
+    const {user} =useContext(AuthContext)
     const [listShip,setListShip]=useState([])
 
     useEffect(()=>{
@@ -205,7 +207,7 @@ export default function RegisterSeller() {
                     <EuiHeaderSection side='right'>
                         <EuiFlexGroup responsive={false}>
                             <EuiHeaderSectionItem>
-                                <EuiAvatar name='D'/>
+                                <EuiAvatar name='D' imageUrl={user?.imageUrl}/>
                                 <EuiPopover button={
                                     <EuiHeaderSectionItemButton>
                                         <EuiPopover
@@ -216,7 +218,7 @@ export default function RegisterSeller() {
                                         button={
                                             <EuiFlexGroup alignItems='center' responsive={false} gutterSize='s' onClick={()=>setisPopoverUser(!isPoperUser)}>
                                                 <EuiFlexItem>
-                                                    <EuiText>Dat Nguyen</EuiText>
+                                                    <EuiText>{user?.name}</EuiText>
                                                 </EuiFlexItem>
                                                 <EuiFlexItem>
                                                     <EuiIcon type="arrowDown"/>
@@ -225,11 +227,14 @@ export default function RegisterSeller() {
                                         }>
                                             <EuiPopoverTitle>
                                                 <EuiFlexGroup direction='column' gutterSize='s' alignItems='center'>
-                                                    <EuiAvatar name='D' imageUrl=''/>
-                                                    <EuiText>Dat nguyen</EuiText>
+                                                    <EuiAvatar name='D' imageUrl={user?.imageUrl}/>
+                                                    <EuiText>{user?.name}</EuiText>
                                                 </EuiFlexGroup>
                                             </EuiPopoverTitle>
-                                            <EuiButtonEmpty iconType="exit">Đăng xuất</EuiButtonEmpty>
+                                            <EuiFlexGroup>
+                                                <EuiButtonEmpty iconType="globe" href='/'>Đến website</EuiButtonEmpty>
+                                                <EuiButtonEmpty iconType="exit">Đăng xuất</EuiButtonEmpty>
+                                            </EuiFlexGroup>
                                         </EuiPopover>
                                     </EuiHeaderSectionItemButton>
                                 }>

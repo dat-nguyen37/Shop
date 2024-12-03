@@ -1,5 +1,7 @@
 const User=require('../model/User')
-
+const Product=require('../model/Product')
+const Comment=require('../model/Comment')
+const Category=require('../model/Category')
 
 exports.create=async(req,res)=>{
     try {
@@ -60,16 +62,56 @@ exports.getAll=async(req,res)=>{
         res.status(500).send(err)
     }
 }
-
-exports.getOne=async(req,res)=>{
+exports.getByUser=async(req,res)=>{
     try {
-        const users = await User.find({ "shop.0": { $exists: true } }, 'shop').lean()
-        const shops = users.flatMap(user => user.shop)
+        const user = await User.findOne({_id:req.userId,"shop.0": { $exists: true } }, 'shop').lean()
+        const shops = user.shop || []
         res.status(200).send(shops)
     } catch (err) {
         res.status(500).send(err)
     }
 }
+
+exports.getOne = async (req, res) => {
+    try {
+        const users = await User.find({ "shop.0": { $exists: true } }, 'shop').lean();
+        const shops = users.flatMap(user => user.shop);
+        const shop =shops.find(s => s._id.toString() === req.params.id);
+        
+        if (!shop) {
+            return res.status(404).send({ message: "Shop not found" });
+        }
+        const category= await Category.findById(shop.categoryId)
+        const products = await Product.find({ shopId: shop._id }).lean();
+        
+        let totalRating = 0;
+        let ratingCount = 0;
+        let totalComments = 0;
+
+        for (let product of products) {
+            const comments = await Comment.find({ productId: product._id }).lean();
+            
+            totalComments += comments.length; 
+            totalRating += product.rating || 0; 
+            if (product.rating !== undefined) ratingCount++; 
+        }
+
+        const averageRating = ratingCount > 0 ? parseFloat((totalRating / ratingCount).toFixed(2)) : 0;
+
+        const data = {
+            shop,
+            category,
+            productCount: products.length, 
+            averageRating: averageRating,
+            totalComments: totalComments 
+        };
+
+        res.status(200).send(data);
+    } catch (err) {
+        res.status(500).send({ message: "Server error", error: err });
+    }
+};
+
 
 exports.update=async(req,res)=>{
     try {

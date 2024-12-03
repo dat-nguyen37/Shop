@@ -1,17 +1,64 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { EuiAvatar, EuiButton, EuiButtonEmpty, EuiCollapsibleNav, EuiCollapsibleNavGroup, EuiFieldNumber, EuiFlexGrid, EuiFlexGroup, EuiFlexItem, EuiFormControlLayoutDelimited, EuiIcon, EuiImage, EuiLink, EuiListGroup, EuiListGroupItem, EuiPageSection, EuiPageTemplate, EuiPopover, EuiSelect, EuiSelectable, EuiText, useIsWithinBreakpoints } from '@elastic/eui'
 import Footer from '../components/footer/Footer'
 import ProductItem from '../components/productItem/ProductItem'
+import { useLocation } from 'react-router-dom'
+import axios from '../axios'
+import moment from 'moment'
 
 export default function ShopView() {
   const mobile=useIsWithinBreakpoints(['xs','s'])
   const tablet=useIsWithinBreakpoints(['m','l'])
+  
 
-  const [selectCategory,setSelectedCategory]=useState(null)
-  const [popoverCategory,setPopoverCategory]=useState(false)
+  const location=useLocation()
+  const [shopId,setShopId]=useState('')
+  const [products,setproducts]=useState([])
+  const [bestSelling,setBestSelling]=useState([])
+  const [shop,setShop]=useState(null)
+  const [sort,setSort]=useState('')
+  const [min,setMin]=useState(0)
+  const [max,setMax]=useState(99999999)
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const shopId = queryParams.get('id');
+    setShopId(shopId);
+}, [location.search]);
+  const getAllProduct=async()=>{
+    try {
+      const res=await axios.get(`/product/search?shopId=${shopId}&sort=${sort}&min=${min}&max=${max}`)
+      setproducts(res.data) 
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  const getShop=async()=>{
+    try {
+      const res=await axios.get('/shop/getOne/'+shopId)
+      setShop(res.data) 
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  const getBestSellingByShop=async()=>{
+    try {
+      const res=await axios.get('/product/getBestSellingByShop/'+shopId)
+      setBestSelling(res.data) 
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  useEffect(() => {
+    if (shopId) {
+      getAllProduct();
+      getShop()
+      getBestSellingByShop()
+    }
+}, [shopId,sort,min,max]);
 
   return (
     <>
+    {shop?<>
     <EuiPageTemplate.Section grow={false}>
         <EuiFlexGroup gutterSize='m'>
             <EuiFlexItem>
@@ -22,7 +69,7 @@ export default function ShopView() {
                   <EuiFlexGroup alignItems='center' gutterSize='s'>
                     <EuiAvatar name='Shop' imageUrl='/assets/logo_shop.webp' size='xl'/>
                     <p>
-                      <EuiText color='white'>CL.KingSneaker01</EuiText>
+                      <EuiText color='white'>{shop?.shop?.name}</EuiText>
                       <EuiText color='white' size='xs'>Online 14 phút trước</EuiText>
                     </p>
                   </EuiFlexGroup>
@@ -35,27 +82,27 @@ export default function ShopView() {
             </EuiFlexItem>
             <EuiFlexItem>
                 <EuiFlexGroup direction='column'>
-                  <EuiText>Sản phẩm: 117</EuiText>
+                  <EuiText>Sản phẩm: {shop?.productCount}</EuiText>
                   <EuiText>Đang theo: 604</EuiText>
                   <EuiText>Tỉ lệ phản hồi chat: 100% (Trong vài giờ)</EuiText>
                 </EuiFlexGroup>
             </EuiFlexItem>
             <EuiFlexItem>
                 <EuiFlexGroup direction='column'>
-                  <EuiText>Người theo dõi: 117</EuiText>
-                  <EuiText>Đánh giá: 5.0(11k Đánh giá)</EuiText>
-                  <EuiText>Tham gia: 24 giờ trước</EuiText>
+                  <EuiText>Người theo dõi: {shop?.shop.follower | 0}</EuiText>
+                  <EuiText>Đánh giá: {shop?.averageRating}({shop?.totalComments} Đánh giá)</EuiText>
+                  <EuiText>Tham gia: {moment(shop?.shop.createdAt).format('DD-MM-YYYY')}</EuiText>
                 </EuiFlexGroup>
             </EuiFlexItem>
         </EuiFlexGroup>
     </EuiPageTemplate.Section>
-    <EuiPageTemplate.Section color='transparent'>
+    {products?<EuiPageTemplate.Section color='transparent'>
       <EuiPageSection paddingSize='s'>
         <EuiFlexGroup direction='column'>
           <EuiText color='subdued'><h3>Sản Phẩm Bán Chạy</h3></EuiText>
           <EuiFlexGrid style={{gridTemplateColumns: mobile?'repeat(2,1fr)': tablet?'repeat(4,1fr)':'repeat(6,1fr)'}}>
-            {[1,2,3,4,5,6].map(item=>(
-              <ProductItem/>
+            {bestSelling.map(product=>(
+              <ProductItem key={product._id} product={product} />
               ))}
           </EuiFlexGrid>
         </EuiFlexGroup>
@@ -63,39 +110,17 @@ export default function ShopView() {
       <EuiPageSection paddingSize='s'>
         <EuiFlexGroup direction='column'>
           <EuiFlexGroup alignItems='center' gutterSize='m' style={{background:'rgba(0, 0, 0, .03)',padding:'10px'}}>
-            <EuiPopover
-            panelPaddingSize='none'
-            style={{outline:'none'}}
-            isOpen={popoverCategory}
-            closePopover={()=>setPopoverCategory(false)}
-            button={
-              <EuiFlexGroup onClick={()=>setPopoverCategory(!popoverCategory)} alignItems='center' gutterSize='s'>
-                <EuiIcon type="list"/>
-                <EuiText size='s'>Danh mục</EuiText>
-              </EuiFlexGroup>
-            }>
-              <EuiListGroup>
-                {['Nike','Jordan','Convest','Puma'].map(item=>(<EuiListGroupItem label={item}
-                  isActive
-                  onClick={()=>setSelectedCategory(item)}
-                  extraAction={{
-                    color:'text',
-                    onClick:()=>{},
-                    iconType:'check',
-                    alwaysShow:selectCategory===item
-                  }}/>))}
-              </EuiListGroup>
-            </EuiPopover>
             <EuiFlexItem>
               <EuiFlexGroup alignItems='center'>
                 <EuiText size='s'>Sắp xếp theo</EuiText>
                 <EuiSelect 
+                  onChange={(e)=>setSort(e.target.value)}
                   options={[
                     {value:'',label:'Giá'},
-                    {value:'',label:'Giá: Thấp đến cao'},
-                    {value:'',label:'Cao đến thấp'},
-                    {value:'',label:'Mới nhất'},
-                    {value:'',label:'Bán chạy'},
+                    {value:'asc',label:'Giá: Thấp đến cao'},
+                    {value:'desc',label:'Cao đến thấp'},
+                    {value:'new',label:'Mới nhất'},
+                    {value:'bestSell',label:'Bán chạy'},
                   ]}/>
               </EuiFlexGroup>
             </EuiFlexItem>
@@ -103,20 +128,31 @@ export default function ShopView() {
               <EuiFlexGroup alignItems='center'>
                 <EuiText size='s'>Khoảng giá</EuiText>
                 <EuiFormControlLayoutDelimited
-                startControl={<EuiFieldNumber placeholder='0'/>}
-                endControl={<EuiFieldNumber placeholder='100'/>}/>
+                startControl={<EuiFieldNumber placeholder='0' onChange={(e)=>setMin(e.target.value)}/>}
+                endControl={<EuiFieldNumber placeholder='100' onChange={(e)=>setMax(e.target.value)}/>}/>
               </EuiFlexGroup>
             </EuiFlexItem>
           </EuiFlexGroup>
           
-          <EuiFlexGrid style={{gridTemplateColumns: mobile?'repeat(2,1fr)': tablet?'repeat(4,1fr)':'repeat(6,1fr)'}}>
-            {[1,2,3,4,5,6].map(item=>(
-              <ProductItem/>
+          {products.length>0?<EuiFlexGrid style={{gridTemplateColumns: mobile?'repeat(2,1fr)': tablet?'repeat(4,1fr)':'repeat(6,1fr)'}}>
+            {products.map(product=>(
+              <ProductItem key={product._id} product={product}/>
               ))}
-            </EuiFlexGrid>
+            </EuiFlexGrid>:<EuiFlexGroup justifyContent='center'><EuiText>Không tìm thấy sản phẩm</EuiText></EuiFlexGroup>}
         </EuiFlexGroup>
       </EuiPageSection>
     </EuiPageTemplate.Section>
+    :<EuiPageTemplate.Section>
+      <EuiFlexGroup justifyContent='center'>
+        <EuiText>Không tìm thấy sản phẩm nào</EuiText>
+      </EuiFlexGroup>
+      </EuiPageTemplate.Section>
+      }
+    </>:<EuiPageTemplate.Section>
+      <EuiFlexGroup justifyContent='center'>
+        <EuiText>Không tìm thấy thông tin cửa hàng</EuiText>
+      </EuiFlexGroup>
+      </EuiPageTemplate.Section>}
     </>
   )
 }

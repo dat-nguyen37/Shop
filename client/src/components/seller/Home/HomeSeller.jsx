@@ -3,15 +3,18 @@ import {EuiAvatar, EuiBreadcrumbs, EuiButton, EuiFlexGrid, EuiFlexGroup, EuiFlex
 import axios from '../../../axios'
 import {ShopContext} from '../../../context/ShopContext'
 import {useNavigate} from 'react-router-dom'
+import {AuthContext} from '../../../context/AuthContext'
 
 export default function HomeSeller() {
   const [data,setdata]=useState([])
+  const {user}=useContext(AuthContext)
   const {dispatch}=useContext(ShopContext)
   const navigate=useNavigate()
   const getShops=async()=>{
     try {
-        const res=await axios.get('/shop/getAll')
+        const res=await axios.get('/shop/getByUser')
         setdata(res.data)
+        console.log(res.data)
     } catch (err) {
         console.log(err)
     }
@@ -43,7 +46,7 @@ export default function HomeSeller() {
           <EuiAvatar name='A' imageUrl='' size='l'/>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiText><h4>Nguyễn Tuấn Đạt</h4></EuiText>
+          <EuiText><h4>{user?.name}</h4></EuiText>
           <EuiLink href='/dangky_nguoiban'><EuiIcon type="plus"/>Tạo cửa hàng</EuiLink>
         </EuiFlexItem>
       </EuiFlexGroup>
