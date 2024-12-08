@@ -47,10 +47,19 @@ export default function Order() {
             render:(item)=>(
                 <EuiFlexGroup gutterSize='s'>
                     <EuiButtonIcon iconType="documentEdit" color='success' onClick={()=>handleModal(item)}/>
+                    <EuiButtonIcon iconType="trash" color='danger' onClick={()=>Delete(item)}/>
                 </EuiFlexGroup>
             )
         },
     ]
+    const Delete=async(item)=>{
+        try {
+            await axios.delete('/order/delete/'+item.id)
+            getOrder()
+        } catch (err) {
+            console.log(err)
+        }
+    }
     const getOrder=async()=>{
         try {
             const res=await axios.get(`/order/getByShop/${shop._id}`)
@@ -64,8 +73,33 @@ export default function Order() {
     useEffect(()=>{
         getOrder()
     },[])
+    const [pageIndex,setPageIndex]=useState(0)
+    const [pageSize,setPageSize]=useState(10)
+
+    const onChange=({page})=>{
+        const {index:pageIndex,size:pageSize}=page
+        setPageIndex(pageIndex)
+        setPageSize(pageSize)
+    }
+    const itemOfPage=(data,pageIndex,pageSize)=>{
+        let itemOfPages;
+        if(!pageIndex && !pageSize){
+            itemOfPages=data
+        }else{
+            itemOfPages=data.slice(pageIndex*pageSize,(pageIndex+1)*pageSize)
+        }
+        return {itemOfPages}
+    }
+    const {itemOfPages}=itemOfPage(data,pageIndex,pageSize)
+
+    const paginations={
+        pageIndex,
+        pageSize,
+        totalItemCount:data.length,
+        pageSizeOptions:[0,10,20]
+    }
   return (
-    <EuiPanel style={{height:'calc(100vh - 3rem'}}>
+    <EuiPanel style={{height:'calc(100vh - 3rem'}} className="eui-fullHeight eui-yScrollWithShadows">
         <ToastContainer/>
         <EuiFlexGroup alignItems='center' justifyContent='spaceBetween'>
             <EuiText>Danh sách đơn hàng</EuiText>
@@ -74,7 +108,9 @@ export default function Order() {
         <EuiBasicTable
         tableLayout='auto'
         columns={columns}
-        items={data}/>
+        items={itemOfPages}
+        pagination={paginations}
+        onChange={onChange}/>
         {modalview&&<ModalView setModalView={setModalView} selectedItem={selectedItem} getOrder={getOrder}/>}
     </EuiPanel>
   )

@@ -19,14 +19,17 @@ export default function ShopView() {
   const [sort,setSort]=useState('')
   const [min,setMin]=useState(0)
   const [max,setMax]=useState(99999999)
+  const [subcategoryId,setSubcategoryId]=useState('')
+
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const shopId = queryParams.get('id');
     setShopId(shopId);
 }, [location.search]);
+
   const getAllProduct=async()=>{
     try {
-      const res=await axios.get(`/product/search?shopId=${shopId}&sort=${sort}&min=${min}&max=${max}`)
+      const res=await axios.get(`/product/search?shopId=${shopId}&subcategoryId=${subcategoryId}&sort=${sort}&min=${min}&max=${max}`)
       setproducts(res.data) 
     } catch (err) {
       console.log(err)
@@ -49,12 +52,10 @@ export default function ShopView() {
     }
   }
   useEffect(() => {
-    if (shopId) {
       getAllProduct();
       getShop()
       getBestSellingByShop()
-    }
-}, [shopId,sort,min,max]);
+}, [shopId,subcategoryId,sort,min,max]);
 
   return (
     <>
@@ -110,6 +111,16 @@ export default function ShopView() {
       <EuiPageSection paddingSize='s'>
         <EuiFlexGroup direction='column'>
           <EuiFlexGroup alignItems='center' gutterSize='m' style={{background:'rgba(0, 0, 0, .03)',padding:'10px'}}>
+            <EuiFlexItem>
+              <EuiSelect
+                onChange={(e)=>setSubcategoryId(e.target.value)}
+                options={[
+                    { text: "Chọn danh mục", value: "" },
+                    ...shop?.shop.subcategories?.map(s=>({
+                    text:s.name,
+                    value:s._id
+                }))]} fullWidth /> 
+            </EuiFlexItem>
             <EuiFlexItem>
               <EuiFlexGroup alignItems='center'>
                 <EuiText size='s'>Sắp xếp theo</EuiText>

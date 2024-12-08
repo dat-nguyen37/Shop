@@ -1,5 +1,4 @@
 const chatHandler = require('./chat');
-const notificationHandler = require('./notification');
 
 module.exports = (io) => {
     io.on('connection', (socket) => {
@@ -9,7 +8,6 @@ module.exports = (io) => {
         chatHandler(io, socket);
 
         // Gọi module notification
-        notificationHandler(io, socket);
 
         // Xử lý ngắt kết nối
         socket.on('disconnect', () => {

@@ -1,4 +1,4 @@
-import { EuiBasicTable, EuiSpacer, EuiSwitch, EuiText } from '@elastic/eui'
+import { EuiAvatar, EuiBasicTable, EuiImage, EuiSpacer, EuiSwitch, EuiText } from '@elastic/eui'
 import React, { useEffect, useState } from 'react'
 import axios from '../../../axios'
 import moment from 'moment'
@@ -18,7 +18,11 @@ export default function ListShop() {
         updateShop(status,id)
     }
     const columns=[
-        {field:'image',name:'Ảnh cửa hàng'},
+        {field:'image',name:'Ảnh cửa hàng',
+            render:(item)=>(
+                <EuiImage src={item} width="70px" height="50px"/>
+            )
+        },
         {field:'shop',name:'Tên cửa hàng'},
         {field:'owner',name:'Chủ cửa hàng'},
         {field:'status',name:'Trạng thái',
@@ -26,7 +30,7 @@ export default function ListShop() {
                 <span>{item?'Đang hoạt động':'Không hoạt động'}</span>
             )
         },
-        {field:'dateStart',name:'Ngày hoạt động',
+        {field:'dateStart',name:'Ngày đăng kí',
             render:(item)=>(
                 <span>{item?moment(item).format('DD/MM/YYYY'):''}</span>
             )
@@ -42,7 +46,7 @@ export default function ListShop() {
         try {
             const res=await axios.get('/shop/getAll')
             setItems(res.data?.map(s=>(
-                {image:s?.image,shop:s?.name,owner:s?.ownerName,status:s?.isActivated,dateStart:s?.createdAt,activate:s}
+                {image:s?.avatar,shop:s?.name,owner:s?.ownerName,status:s?.isActivated,dateStart:s?.createdAt,activate:s}
             )))
         } catch (err) {
             console.log(err)

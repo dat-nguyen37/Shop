@@ -66,9 +66,34 @@ export default function ListProduct() {
     }
     useEffect(()=>{
         getProduct()
-    },[])
+    },[shop])
+    const [pageIndex,setPageIndex]=useState(0)
+    const [pageSize,setPageSize]=useState(10)
+
+    const onChange=({page})=>{
+        const {index:pageIndex,size:pageSize}=page
+        setPageIndex(pageIndex)
+        setPageSize(pageSize)
+    }
+    const itemOfPage=(data,pageIndex,pageSize)=>{
+        let itemOfPages;
+        if(!pageIndex && !pageSize){
+            itemOfPages=data
+        }else{
+            itemOfPages=data.slice(pageIndex*pageSize,(pageIndex+1)*pageSize)
+        }
+        return {itemOfPages}
+    }
+    const {itemOfPages}=itemOfPage(data,pageIndex,pageSize)
+
+    const paginations={
+        pageIndex,
+        pageSize,
+        totalItemCount:data.length,
+        pageSizeOptions:[0,10,20]
+    }
   return (
-    <EuiPanel>
+    <EuiPanel style={{minHeight:'calc(100vh - 3rem)'}}>
         <ToastContainer/>
         {modalAdd&&<AddProduct setModalAdd={setModalAdd} getProduct={getProduct}/>}
         {modalUpdate&&<EditProduct setModalUpdate={setModalUpdate} getProduct={getProduct} selectedItem={selectedItem}/>}
@@ -80,7 +105,9 @@ export default function ListProduct() {
         <EuiBasicTable
         tableLayout='auto'
         columns={columns}
-        items={data}/>
+        items={itemOfPages}
+        pagination={paginations}
+        onChange={onChange}/>
     </EuiPanel>
   )
 }

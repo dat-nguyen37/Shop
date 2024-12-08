@@ -105,9 +105,12 @@ export default function Cart() {
             const filteredItems = selectedItems.map(item => ({
                 cartId: item?.cartId,
                 product: {
-                    id:item?.name._id,
+                    id:item?.name?._id,
+                    shopId:item?.name?.shopId,
                     image: encodeURIComponent(item?.image), 
-                    name: item?.name?.name
+                    name: item?.name?.name,
+                    color:item?.cart?.color,
+                    size:item?.cart?.size,
                 },
                 price: item?.price,
                 quantity: item?.quantity,

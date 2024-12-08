@@ -9,6 +9,10 @@ exports.create=async(req,res)=>{
         members:[req.body.senderId,req.body.receiverId]
     })
     try {
+        const conversation=await Conversation.findOne({members:{ $all: [req.body.senderId, req.body.receiverId] }})
+        if(conversation){
+            return res.status(200).send(conversation)
+        }
         const saveConsation=await newConversation.save()
         res.status(200).json(saveConsation)
     } catch (err) {
@@ -46,6 +50,9 @@ exports.getByUser = async (req, res) => {
         ).lean();
         // Gộp tin nhắn theo shopId (mỗi shop chỉ giữ tin nhắn mới nhất)
         const result = shopIds.reduce((acc, shopId) => {
+            const conversation = conversations.find(conv =>
+                conv.members.includes(shopId) && conv.members.includes(req.userId)
+            );            
             const shop = shops.flatMap(user => user.shop).find(s => s._id.toString() === shopId);
             if (shop) {
                 const latestMessage = messages.find(msg =>
@@ -54,22 +61,17 @@ exports.getByUser = async (req, res) => {
                         conv.members.includes(shopId)
                     )
                 );
-                if (latestMessage) {
                     acc.push({
                         shop,
                         latestMessage,
+                        conversationId: conversation._id,
                     });
-                }
             }
             return acc;
         }, []);
 
         // Chuyển kết quả về mảng
-
-        if (!result.length) {
-            return res.status(404).json({ message: 'Không tìm thấy tin nhắn nào!' });
-        }
-        result.sort((a, b) => new Date(b.latestMessage.createdAt) - new Date(a.latestMessage.createdAt));
+        result.sort((a, b) => new Date(b.latestMessage?.createdAt) - new Date(a.latestMessage?.createdAt));
 
         // Trả về danh sách tin nhắn theo shopId
         res.status(200).json(result);
@@ -105,6 +107,9 @@ exports.getByShop = async (req, res) => {
             { _id: { $in: userIds } }).lean();
         // Gộp tin nhắn theo userId (mỗi user chỉ giữ tin nhắn mới nhất)
         const result = userIds.reduce((acc, userId) => {
+            const conversation = conversations.find(conv =>
+                conv.members.includes(userId) && conv.members.includes(req.params.shopId)
+            );   
             const user = users.find(u=>u._id.toString()===userId);
             if (user) {
                 const latestMessage = messages.find(msg =>
@@ -117,6 +122,7 @@ exports.getByShop = async (req, res) => {
                     acc.push({
                         user,
                         latestMessage,
+                        conversationId:conversation._id
                     });
                 }
             }
@@ -128,7 +134,7 @@ exports.getByShop = async (req, res) => {
         if (!result.length) {
             return res.status(404).json({ message: 'Không tìm thấy tin nhắn nào!' });
         }
-        result.sort((a, b) => new Date(b.latestMessage.createdAt) - new Date(a.latestMessage.createdAt));
+        result.sort((a, b) => new Date(b.latestMessage?.createdAt) - new Date(a.latestMessage?.createdAt));
 
         // Trả về danh sách tin nhắn theo shopId
         res.status(200).json(result);

@@ -1,4 +1,4 @@
-import { EuiButton, EuiFieldText, EuiFilePicker, EuiFlexGroup, EuiFormRow, EuiModal, EuiModalBody, EuiModalFooter, EuiModalHeader, EuiModalHeaderTitle, EuiSpacer } from '@elastic/eui'
+import { EuiButton, EuiButtonIcon, EuiComboBox, EuiFieldText, EuiFilePicker, EuiFlexGroup, EuiFlexItem, EuiFormRow, EuiModal, EuiModalBody, EuiModalFooter, EuiModalHeader, EuiModalHeaderTitle, EuiPopover, EuiSpacer } from '@elastic/eui'
 import React, { useState } from 'react'
 import { toast,ToastContainer } from 'react-toastify'
 import axios from '../../../axios'
@@ -8,10 +8,23 @@ import { ref, uploadBytesResumable,getDownloadURL } from 'firebase/storage'
 export default function AddCategory({setModalAdd,getCategory}) {
     const [image,setImage]=useState('')
     const [name,setName]=useState()
+    const [subcategories,setSubcategories]=useState([])
+    const [nameSubcategory,setNameSubcategory]=useState('')
+    const [popover,setPopover]=useState(false)
+
     const [errors,setErrors]=useState({
         name:''
     })
-
+    const addSubcategories=()=>{
+        setSubcategories((prev) => [
+            ...prev,
+            { label: nameSubcategory,},
+          ]);
+          setNameSubcategory('')
+    }
+    const onChangeSubcategory=(category)=>{
+        setSubcategories(category)
+    }
     const changeFile=async(files)=>{
         const file=Array.from(files)[0]
         try {
@@ -36,7 +49,10 @@ export default function AddCategory({setModalAdd,getCategory}) {
         try {
             await axios.post('/category/create',{
                 name:name,
-                image:image
+                image:image,
+                subcategories:subcategories?.map(item=>(
+                    {name:item.label}
+                ))
             })
             getCategory()
             setModalAdd(false)
@@ -57,8 +73,31 @@ export default function AddCategory({setModalAdd,getCategory}) {
             <EuiModalHeaderTitle>Thêm mới</EuiModalHeaderTitle>
         </EuiModalHeader>
         <EuiModalBody>
-            <EuiFormRow fullWidth isInvalid={!!errors.name} error={errors.name}>
+            <EuiFormRow label="Tên danh mục" fullWidth isInvalid={!!errors.name} error={errors.name}>
                 <EuiFieldText onChange={(e)=>setName(e.target.value)} fullWidth isInvalid={!!errors.name}/>
+            </EuiFormRow>
+            <EuiSpacer/>
+            <EuiFormRow label="Tên danh mục con" fullWidth>
+                <EuiFlexGroup gutterSize='s'>
+                <EuiFlexItem>
+                    <EuiComboBox
+                        options={subcategories}
+                        selectedOptions={subcategories}
+                        onChange={onChangeSubcategory} fullWidth/>
+                </EuiFlexItem>
+                <EuiFlexItem grow={false}>
+                    <EuiPopover
+                    isOpen={popover}
+                    closePopover={()=>setPopover(false)}
+                    hasArrow={false}
+                    anchorPosition='upRight'
+                    button={<EuiButtonIcon iconType="plus" display='fill' size='m' onClick={() => setPopover(!popover)}/>}
+                    >
+                            <EuiFieldText placeholder='Nhập tên' onChange={(e)=>setNameSubcategory(e.target.value)}/>
+                            <EuiButton iconType="plusInCircle" fill onClick={addSubcategories}>Thêm</EuiButton>
+                    </EuiPopover>
+                </EuiFlexItem>
+                </EuiFlexGroup>
             </EuiFormRow>
             <EuiSpacer/>
             <EuiFilePicker onChange={changeFile} multiple fullWidth/>

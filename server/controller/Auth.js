@@ -76,6 +76,7 @@ exports.login=async(req,res)=>{
     }
 }
 exports.logout=(req,res)=>{
+    req.session.destroy()
     res.clearCookie("access_token").status(200).json("User has been logged out.")
 }
 

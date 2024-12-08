@@ -28,7 +28,7 @@ export default function ModalView({setModalView,selectedItem,getOrder}) {
 
     const handleUpdate=async()=>{
         try {
-            await axios.patch('/order/update/'+data.id,{
+            await axios.patch(`/order/update?orderItemId=${data.id}`,{
                 confimationStatus:data.confimationStatus,
                 name:data.name,
                 phone:data.phone,

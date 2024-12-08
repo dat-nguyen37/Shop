@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { EuiButton, EuiButtonEmpty, EuiButtonIcon, EuiFieldPassword, EuiFieldText, EuiFlexGroup, EuiFlexItem, EuiFormRow, EuiLink, EuiPageTemplate, EuiText } from "@elastic/eui"
+import { EuiButton, EuiButtonEmpty, EuiButtonIcon, EuiFieldPassword, EuiFieldText, EuiFlexGroup, EuiFlexItem, EuiFormRow, EuiLink, EuiPageTemplate, EuiSpacer, EuiText } from "@elastic/eui"
 import {validator} from '../Validator'
 import axios from '../axios'
 import Swal from 'sweetalert2'
@@ -67,6 +67,11 @@ export default function Login() {
             }
         }
     }
+
+    const google=()=>{
+        window.open("http://localhost:5000/auth/google", "_self")
+     }
+     
   return (
     <EuiPageTemplate style={{backgroundImage:'url("/assets/bg.png")',width:'100vw',height:'100vh',backgroundRepeat:'no-repeat',backgroundSize:'cover'}}>
         <EuiFlexGroup alignItems='center' justifyContent='center' style={{width:'100%',height:'100%'}}>
@@ -80,12 +85,10 @@ export default function Login() {
                         <EuiFieldPassword type='dual' placeholder='Mật khẩu' onChange={handleChange('password')} isInvalid={!!errors.password} fullWidth/>
                     </EuiFormRow>
                     <EuiButton fill onClick={handleLogin} isLoading={loading}>Đăng nhập</EuiButton>
+                    <EuiSpacer size='s'/>
                     <EuiFlexGroup justifyContent='center' responsive={false}>
                         <EuiFlexItem>
-                            <EuiButton fill iconType="/assets/facebook.png">Facebook</EuiButton>
-                        </EuiFlexItem>
-                        <EuiFlexItem>
-                            <EuiButton fill iconType="/assets/google.png">Google</EuiButton>
+                            <EuiButton fill iconType="/assets/google.png" onClick={google}>Google</EuiButton>
                         </EuiFlexItem>
                     </EuiFlexGroup>
                     <EuiText textAlign='center' color='black'>Chưa có tài khoản? <EuiLink href='/dang_ky'>Đăng ký</EuiLink></EuiText>

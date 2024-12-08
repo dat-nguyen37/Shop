@@ -28,7 +28,7 @@ export default function HomeSeller() {
     }
   return (
     <EuiFlexGroup justifyContent='center' alignItems='flexStart'>
-      <EuiPanel grow={false} style={{minWidth:'600px'}}>
+      <EuiPanel grow={false} style={{minWidth:'800px'}}>
         <EuiBreadcrumbs
         breadcrumbs={[
           {
@@ -56,18 +56,21 @@ export default function HomeSeller() {
       <EuiFlexGrid columns={2}>
          {data?( data.map(shop=>(<EuiFlexItem>
               <div style={{position:'relative'}}>
-                <EuiImage src='/assets/shop1.png' allowFullScreen height="150" size='fullWidth'/>
+                <EuiImage src={shop.background} allowFullScreen height="150" size='fullWidth'/>
                 <div style={{position: 'absolute',top: 0,left: 0,right: 0,bottom: 0,backgroundColor: 'rgba(0, 0, 0, 0.5)'}}></div>
                 <EuiFlexGroup direction='column' gutterSize='s' style={{position:'absolute',top:'20%',left:'10%'}}>
                   <EuiFlexGroup alignItems='center' gutterSize='s'>
-                    <EuiAvatar name='Shop' imageUrl='/assets/logo_shop.webp' size='xl'/>
+                    <EuiAvatar name='Shop' imageUrl={shop.avatar} size='xl'/>
                     <p>
                       <EuiText color='white'><h3>Shop:{shop.name}</h3></EuiText>
                       <EuiText color='white'>Mã:{shop._id}</EuiText>
                     </p>
                   </EuiFlexGroup>
                 </EuiFlexGroup>
+                {shop.isActivated?
                 <EuiLink onClick={()=>handleClick(shop)} style={{position:'absolute',bottom:0, right:10}}><EuiText color='white'>Truy cập</EuiText></EuiLink>
+                :<EuiText style={{position:'absolute',bottom:0, right:10}}>Chưa mở</EuiText>
+              }
               </div>
           </EuiFlexItem>))):(
             <EuiText>Bạn chưa có cửa hàng nào</EuiText>

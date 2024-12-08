@@ -8,6 +8,8 @@ router.get('/getAll',shopController.getAll)
 router.patch('/update/:id',shopController.update)
 router.get('/getOne/:id',shopController.getOne)
 router.get('/getByUser',checkLogin,shopController.getByUser)
+router.patch('/deleteSubcategories/:shopId/:subcategoryId',shopController.deleteSubcategories)
+
 
 
 

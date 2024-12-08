@@ -63,6 +63,11 @@ export default function Register() {
           }
     }
 
+    const google=()=>{
+      window.open("http://localhost:5000/auth/google", "_self")
+   }
+   
+
   return (
     <EuiPageTemplate style={{backgroundImage:'url("/assets/bg.png")',width:'100vw',height:'100vh',backgroundRepeat:'no-repeat',backgroundSize:'cover'}}>
         <EuiFlexGroup alignItems='center' justifyContent='center' style={{width:'100%',height:'100%'}}>
@@ -84,10 +89,7 @@ export default function Register() {
                     <EuiButton fill isLoading={isLoading} onClick={handleRegister}>Đăng ký</EuiButton>
                     <EuiFlexGroup justifyContent='center' responsive={false}>
                         <EuiFlexItem>
-                            <EuiButton fill iconType="/assets/facebook.png">Facebook</EuiButton>
-                        </EuiFlexItem>
-                        <EuiFlexItem>
-                            <EuiButton fill iconType="/assets/google.png">Google</EuiButton>
+                            <EuiButton fill iconType="/assets/google.png" onClick={google}>Google</EuiButton>
                         </EuiFlexItem>
                     </EuiFlexGroup>
                     <EuiText textAlign='center' color='black'>Đã có tài khoản? <EuiLink href='/dang_nhap'>Đăng nhập</EuiLink></EuiText>

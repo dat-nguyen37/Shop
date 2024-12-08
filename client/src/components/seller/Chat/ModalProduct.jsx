@@ -65,7 +65,7 @@ export default function ModalProduct({setModalProduct,setListOrder}) {
                             <EuiFieldNumber defaultValue={quantity} onChange={(e)=>setQuantity(e.target.value)}/>
                         </EuiFormRow>
                     </EuiFlexItem>
-                    {selectedProduct?.size&&<EuiFlexItem>
+                    {selectedProduct?.size.length&&<EuiFlexItem>
                         <EuiFormRow label="Size">
                             <EuiSelect
                             options={[
@@ -80,7 +80,7 @@ export default function ModalProduct({setModalProduct,setListOrder}) {
                             }}/>
                         </EuiFormRow>
                     </EuiFlexItem>}
-                    {selectedProduct?.color&&<EuiFlexItem>
+                    {selectedProduct?.color.length&&<EuiFlexItem>
                         <EuiFormRow label="Color">
                         <EuiSelect
                             options={[

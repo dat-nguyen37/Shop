@@ -1,3 +1,5 @@
+    
+
     let users=[]
     const addUser=(userId,socketId)=>{
     !users.some(user=>user.userId===userId) &&
@@ -19,15 +21,25 @@ module.exports = (io, socket) => {
     })
     socket.on("sendMessage",({senderId,receiverId,text})=>{
         const user=getUser(receiverId)
-        // gửi tin nhắn đến người dùng cụ thể
-        console.log(user)
-        io.to(user.socketId).emit("getMessage",{
-            senderId,
-            text
-        })
+
+        if(user){
+            io.to(user.socketId).emit("getMessage",{
+                senderId,
+                text
+            })
+        }
     })
+
+    socket.on("sendNotification", ({ senderId, receiverId, text }) => {
+        const user = getUser(receiverId);
+        if (user) {
+            io.to(user.socketId).emit("getNotification", {
+                senderId,
+                text,
+            });
+        }
+    });
     socket.on("disconnect", () => {
         removeUser(socket.id);
-        console.log("User disconnected:", users); // Debugging
     });
 };

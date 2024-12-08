@@ -19,6 +19,12 @@ exports.creatOrder=async(req,res)=>{
             const order=await newOrder.save()
             const cartItems=req.body.product.map(item=>item.productId)
             await Cart.deleteMany({userId:req.body.userId,productId:{$in:cartItems}})
+            for (const item of req.body.product) {
+                await Product.updateOne(
+                    { _id: item.productId }, 
+                    { $inc: { quantitySold: item.quantity } } 
+                );
+            }
             res.status(200).send(order)
         }else{
             res.status(401).send("Authentication")    
@@ -72,7 +78,7 @@ exports.getOrderByUser=async(req,res)=>{
         let filteredProducts = [...productsByUser];
         if (value!=="") {
             filteredProducts = filteredProducts.filter(product => 
-                product.productName.toLowerCase().includes(value?.toLowerCase()) || 
+                product?.productName.toLowerCase().includes(value?.toLowerCase()) || 
                 product.id === value
             );
         }
@@ -129,8 +135,12 @@ exports.getAllByShop=async(req,res)=>{
 
 exports.update=async(req,res)=>{
     try {
+        const { orderId,orderItemId } = req.query;
+        const filter = orderId 
+            ? { _id: orderId }
+            : { "product._id": orderItemId }
         await Order.findOneAndUpdate(
-            {"product._id": req.params.id},
+            filter,
             {$set: { 
                 "product.$.confimationStatus": req.body.confimationStatus,
                 name:req.body.name,
@@ -143,5 +153,16 @@ exports.update=async(req,res)=>{
         res.status(200).send('Update thành công')
     } catch (err) {
         res.status(200).send(err)
+    }
+}
+
+exports.delete=async(req,res)=>{
+    try {
+        await Order.findOneAndDelete(
+            { "product._id": req.params.id },
+            { new: true })
+        res.status(200).send("Xóa thành công")
+    } catch (err) {
+        res.status(500).send(err)
     }
 }

@@ -6,14 +6,14 @@ const orderSchema=new mongoose.Schema({
     },
     product:[
         {
-            shopId:String,
-            productId:String,
-            productName:String,
+            shopId:{type:String,required: true},
+            productId:{type:String,required: true},
+            productName:{type:String,required: true},
             image:String,
             size:String,
             color:String,
-            quantity:Number,
-            price:Number,
+            quantity:{type:Number,required: true},
+            price:{type:Number,required: true},
             confimationStatus:{
                 type:String,
                 enum: ['Chưa xác nhận', 'Đã xác nhận',  'Đang giao', 'Đã giao', 'Đã hủy'],

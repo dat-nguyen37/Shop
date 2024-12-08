@@ -34,26 +34,24 @@ export default function Home() {
   },[])
   return (
     <div>
-      <EuiPageTemplate.Section color='transparent'>
         <Slide/>
-      </EuiPageTemplate.Section>
         <EuiPageTemplate.Section color='transparent'>
-          <EuiPanel hasShadow={false}>
+          <EuiPanel>
             <EuiFlexGroup direction='column'>
               <EuiFlexItem>
                 <EuiText>Danh Mục</EuiText>
               </EuiFlexItem>
               <EuiFlexItem>
-                <EuiFlexGrid gutterSize='none' style={{gridTemplateColumns: mobile?'repeat(4,1fr)':'repeat(6,1fr)'}}>
+                <EuiFlexGroup gutterSize='m' responsive={false} className="eui-fullHeight eui-xScrollWithShadows">
                   {categories.map(category=>(<EuiFlexItem>
                     <EuiLink href={`/danh_muc?ma=${category._id}`}>
-                      <EuiFlexGroup direction='column' alignItems='center' gutterSize='none' style={{border:'1px solid #FFF'}}>
-                        <EuiImage src={category.image} size='s'/>
-                        <EuiText>{category.name}</EuiText>
+                      <EuiFlexGroup direction='column' alignItems='center' gutterSize='none'>
+                        <EuiImage src={category.image} width="70" height="70" style={{borderRadius:'10px'}}/>
+                        <EuiText color='default' size='s' style={{width:'100px',textAlign:'center'}}><b>{category.name}</b></EuiText>
                       </EuiFlexGroup>
                     </EuiLink>
                   </EuiFlexItem>))}
-                </EuiFlexGrid>
+                </EuiFlexGroup>
               </EuiFlexItem>
             </EuiFlexGroup>
           </EuiPanel>

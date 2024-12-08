@@ -34,11 +34,12 @@ export default function Chat() {
     },[])
     // cập nhật tin nhắn mới
     useEffect(()=>{
+      getConversations()
          if(arrivalMessages &&curentChat?.members.includes(arrivalMessages.sender))
          {getMessage()
           getConversations()
          }
-    },[arrivalMessages])
+    },[arrivalMessages,curentChat])
 
     const handleSelected=(conversationId,selectedUserId)=>{
       setSelectedConversationId(conversationId)
@@ -47,12 +48,8 @@ export default function Chat() {
     useEffect(()=>{
       // gửi người dùng đến máy chủ
       socket.current.emit("addUser", shop._id)
-      if(selectedConversationId){
-        socket.current.emit("addUser", selectedUserId)
-      }
-      
       // lắng nghe về người dùng trực tuyến và cập nhật trạng thái 
-     },[shop,selectedUserId])
+     },[shop])
   
     const sendMessage=async()=>{
       const message={
@@ -91,6 +88,9 @@ export default function Chat() {
         console.log(err)
       }
     }
+    useEffect(()=>{
+      getMessage()
+    },[selectedConversationId])
     const getCurrentChat=async()=>{
       try {
         const res=await axios.get(`conversation/find/${shop._id}/${selectedUserId}`)
@@ -127,11 +127,12 @@ export default function Chat() {
   return (
     <EuiFlexGroup responsive={false} gutterSize='s' style={{height:'calc(100vh - 3rem)'}}>
         <EuiFlexItem grow={false} style={{background:'white',padding:'8px'}}>
-            <EuiFieldSearch placeholder='Tìm kiếm' style={{outline:'none'}}/>
+        {conversations.length&&<EuiFlexGroup direction='column' gutterSize='s'>
+           <EuiFieldSearch placeholder='Tìm kiếm' style={{outline:'none'}}/>
             <EuiSpacer size='s'/>
             <EuiFlexGroup direction='column' gutterSize='s' className="eui-fullHeight eui-yScrollWithShadows">
-            {conversations?(conversations.map(conversation=>(
-                <EuiFlexItem grow={false} onClick={()=>handleSelected(conversation.latestMessage.conversationId,conversation.user._id)}>
+            {conversations.map(conversation=>(
+                <EuiFlexItem grow={false} onClick={()=>handleSelected(conversation.conversationId,conversation.user._id)}>
                 <EuiFlexGroup gutterSize='s' alignItems='center' responsive={false}>
                 <EuiAvatar name='A' size='s'/>
                 <EuiFlexItem>
@@ -140,8 +141,9 @@ export default function Chat() {
                 </EuiFlexItem>
                 <EuiText size='xs' color='subdued'>{moment(conversation.latestMessage.createdAt).format("DD/MM")}</EuiText>
                 </EuiFlexGroup>
-            </EuiFlexItem>))):('')}
+            </EuiFlexItem>))}
             </EuiFlexGroup>
+           </EuiFlexGroup>}
         </EuiFlexItem>
         {messages?(
         <EuiFlexGroup gutterSize='s' style={{padding:'8px'}}>

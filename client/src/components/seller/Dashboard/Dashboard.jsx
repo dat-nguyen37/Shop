@@ -1,8 +1,11 @@
-import { EuiAvatar, EuiButtonIcon, EuiFlexGroup,EuiPopover,EuiPopoverTitle,EuiButtonEmpty,EuiFlexItem, EuiHeader, EuiHeaderSection, EuiHeaderSectionItem, EuiHeaderSectionItemButton, EuiIcon, EuiPageHeader, EuiPageHeaderContent, EuiPageTemplate, EuiSpacer, EuiText, EuiFlyout, EuiPageSidebar, EuiAccordion, EuiListGroup, EuiListGroupItem, EuiLink, EuiPanel, EuiFlexGrid, EuiStat } from '@elastic/eui'
-import React, { useContext, useEffect, useState } from 'react'
+import { EuiAvatar, EuiButtonIcon, EuiFlexGroup,EuiPopover,EuiPopoverTitle,EuiButtonEmpty,EuiFlexItem, EuiHeader, EuiHeaderSection, EuiHeaderSectionItem, EuiHeaderSectionItemButton, EuiIcon, EuiPageHeader, EuiPageHeaderContent, EuiPageTemplate, EuiSpacer, EuiText, EuiFlyout, EuiPageSidebar, EuiAccordion, EuiListGroup, EuiListGroupItem, EuiLink, EuiPanel, EuiFlexGrid, EuiStat, EuiHorizontalRule } from '@elastic/eui'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import {ShopContext} from '../../../context/ShopContext'
 import { AuthContext } from '../../../context/AuthContext'
+import { io } from 'socket.io-client';
+import axios from '../../../axios'
+import {format} from 'timeago.js'
 
 
 export default function Dashboard() {
@@ -10,6 +13,51 @@ export default function Dashboard() {
     const {shop}=useContext(ShopContext)
     const {user}=useContext(AuthContext)
     const [dots, setDots] = useState('');
+    const [notificationPopover,setNotificationPopover]=useState(false)
+
+        //notification
+        const socket=useRef(io("ws://localhost:5000"))
+
+        const [notifications,setNotifications]=useState([])
+        const [newNotification,setNewNotification]=useState(null)
+    
+        useEffect(()=>{
+          // khởi tạo kết nối
+           socket.current=io("ws://localhost:5000")
+           socket.current.on("getNotification",data=>{
+            setNewNotification({
+             sender:data.senderId,
+             text:data.text,
+             createdAt:Date.now()
+            })
+      })
+        },[])
+        useEffect(()=>{
+            // gửi người dùng đến máy chủ
+            socket.current.emit("addUser", shop._id)
+        },[shop])
+        useEffect(()=>{
+                getNotification()
+        },[newNotification])
+        const getNotification=async()=>{
+            try {
+                const res=await axios.get('/notification/getByShop/'+shop._id)
+                setNotifications(res.data)
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        useEffect(()=>{
+            getNotification()
+        },[])
+        const Update=async()=>{
+            try {
+                await axios.patch('/notification/update/'+shop._id)
+                getNotification()
+            } catch (err) {
+                console.log(err)
+            }
+        }
 
     useEffect(() => {
       const interval = setInterval(() => {
@@ -18,6 +66,8 @@ export default function Dashboard() {
   
       return () => clearInterval(interval);
     }, []);
+
+
 
   return (
       <>
@@ -37,8 +87,30 @@ export default function Dashboard() {
                 <EuiHeaderSection side='right'>
                     <EuiFlexGroup gutterSize='s'>
                         <EuiHeaderSectionItem>
-                            <EuiHeaderSectionItemButton notification={1}>
-                                <EuiIcon type="bell" size='l'/>
+                            <EuiHeaderSectionItemButton notification={notifications.length}>
+                                <EuiPopover
+                                panelStyle={{minWidth:'300px'}}
+                                isOpen={notificationPopover}
+                                closePopover={()=>setNotificationPopover(false)}
+                                button={
+                                    <EuiIcon type="bell" size='l' onClick={()=>setNotificationPopover(!notificationPopover)}/>
+                                }>
+                                    <EuiPopoverTitle paddingSize='s'>
+                                        <EuiFlexGroup alignItems='center' justifyContent='spaceBetween'>
+                                            <EuiText>Thông báo</EuiText>
+                                            <EuiLink onClick={Update}>Đánh dấu đã học <EuiIcon type="check"/></EuiLink>
+                                        </EuiFlexGroup>
+                                    </EuiPopoverTitle>
+                                    <EuiFlexGroup direction='column' gutterSize='s'>
+                                        {notifications.length?notifications?.map(item=>(<EuiFlexItem>
+                                            <EuiFlexGroup alignItems='center' gutterSize='s'>
+                                                <EuiText>{item?.text}.</EuiText>
+                                                <EuiText color='subdued' size='s'>{format(item.createdAt)}</EuiText>
+                                            </EuiFlexGroup>
+                                            <EuiHorizontalRule margin='none'/>
+                                        </EuiFlexItem>)):<EuiText>Không có thông báo mới nào.</EuiText>}
+                                    </EuiFlexGroup>
+                                </EuiPopover>
                             </EuiHeaderSectionItemButton>
                         </EuiHeaderSectionItem>
                         <EuiHeaderSectionItem>
@@ -102,6 +174,7 @@ export default function Dashboard() {
                         <EuiListGroup flush style={{}}>
                             <EuiListGroupItem href='/nguoi_ban/danh_sach_san_pham' label='Sản phẩm'/>
                             <EuiListGroupItem href='/nguoi_ban/danh_sach_don_hang' label='Đơn hàng'/>
+                            <EuiListGroupItem href='/nguoi_ban/danh_sach_danh_muc' label='Danh mục'/>
                             <EuiListGroupItem href='/nguoi_ban/danh_sach_don_hang' label='Khuyến mãi'/>
                         </EuiListGroup>
                     </EuiAccordion>

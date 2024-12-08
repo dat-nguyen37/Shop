@@ -1,8 +1,9 @@
 import React from 'react'
 import { EuiAccordion, EuiAvatar, EuiFlexGroup, EuiFlexItem, EuiIcon, EuiLink, EuiListGroup, EuiListGroupItem, EuiPage, EuiPageSection, EuiPageSidebar, EuiPageTemplate, EuiPanel, EuiSpacer, EuiText } from '@elastic/eui'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useOutletContext } from 'react-router-dom'
 
 export default function Profile() {
+    const result = useOutletContext();
   return (
     <EuiPage>
         <EuiPageTemplate.Sidebar style={{width:'280px'}}>
@@ -47,7 +48,7 @@ export default function Profile() {
         </EuiPageTemplate.Sidebar>
         <EuiPageTemplate.Section color='transparent' grow={false}>
             <EuiPanel style={{minHeight:'80vh'}}>
-                <Outlet/>
+                <Outlet context={result}/>
             </EuiPanel>
         </EuiPageTemplate.Section>
     </EuiPage>

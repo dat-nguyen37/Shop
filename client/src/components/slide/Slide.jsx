@@ -13,10 +13,10 @@ import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 
 export default function Slide() {
     const banners = [
-        { id: 1, title: "Sự kiện Khuyến mãi 11/11", imageUrl: "/assets/slide/slide1.png" },
-        { id: 2, title: "Black Friday Sale", imageUrl: "/assets/slide/slide2.png" },
-        { id: 3, title: "Giáng sinh Rộn ràng", imageUrl: "/assets/slide/slide3.png" },
-        { id: 4, title: "Giáng sinh Rộn ràng", imageUrl: "/assets/slide/slide4.png" },
+        { id: 1, title: "Sự kiện Khuyến mãi 11/11", imageUrl: "/assets/slider/slide1.webp" },
+        { id: 2, title: "Black Friday Sale", imageUrl: "/assets/slider/slide2.webp" },
+        { id: 3, title: "Giáng sinh Rộn ràng", imageUrl: "/assets/slider/slide3.webp" },
+        { id: 4, title: "Giáng sinh Rộn ràng", imageUrl: "/assets/slider/slide4.jpg" },
       ];
   return (
     <EuiFlexGroup style={{width:'100%'}}>

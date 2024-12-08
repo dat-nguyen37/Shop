@@ -1,4 +1,4 @@
-import { EuiButton, EuiButtonIcon, EuiColorPicker, EuiComboBox, EuiFieldNumber, EuiFieldText, EuiFilePicker, EuiFlexGroup, EuiFlexItem, EuiFormRow, EuiIcon, EuiModal, EuiModalBody, EuiModalFooter, EuiModalHeader, EuiModalHeaderTitle, EuiPopover, EuiPopoverTitle, EuiSpacer, EuiTextArea } from '@elastic/eui'
+import { EuiButton, EuiButtonIcon, EuiColorPicker, EuiComboBox, EuiFieldNumber, EuiFieldText, EuiFilePicker, EuiFlexGroup, EuiFlexItem, EuiFormRow, EuiIcon, EuiModal, EuiModalBody, EuiModalFooter, EuiModalHeader, EuiModalHeaderTitle, EuiPopover, EuiPopoverTitle, EuiSelect, EuiSpacer, EuiTextArea } from '@elastic/eui'
 import React, { useContext, useState } from 'react'
 import {Colors} from '../../../Color'
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
@@ -12,6 +12,7 @@ export default function AddProduct({setModalAdd,getProduct}) {
     const {shop}=useContext(ShopContext)
     const [popoverSize,setPopoverSize]=useState(false)
     const [name,setName]=useState('')
+    const [categoryId,setCategoryId]=useState('')
     const [image,setImage]=useState([])
     const [price,setPrice]=useState()
     const [description,setDescription]=useState('')
@@ -66,6 +67,7 @@ export default function AddProduct({setModalAdd,getProduct}) {
         try {
             await axios.post('/product/create',{
                 shopId:shop._id,
+                categoryId:categoryId,
                 name:name,
                 price:price,
                 image:image,
@@ -110,10 +112,21 @@ export default function AddProduct({setModalAdd,getProduct}) {
             </EuiFlexItem>
         </EuiFlexGroup>
         <EuiSpacer/>
+        <EuiFormRow label="Danh mục" fullWidth isInvalid={!!errors.categoryId} error={errors.categoryId}>
+            <EuiSelect
+                onChange={(e)=>setCategoryId(e.target.value)}
+                options={[
+                    { text: "Chọn danh mục", value: "" },
+                    ...shop.subcategories?.map(s=>({
+                    text:s.name,
+                    value:s._id
+                }))]} fullWidth isInvalid={!!errors.categoryId}/>          
+        </EuiFormRow>
+        <EuiSpacer/>
         <EuiFlexGroup>
             <EuiFlexItem>
-                <EuiFormRow label="Số lượng" fullWidth>
-                    <EuiFieldNumber placeholder='Số lượng' min={1} onChange={(e)=>setQuantity(e.target.value)} fullWidth/>
+                <EuiFormRow label="Số lượng" fullWidth isInvalid={!!errors.quantity} error={errors.quantity}>
+                    <EuiFieldNumber placeholder='Số lượng' min={1} onChange={(e)=>setQuantity(e.target.value)} fullWidth isInvalid={!!errors.quantity}/>
                 </EuiFormRow>
             </EuiFlexItem>
             <EuiFlexItem>
@@ -159,7 +172,7 @@ export default function AddProduct({setModalAdd,getProduct}) {
                 </EuiFormRow>
             </EuiFlexItem>
             <EuiFlexItem>
-                <EuiFormRow label="Ảnh" fullWidth isInvalid={!!errors.image} error={errors.image}>
+                <EuiFormRow label="Ảnh" fullWidth isInvalid={!!errors.image} error={errors.image} >
                     <EuiFilePicker onChange={changeFile} multiple fullWidth isInvalid={!!errors.image} isLoading={percent<100}/>
                 </EuiFormRow>
             </EuiFlexItem>

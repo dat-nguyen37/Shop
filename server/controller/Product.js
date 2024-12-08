@@ -5,6 +5,10 @@ exports.create=async(req,res)=>{
     try {
         let errors={}
         const products=req.body
+        if(!products.categoryId){
+            errors.categoryId="Chọn danh mục"
+            return res.status(400).send({errors})
+        }
         if(!products.name){
             errors.name="Tên sản phẩm không được để trống"
             return res.status(400).send({errors})
@@ -27,7 +31,7 @@ exports.create=async(req,res)=>{
 
 exports.getByShop=async(req,res)=>{
     try {
-        const products=await Product.find({shopId:req.params.id,IsActivate:true})
+        const products=await Product.find({shopId:req.params.id,IsActivate:true}).sort({createdAt:-1})
         res.status(200).send(products)
     } catch (err) {
         res.status(200).send(err)
@@ -103,7 +107,7 @@ exports.getBestSellingByShop=async(req,res)=>{
 }
 exports.search = async (req, res) => {
     try {
-        const { q, categoryId, shipId,shopId, min, max, rating, sort } = req.query;
+        const { q, categoryId,subcategoryId, shipId,shopId, min, max, rating, sort } = req.query;
 
         let query = {IsActivate: true};
 
@@ -142,6 +146,9 @@ exports.search = async (req, res) => {
         // Các điều kiện lọc sản phẩm
         if (shopId) {
             query.shopId = shopId
+        }
+        if (subcategoryId) {
+            query.categoryId = subcategoryId
         }
         if (q) {
             query.name = { $regex: q, $options: "i" };

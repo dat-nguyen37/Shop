@@ -43,11 +43,16 @@ const userSchema=new mongoose.Schema({
             follower:[String],
             avatar:String,
             background:String,
+            subcategories: [
+                {
+                    name: String,
+                }
+            ],
             isActivated:{
                 type:Boolean,
                 default:false
             },
-            createdAt: { type: Date}
+            createdAt: { type: Date,default:Date.now}
         }
     ],
     role:{

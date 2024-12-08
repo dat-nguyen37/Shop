@@ -115,7 +115,8 @@ exports.getOne = async (req, res) => {
 
 exports.update=async(req,res)=>{
     try {
-        const {name,categoryId,address,ownerName,email,phone,ship,isActivated}=req.body
+        const {name,categoryId,address,avatar,background,ownerName,email,phone,subcategories,ship,isActivated}=req.body
+        
         const user=await User.findOneAndUpdate({
             "shop._id": req.params.id
             }
@@ -126,9 +127,11 @@ exports.update=async(req,res)=>{
                 "shop.$.ownerName": ownerName,
                 "shop.$.email": email,
                 "shop.$.phone": phone,
+                "shop.$.avatar": avatar,
+                "shop.$.background": background,
+                "shop.$.subcategories": subcategories,
                 "shop.$.ship": ship,
                 "shop.$.isActivated": isActivated,
-                "shop.$.createdAt": new Date(),
             }},{new:true})
             if(!isActivated){
                 const userUpdate=await User.findByIdAndUpdate(
@@ -137,9 +140,21 @@ exports.update=async(req,res)=>{
                     { new: true }        
                   );
             }
-        res.status(200).send("Cập nhật thành công")
+            const updatedShop = user.shop.find((shop) => shop._id.toString() === req.params.id);
+        res.status(200).send(updatedShop)
     } catch (err) {
         res.status(500).send(err)
     }
 }
 
+exports.deleteSubcategories=async(req,res)=>{
+    try {        
+        const user=await User.findOneAndUpdate(
+            {"shop._id": req.params.shopId},
+            {$pull:{"shop.$.subcategories":{_id:req.params.subcategoryId}}},{new:true})
+            const updatedShop = user.shop.find((shop) => shop._id.toString() === req.params.shopId);
+        res.status(200).send(updatedShop)
+    } catch (err) {
+        res.status(500).send(err)
+    }
+}

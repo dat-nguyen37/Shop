@@ -8,7 +8,7 @@ import {useLocation} from 'react-router-dom'
 export default function BoxCategory() {
     const mobile=useIsWithinBreakpoints(['xs','s'])
     const tablet=useIsWithinBreakpoints(['m','l'])
-    const [categories,setCategories]=useState([])
+    const [category,setCategory]=useState('')
     const [ships,setShips]=useState([])
     const [selectedShip,setSelectedShip]=useState('')
     const [selectedRating,setSelectedRating]=useState()
@@ -26,15 +26,6 @@ export default function BoxCategory() {
     
     const itemOfPage = products?.slice(activePage * pageSize, (activePage + 1) * pageSize);
 
-    const getCategories=async()=>{
-        try {
-            const res=await axios.get('/category/getAll')
-            setCategories(res.data)
-        } catch (err) {
-            console.log(err)
-        }
-    }
-
     const getShips=async()=>{
         try {
             const res=await axios.get('/ship/getAll')
@@ -49,45 +40,55 @@ export default function BoxCategory() {
         setSelectedShip(id)
     }
     useEffect(()=>{
-        getCategories()
         getShips()
     },[])
     const location=useLocation()
     const [selectedCategory,setSelectedCategory]=useState('')
+    const [subcategoryId,setSubcategoryId]=useState('')
     useEffect(() => {
         const queryParams = new URLSearchParams(window.location.search);
         const ma = queryParams.get('ma');
         setSelectedCategory(ma);
+        getCategories(ma)
     }, []);
+    const getCategories=async(id)=>{
+        try {
+            const res=await axios.get('/category/getOne/'+id)
+            setCategory(res.data)
+        } catch (err) {
+            console.log(err)
+        }
+    }
     const getProducts=async()=>{
         try {
-            const res=await axios.get(`/product/search?categoryId=${selectedCategory}&min=${min}&max=${max}&shipId=${selectedShip}&rating=${selectedRating}&sort=${sort}`)
+            const res=await axios.get(`/product/search?categoryId=${selectedCategory}&subcategoryId=${subcategoryId}&min=${min}&max=${max}&shipId=${selectedShip}&rating=${selectedRating}&sort=${sort}`)
             setProducts(res.data)
-            console.log(res.data)
         } catch (err) {
             console.log(err)
         }
     }
     useEffect(()=>{
         getProducts()
-    },[selectedCategory,min,max,selectedShip,selectedRating,sort])
+    },[selectedCategory,subcategoryId,min,max,selectedShip,selectedRating,sort])
   return (
     <EuiPageTemplate>
         <EuiPageTemplate.Sidebar style={{minWidth:'200px'}} paddingSize='s'>
             <EuiFlexGroup direction='column' gutterSize='m'>
                 <EuiFlexItem>
-                    <EuiText><h4>Tất cả danh mục</h4></EuiText>
+                    <EuiFlexGroup alignItems='center' gutterSize='s'>
+                        <EuiIcon type="list" size='l'/>
+                        <EuiText><h4>{category.name}</h4></EuiText>
+                    </EuiFlexGroup>
                     <EuiListGroup>
-                        {categories&&categories.map(category=>(
+                        {category.subcategories&&category.subcategories.map(category=>(
                             <EuiListGroupItem label={category.name}
-                            onClick={()=>setSelectedCategory(category._id)}
-                            href={`danh_muc?ma=${category._id}`}
+                            onClick={()=>setSubcategoryId(category._id)}
                             extraAction={{
                                 color: 'text',
-                                iconType: selectedCategory === category._id ? 'check' : '',
+                                iconType: subcategoryId === category._id ? 'check' : '',
                                 iconSize: 'l',
                                 'aria-label': category.name,
-                                alwaysShow: selectedCategory === category._id,
+                                alwaysShow: subcategoryId === category._id,
                             }}/>))}
                     </EuiListGroup>
                 </EuiFlexItem>

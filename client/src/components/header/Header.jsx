@@ -20,7 +20,7 @@ export default function Header() {
       };
     const handleLogout=async()=>{
         try {
-            await axios.get('/logout')
+            await axios.get('/auth/logout')
             dispatch({type:'LOGOUT'})
         } catch (err) {
             console.log(err)

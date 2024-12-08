@@ -7,7 +7,7 @@ export default function Order() {
   const [selectedTabId, setSelectedTabId] = useState(1);
 
   const tabs = [
-    { id: 1, name: 'Tất cả', content: <TabContent status="all" /> },
+    { id: 1, name: 'Tất cả', content: <TabContent status="all"/> },
     { id: 2, name: 'Chờ thanh toán', content: <TabContent status="pending" /> },
     { id: 3, name: 'Vận chuyển', content: <TabContent status="shipping" /> },
     { id: 4, name: 'Chờ giao hàng', content: <TabContent status="delivering" /> },

@@ -7,7 +7,7 @@ import Login from './pages/Login';
 import ProductDetail from './pages/ProductDetail';
 import Footer from './components/footer/Footer';
 import ShopView from './pages/ShopView';
-import { EuiAbsoluteTab, EuiAvatar, EuiBottomBar, EuiButton, EuiButtonIcon, EuiFieldSearch, EuiFieldText, EuiFlexGroup, EuiFlexItem, EuiHeader, EuiHeaderSection, EuiHeaderSectionItem, EuiIcon, EuiImage, EuiPageBody, EuiPageHeader, EuiPageSection, EuiPageTemplate, EuiPanel, EuiPopover, EuiPopoverTitle, EuiRelativeTab, EuiSpacer, EuiText } from '@elastic/eui';
+import { EuiAbsoluteTab, EuiAvatar, EuiBottomBar, EuiButton, EuiButtonIcon, EuiFieldSearch, EuiFieldText, EuiFlexGroup, EuiFlexItem, EuiHeader, EuiHeaderSection, EuiHeaderSectionItem, EuiHorizontalRule, EuiIcon, EuiImage, EuiLink, EuiPageBody, EuiPageHeader, EuiPageSection, EuiPageTemplate, EuiPanel, EuiPopover, EuiPopoverTitle, EuiRelativeTab, EuiSpacer, EuiText } from '@elastic/eui';
 import Cart from './pages/Cart';
 import Payment from './pages/Payment';
 import Profile from './pages/Profile';
@@ -25,6 +25,7 @@ import ListShop from './components/admin/shop/ListShop';
 import Account from './components/admin/account/Account';
 import DashboardSeller from './components/seller/Dashboard/Dashboard';
 import ListCategory from './components/admin/category/ListCategory';
+import ListSubCategory from './components/seller/Category/ListCategory';
 import Statistical from './components/seller/Statistical/Statistical';
 import ListProduct from './components/seller/Product/ListProduct';
 import HomeSeller from './components/seller/Home/HomeSeller';
@@ -35,11 +36,24 @@ import axios from './axios'
 import moment from 'moment';
 import Chat from './components/seller/Chat/Chat';
 import OrderByShop from './components/seller/Order/Order';
+import Swal from 'sweetalert2'
 import { io } from 'socket.io-client';
 
 
 function App() {
-  const {user}=useContext(AuthContext)
+  const {user,dispatch}=useContext(AuthContext)
+
+  const getLogin=async()=>{
+    try {
+      const res=await axios.get('/auth/login/success')
+      dispatch({type:'LOGIN_SUCCESS',payload:res.data})
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  useEffect(()=>{
+    getLogin()
+  },[])
 
   return (
     <>
@@ -58,6 +72,7 @@ function App() {
           <Route index element={<Statistical />}/>
           <Route path="danh_sach_san_pham" element={<ListProduct />}/>
           <Route path="danh_sach_don_hang" element={<OrderByShop />}/>
+          <Route path="danh_sach_danh_muc" element={<ListSubCategory />}/>
           <Route path="chat" element={<Chat />}/>
         </Route>
         <Route path="/" element={<Nested />} >
@@ -69,7 +84,7 @@ function App() {
           <Route path="/shop" element={<ShopView />} />
           <Route path="/cart" element={user?<Cart />:<Navigate to="/dang_nhap"/>} />
           <Route path="/payment" element={<Payment />} />
-          <Route path="/profile" element={user?<Profile/>:<Navigate to="/dang_nhap"/>}>
+          <Route path="/profile" element={user?<Profile />:<Navigate to="/dang_nhap"/>}>
             <Route index element={user?<Acount />:<Navigate to="/dang_nhap"/>} />
             <Route path="address" element={<ListAddress />} />
             <Route path="setting" element={<Setting />} />
@@ -93,6 +108,7 @@ const Nested=()=>{
   const [newMessage,setNewMessage]=useState('')
   const [arrivalMessages,setArrivalNewMessages]=useState(null)
   const socket=useRef(io("ws://localhost:5000"))
+
   useEffect(()=>{
     // khởi tạo kết nối
      socket.current=io("ws://localhost:5000")
@@ -103,6 +119,7 @@ const Nested=()=>{
             text:data.text,
             createdAt:Date.now()
            })
+           
      })
   },[])
   useEffect(()=>{
@@ -110,7 +127,8 @@ const Nested=()=>{
     { getMessage()
       getConversations()
     }
-},[arrivalMessages])
+    console.log(arrivalMessages)
+},[arrivalMessages,curentChat])
 
 const handleSelected=(conversationId,selectedShopId)=>{
   setSelectedConversationId(conversationId)
@@ -119,10 +137,11 @@ const handleSelected=(conversationId,selectedShopId)=>{
 useEffect(()=>{
  // gửi người dùng đến máy chủ
  socket.current.emit("addUser", user?._id)
-  if(selectedShopId){
-    socket.current.emit("addUser", selectedShopId)
-  }
-  },[user,selectedShopId])
+ socket.current.on("getUser",(users)=>{
+  console.log(users)
+})
+
+  },[user])
 
   const sendMessage=async()=>{
     const message={
@@ -130,9 +149,9 @@ useEffect(()=>{
       sender:user?._id,
       text:newMessage
     }
-    const receiverId=curentChat.members.find(member=>member!==user?._id)
+    const receiverId=curentChat.members.find(member=>member!==user._id)
     socket.current.emit("sendMessage",{
-      senderId:user?._id,
+      senderId:user._id,
       receiverId,
       text:newMessage
     })
@@ -181,47 +200,42 @@ useEffect(()=>{
   useEffect(()=>{
     scoll.current?.scrollIntoView({behavior:"smooth"})
  },[messages])
-  return (<div>
+  return (<div style={{position:'relative'}}>
     <Header/>
     <EuiPageTemplate style={{marginTop:'100px'}}>
-      <Outlet/>
+      <Outlet context={{setPopover,setSelectedConversationId,setSelectedShopId}}/>
     </EuiPageTemplate>
     <Footer/>
-    <div style={{position:'fixed',right:'40px',bottom:'5px',zIndex:100}}>
-    <EuiPopover
-    panelStyle={{width:'550px',height:'400px',position:'fixed',right:'40px',bottom:0,zIndex:100}}
-      isOpen={popover}
-      hasArrow={false}
-      closePopover={()=>{}}
-      anchorPosition='upLeft'
-          button={
-            !popover&&<EuiButton onClick={()=>setPopover(true)} iconType="discuss" color='danger' iconSize='m' fill>Chat</EuiButton>
-          }>
-            <EuiPopoverTitle paddingSize='s'>
-              <EuiFlexGroup justifyContent='spaceBetween'>
+    <EuiPanel style={{position:'fixed',right:'20px',bottom:'5px',zIndex:100}}>
+          {!popover&&<EuiLink onClick={()=>setPopover(true)} color='danger'><EuiIcon type="discuss"/>&nbsp;<b>Chat</b></EuiLink>}
+        {popover&&<EuiFlexGroup direction='column' gutterSize='s' style={{background:'white',width:"500px",padding:"5px"}}>
+              <EuiFlexGroup justifyContent='spaceBetween' alignItems='center'>
                 <EuiText>Chat</EuiText>
                 <EuiButtonIcon iconType="arrowDown" display='fill' color='text' onClick={()=>setPopover(false)}/>
               </EuiFlexGroup>
-            </EuiPopoverTitle>
-            {user?(<EuiFlexGroup style={{height:'330px'}} responsive={false} gutterSize='s'>
+            <EuiHorizontalRule margin='none'/>
+            {user?(
+              conversations.length?<EuiFlexGroup style={{height:'330px'}} responsive={false} gutterSize='s'>
               <EuiFlexItem grow={false} style={{width:'180px'}}>
                   <EuiFieldSearch placeholder='Tìm kiếm' style={{outline:'none'}}/>
                   <EuiSpacer size='s'/>
                   <EuiFlexGroup direction='column' gutterSize='s' className="eui-fullHeight eui-yScrollWithShadows">
-                    {conversations?(conversations.map(conversation=>(
-                      <EuiFlexItem grow={false} key={conversation.shop.id} onClick={()=>handleSelected(conversation.latestMessage.conversationId,conversation.shop._id)}>
+                    {conversations.map(conversation=>(
+                      <EuiFlexItem grow={false} key={conversation.shop.id} onClick={()=>handleSelected(conversation.conversationId,conversation.shop._id)}>
                       <EuiFlexGroup gutterSize='s' alignItems='center' responsive={false}>
                         <EuiAvatar name='A' size='s'/>
                         <EuiFlexItem>
                           <EuiText size='s'>{conversation.shop.name}</EuiText>
-                          <EuiText color='subdued' size='xs'>{conversation.latestMessage.sender===user._id&&'bạn:'}&nbsp;{conversation.latestMessage.text}</EuiText>
+                          <EuiText color='subdued' size='xs'>{conversation?.latestMessage?.sender===user._id&&'bạn:'}&nbsp;{conversation.latestMessage?.text}</EuiText>
                         </EuiFlexItem>
-                        <EuiText size='xs' color='subdued'>{moment(conversation.latestMessage.createdAt).format("DD/MM")}</EuiText>
+                        <EuiText size='xs' color='subdued'>{moment(conversation?.latestMessage?.createdAt).format("DD/MM")}</EuiText>
                       </EuiFlexGroup>
-                    </EuiFlexItem>))):('')}
+                    </EuiFlexItem>))}
                   </EuiFlexGroup>
               </EuiFlexItem>
-              {messages?(<EuiFlexItem style={{background:'#fafafa'}}>
+              <hr/>
+              {messages?(
+                <EuiFlexItem style={{background:'#fafafa'}}>
                 <EuiPageHeader paddingSize='none'>
                   <EuiHeader style={{width:'100%',height:'40px'}}>
                     <EuiHeaderSection>
@@ -238,12 +252,15 @@ useEffect(()=>{
                 </EuiPageHeader>
                   <EuiFlexGroup direction='column' gutterSize='s' justifyContent='spaceBetween'>
                     <EuiFlexItem style={{maxHeight:'250px'}} className="eui-fullHeight eui-yScrollWithShadows">
-                      <EuiFlexGroup direction='column' style={{padding:'5px'}} gutterSize='s'>
+                      {messages?.messages.length?<EuiFlexGroup direction='column' style={{padding:'5px'}} gutterSize='s'>
                         {messages?.messages?.map(message=>(<EuiFlexItem grow={false} style={{alignItems:user._id===message.sender?'flex-end':'flex-start'}}>
                           <EuiText style={{background:'#0099FF',padding:'5px',borderRadius:'10px',maxWidth:'200px'}}>{message.text}</EuiText>
                         </EuiFlexItem>))}
                         <div ref={scoll} />
                       </EuiFlexGroup>
+                      :<EuiFlexGroup style={{background:'white'}} justifyContent='center' alignItems='center'>
+                          <EuiText>Bắt đầu trò chuyện</EuiText>
+                      </EuiFlexGroup>}
                     </EuiFlexItem>
                     <EuiFlexItem grow={false} style={{background:'white'}}>
                       <EuiFlexGroup alignItems='center' gutterSize='s' responsive={false}>
@@ -252,12 +269,21 @@ useEffect(()=>{
                       </EuiFlexGroup>
                     </EuiFlexItem>
                   </EuiFlexGroup>
-              </EuiFlexItem>):('')}
-            </EuiFlexGroup>):(<EuiFlexGroup justifyContent='center' alignItems='center' style={{height:'330px'}} responsive={false} gutterSize='s'>
+              </EuiFlexItem>):(
+                <EuiFlexGroup style={{background:'white'}} justifyContent='center' alignItems='center'>
+                  <EuiIcon type="discuss" size='l'/>
+                  <EuiText>Chọn 1 hội thoại từ danh sách bên trái</EuiText>
+              </EuiFlexGroup>
+              )}
+            </EuiFlexGroup>
+            :<EuiFlexGroup justifyContent='center' alignItems='center' style={{height:'330px'}} responsive={false} gutterSize='s'>
+              <EuiText>Bạn không có cuộc trò chuyện nào</EuiText>
+            </EuiFlexGroup>)
+            :(<EuiFlexGroup justifyContent='center' alignItems='center' style={{height:'330px'}} responsive={false} gutterSize='s'>
               <EuiText>Bạn chưa đăng nhập</EuiText>
             </EuiFlexGroup>)}
-          </EuiPopover>
-    </div>
+        </EuiFlexGroup>}
+    </EuiPanel>
   </div>)
 }
 
