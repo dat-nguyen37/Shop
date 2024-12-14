@@ -40,7 +40,11 @@ export default function Login() {
                       icon: 'swal-icon-success', 
                     }
                   });
-                  navigate('/')
+                  if(res.data.role==="Admin"){
+                    navigate('/dashboard')
+                  }else{
+                      navigate('/')
+                  }
             } catch (err) {
                 dispatch({type:'LOGIN_FAILURE'})
                 if(err.response && err.response.data.errors){

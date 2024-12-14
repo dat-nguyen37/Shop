@@ -1,5 +1,5 @@
-import { EuiAvatar, EuiButtonIcon, EuiFlexGroup,EuiPopover,EuiPopoverTitle,EuiButtonEmpty,EuiFlexItem, EuiHeader, EuiHeaderSection, EuiHeaderSectionItem, EuiHeaderSectionItemButton, EuiIcon, EuiPageHeader, EuiPageHeaderContent, EuiPageTemplate, EuiSpacer, EuiText, EuiFlyout, EuiPageSidebar, EuiAccordion, EuiListGroup, EuiListGroupItem, EuiLink, EuiPanel, EuiFlexGrid, EuiStat, EuiImage, EuiFilePicker, EuiInlineEditText, EuiButton } from '@elastic/eui'
-import React, { useContext, useRef, useState } from 'react'
+import { EuiAvatar, EuiButtonIcon, EuiFlexGroup,EuiPopover,EuiPopoverTitle,EuiButtonEmpty,EuiFlexItem, EuiHeader, EuiHeaderSection, EuiHeaderSectionItem, EuiHeaderSectionItemButton, EuiIcon, EuiPageHeader, EuiPageHeaderContent, EuiPageTemplate, EuiSpacer, EuiText, EuiFlyout, EuiPageSidebar, EuiAccordion, EuiListGroup, EuiListGroupItem, EuiLink, EuiPanel, EuiFlexGrid, EuiStat, EuiImage, EuiFilePicker, EuiInlineEditText, EuiButton, EuiSelect, EuiFormRow } from '@elastic/eui'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import Chart from 'react-apexcharts';
 import { ShopContext } from '../../../context/ShopContext';
 import moment from 'moment';
@@ -20,68 +20,6 @@ export default function Statistical() {
     address:shop.address,
   })
 
-    const [chartOptions, setChartOptions]=useState({
-        series: [{
-            name: 'XYZ MOTORS',
-            data: [1,2,3,4,5,6,7,8,9,10,11,12]
-          }],
-          options: {
-            chart: {
-              type: 'area',
-              stacked: false,
-              height: 350,
-              zoom: {
-                type: 'x',
-                enabled: true,
-                autoScaleYaxis: true
-              },
-              toolbar: {
-                autoSelected: 'zoom'
-              }
-            },
-            dataLabels: {
-              enabled: false
-            },
-            markers: {
-              size: 0,
-            },
-            title: {
-              text: 'Stock Price Movement',
-              align: 'left'
-            },
-            fill: {
-              type: 'gradient',
-              gradient: {
-                shadeIntensity: 1,
-                inverseColors: false,
-                opacityFrom: 0.5,
-                opacityTo: 0,
-                stops: [0, 90, 100]
-              },
-            },
-            yaxis: {
-              labels: {
-                formatter: function (val) {
-                  return (val / 1000000).toFixed(0);
-                },
-              },
-              title: {
-                text: 'Price'
-              },
-            },
-            xaxis: {
-              type: 'datetime',
-            },
-            tooltip: {
-              shared: false,
-              y: {
-                formatter: function (val) {
-                  return (val / 1000000).toFixed(0)
-                }
-              }
-            }
-          },
-    })
 
     const avataRef = useRef();
     const handleAvatar=()=>{
@@ -153,6 +91,205 @@ export default function Statistical() {
        toast.success('Cập nhật thất bại')
     }
 }
+
+  const [product,setProduct]=useState([])
+  const [order,setOrder]=useState([])
+  const getProduct=async()=>{
+    try {
+      const res=await axios.get("/product/getProductByShop/"+shop._id)
+      setProduct(res.data)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  const getOrder=async()=>{
+    try {
+      const res=await axios.get("/order/getByShop/"+shop._id)
+      setOrder(res.data)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  const [year,setYear]=useState(2024)
+  const [totalAmount,setTotalAmount]=useState(0)
+  const [dataStatistical,setDataStatistical]=useState()
+  const [bestSelling,setBestSelling]=useState([])
+
+  const getStatistical=async()=>{
+    try {
+      const res=await axios.get(`/order/statistical?shopId=${shop._id}`)
+      setTotalAmount(res.data.totalAmount)
+      setDataStatistical(res.data)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  
+  const getBestSelling=async()=>{
+    try {
+      const res=await axios.get('/product/getBestSellingByShop/'+shop._id)
+      setBestSelling(res.data)
+      console.log(res.data)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  const [chartOptions, setChartOptions]=useState({
+    series: [{
+        name: 'Tháng',
+        data: []
+      }],
+      options: {
+        chart: {
+          type: 'area',
+          stacked: false,
+          height: 350,
+          zoom: {
+            type: 'x',
+            enabled: true,
+            autoScaleYaxis: true
+          },
+          toolbar: {
+            autoSelected: 'zoom'
+          }
+        },
+        dataLabels: {
+          enabled: false
+        },
+        markers: {
+          size: 0,
+        },
+        title: {
+          text: 'Doanh thu theo tháng',
+          align: 'left'
+        },
+        fill: {
+          type: 'gradient',
+          gradient: {
+            shadeIntensity: 1,
+            inverseColors: false,
+            opacityFrom: 0.5,
+            opacityTo: 0,
+            stops: [0, 90, 100]
+          },
+        },
+        yaxis: {
+          labels: {
+            formatter: function (val) {
+              return `${(val / 1000000).toFixed(0)}`;
+            },
+          },
+          title: {
+            text: 'Doanh thu (triệu)'
+          },
+        },
+        xaxis: {
+          type: 'datetime',
+          labels: {
+            // formatter: function (val) {
+            //   const date = new Date(val);
+            //   return `${date.getMonth() + 1}/${date.getFullYear()}`; // Hiển thị dạng tháng/năm
+            // },
+          },
+          title: {
+            text: 'Tháng',
+          },
+        },
+        tooltip: {
+          shared: false,
+          y: {
+            formatter: function (val) {
+              return `${(val / 1000000).toFixed(2)} triệu`;
+            }
+          }
+        }
+      },
+  })
+const [donutOptions, setDonutOptions] = useState({   
+  series: [],
+  options: {
+    chart: {
+      type: 'donut',
+    },
+    labels:[],
+    responsive: [{
+      breakpoint: 480,
+      options: {
+        chart: {
+          width: 200
+        },
+        legend: {
+          position: 'bottom'
+        }
+      }
+    }]
+  },
+
+
+});
+const [barOptions, setBarOptions] = useState({
+  series: [{
+    data: []
+  }],
+  options: {
+    chart: {
+      type: 'bar',
+      height: 350
+    },
+    plotOptions: {
+      bar: {
+        borderRadius: 4,
+        borderRadiusApplication: 'end',
+        horizontal: true,
+      }
+    },
+    dataLabels: {
+      enabled: false
+    },
+    xaxis: {
+      categories: [],
+    }
+  },
+
+
+});
+
+  useEffect(()=>{
+    getProduct()
+    getOrder()
+    getBestSelling()
+    getStatistical()
+  },[])
+  useEffect(() => {
+    if (!dataStatistical?.data) return;
+    const result = dataStatistical.data.filter(data => data.year.toString() === year.toString());
+
+    const series = result[0]?.monthlyRevenue?.map(item => [item.month, item.revenue]) || [];
+
+    setChartOptions(prevOptions => ({
+        ...prevOptions,
+        series: [{ name: 'Doanh thu', data: series }],
+    }));
+    setDonutOptions({
+      ...donutOptions,
+      series: dataStatistical.data.map(item => item.total),
+      options: {
+        ...donutOptions.options,
+        labels: dataStatistical.data.map(item => `Năm ${item.year.toString()}`)
+      }
+    });
+    setBarOptions({
+      ...barOptions,
+      series: [{name:"Số lượng",data: bestSelling.map(data=>data.quantitySold) }],
+      options: {
+        ...donutOptions.options,
+        xaxis: {categories:bestSelling.map(item => item.name)}
+      }
+    })
+}, [year, dataStatistical,bestSelling]);
+
+
+  
   return (
     <>
     <ToastContainer/>
@@ -235,31 +372,65 @@ export default function Statistical() {
           <EuiSpacer/>
           <EuiFlexGrid columns={4}>
               <EuiFlexItem>
-                  <EuiStat title="1" titleColor="primary" titleSize='s' style={{borderRight:'1px solid'}} reverse={true} textAlign='center' description="Chờ xác nhận" />
+                  <EuiStat title={product.length} titleColor="primary" titleSize='s' style={{borderRight:'1px solid'}} reverse={true} textAlign='center' description="Sản phẩm" />
               </EuiFlexItem>
               <EuiFlexItem>
-                  <EuiStat title="1" titleColor="primary" titleSize='s' style={{borderRight:'1px solid'}} reverse={true} textAlign='center' description="Chờ lấy hàng" />
+                  <EuiStat title={product.filter(p=>p.status==="cấm bán").length} titleColor="primary" titleSize='s' style={{borderRight:'1px solid'}} reverse={true} textAlign='center' description="Sản phẩm bị tạm khóa" />
               </EuiFlexItem>
               <EuiFlexItem>
-                  <EuiStat title="1" titleColor="primary" titleSize='s' style={{borderRight:'1px solid'}} reverse={true} textAlign='center' description="Chờ xử lý" />
+                  <EuiStat title={product.filter(p=>p.status==="hết hàng").length} titleColor="primary" titleSize='s' style={{borderRight:'1px solid'}} reverse={true} textAlign='center' description="Sản phẩm hết hàng" />
               </EuiFlexItem>
               <EuiFlexItem>
-                  <EuiStat title="1" titleColor="primary" titleSize='s' style={{borderRight:'1px solid'}} reverse={true} textAlign='center' description="Đơn hàng" />
+                  <EuiStat title={order.length} titleColor="primary" titleSize='s' style={{borderRight:'1px solid'}} reverse={true} textAlign='center' description="Đơn hàng" />
               </EuiFlexItem>
               <EuiFlexItem>
-                  <EuiStat title="1" titleColor="primary" titleSize='s' style={{borderRight:'1px solid'}} reverse={true} textAlign='center' description="Sản phẩm bị tạm khóa" />
+                  <EuiStat title={order.filter(o=>o.confimationStatus==="Chưa xác nhận").length} titleColor="primary" titleSize='s' style={{borderRight:'1px solid'}} reverse={true} textAlign='center' description="Chờ xác nhận" />
               </EuiFlexItem>
               <EuiFlexItem>
-                  <EuiStat title="1" titleColor="primary" titleSize='s' style={{borderRight:'1px solid'}} reverse={true} textAlign='center' description="Sản phẩm hết hàng" />
+                  <EuiStat title={order.filter(o=>o.confimationStatus!=="Chưa xác nhận"&&o.confimationStatus!=="Đã giao"&&o.confimationStatus!=="Đã hủy").length} titleColor="primary" titleSize='s' style={{borderRight:'1px solid'}} reverse={true} textAlign='center' description="Chờ lấy hàng" />
+              </EuiFlexItem>
+              <EuiFlexItem>
+                  <EuiStat title={order.filter(o=>o.confimationStatus==="Đã giao").length} titleColor="primary" titleSize='s' style={{borderRight:'1px solid'}} reverse={true} textAlign='center' description="Đơn hoàn thành" />
+              </EuiFlexItem>
+              <EuiFlexItem>
+                  <EuiStat title={totalAmount?.toLocaleString()} titleColor="primary" titleSize='s' style={{borderRight:'1px solid'}} reverse={true} textAlign='center' description="Doanh thu" />
               </EuiFlexItem>
           </EuiFlexGrid>
       </EuiPanel>
       <EuiSpacer/>
       <EuiPanel>
           <EuiText><h3>Phân tích bán hàng</h3></EuiText>
-          <EuiText>Tổng quan dữ liệu của shop đối với đơn hàng đã xác nhận</EuiText>
+          <EuiText>Tổng quan dữ liệu của shop đối với đơn hàng đã hoàn thành</EuiText>
+          <EuiSpacer/>
+          <EuiFormRow style={{width:"100px"}}>
+            <EuiSelect
+              value={year}
+              onChange={e=>setYear(e.target.value)}
+              options={[
+                {value:"2026",label:"2026"},
+                {value:"2025",label:"2025"},
+                {value:"2024",label:"2024"},
+                {value:"2023",label:"2023"},
+              ]}/>
+          </EuiFormRow>
+          <EuiFlexGroup justifyContent='center'>
+            <EuiText><b>Doanh thu theo tháng (năm {year})</b></EuiText>
+          </EuiFlexGroup>
           <Chart options={chartOptions} series={chartOptions.series} type="area" height={350} />
       </EuiPanel>
+      <EuiSpacer/>
+        <EuiFlexGroup>
+          <EuiFlexItem>
+            <EuiPanel>
+              <Chart options={donutOptions.options} series={donutOptions.series} type="donut" />
+            </EuiPanel>
+          </EuiFlexItem>
+          <EuiFlexItem>
+            <EuiPanel>
+              <Chart options={barOptions.options} series={barOptions.series} type="bar" height={350} />
+            </EuiPanel>
+          </EuiFlexItem>
+        </EuiFlexGroup>
     </>
 )
 }

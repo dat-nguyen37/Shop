@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { EuiButtonEmpty, EuiButtonIcon,EuiFlexGroup,EuiListGroup,EuiListGroupItem,EuiAccordion,EuiHeaderSectionItemButton,EuiIcon,EuiText,EuiPopover,EuiFlexItem,EuiAvatar, EuiFlyout, EuiFlyoutBody, EuiFlyoutFooter, EuiFlyoutHeader, EuiHeader, EuiHeaderSection, EuiHeaderSectionItem, EuiPageHeader, EuiPageHeaderContent, EuiPageTemplate, EuiLink, EuiFlexGrid, EuiPanel, EuiStat } from '@elastic/eui'
+import { EuiButtonEmpty, EuiButtonIcon,EuiFlexGroup,EuiListGroup,EuiListGroupItem,EuiAccordion,EuiHeaderSectionItemButton,EuiIcon,EuiText,EuiPopover,EuiFlexItem,EuiAvatar, EuiFlyout, EuiFlyoutBody, EuiFlyoutFooter, EuiFlyoutHeader, EuiHeader, EuiHeaderSection, EuiHeaderSectionItem, EuiPageHeader, EuiPageHeaderContent, EuiPageTemplate, EuiLink, EuiFlexGrid, EuiPanel, EuiStat, EuiImage } from '@elastic/eui'
 import {Outlet} from 'react-router-dom'
 import {AuthContext} from '../../../context/AuthContext'
 import axios from '../../../axios'
@@ -11,7 +11,7 @@ export default function Dashboard() {
 
     const handleLogout=async()=>{
         try {
-            await axios.get('/logout')
+            await axios.get('/auth/logout')
             dispatch({type:'LOGOUT'})
         } catch (err) {
             console.log(err)
@@ -19,8 +19,8 @@ export default function Dashboard() {
     }
     const flyout=(
         <EuiFlyout side='left' type='push' size='250px' pushAnimation={true} onClose={()=>setIsFlyout(false)}>
-            <EuiFlyoutHeader style={{background:'black',height:'200px'}}>
-
+            <EuiFlyoutHeader style={{background:'',height:'200px'}}>
+                <EuiImage src='/assets/logo.png'/>
             </EuiFlyoutHeader>
             <EuiFlyoutBody>
                 <EuiFlexGroup direction='column'>

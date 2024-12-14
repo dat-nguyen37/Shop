@@ -1,4 +1,4 @@
-import { EuiAvatar, EuiButton, EuiButtonEmpty, EuiButtonIcon, EuiFieldText, EuiFlexGroup, EuiFlexItem, EuiForm, EuiFormControlLayout, EuiFormRow, EuiHeader, EuiHeaderSection, EuiHeaderSectionItem, EuiHeaderSectionItemButton, EuiIcon, EuiImage, EuiPageHeader, EuiPageHeaderContent, EuiPageTemplate, EuiPopover, EuiPopoverFooter, EuiPopoverTitle, EuiProgress, EuiSelect, EuiSelectable, EuiSpacer, EuiStep, EuiSteps, EuiSwitch, EuiText } from '@elastic/eui'
+import { EuiAvatar, EuiButton, EuiButtonEmpty, EuiButtonIcon, EuiFieldText, EuiFlexGroup, EuiFlexItem, EuiForm, EuiFormControlLayout, EuiFormRow, EuiHeader, EuiHeaderSection, EuiHeaderSectionItem, EuiHeaderSectionItemButton, EuiIcon, EuiImage, EuiLink, EuiPageHeader, EuiPageHeaderContent, EuiPageTemplate, EuiPopover, EuiPopoverFooter, EuiPopoverTitle, EuiProgress, EuiSelect, EuiSelectable, EuiSpacer, EuiStep, EuiSteps, EuiSwitch, EuiText } from '@elastic/eui'
 import React, { useContext, useEffect, useState } from 'react'
 import axios from '../axios'
 import { AuthContext } from '../context/AuthContext'
@@ -197,7 +197,7 @@ export default function RegisterSeller() {
                     <EuiHeaderSection>
                         <EuiFlexGroup>
                             <EuiHeaderSectionItem>
-                                <EuiImage src='/assets/logo.webp' height={45}/>
+                                <EuiLink href='/'><EuiImage src='/assets/logo.png' height={45}/></EuiLink>
                             </EuiHeaderSectionItem>
                             <EuiHeaderSectionItem>
                                 <EuiText>Đăng ký trở thành người bán</EuiText>

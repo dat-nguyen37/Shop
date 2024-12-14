@@ -69,7 +69,7 @@ exports.login=async(req,res)=>{
             return res.status(400).send({message:'Tài khoản của bạn đã bị khóa. Vui lòng liện hệ admin'})
         }
         const token= jwt.sign({userId:user._id,role:user.role},process.env.SECRET)
-        const {password,role,shop,status,...others}=user._doc
+        const {password,shop,status,...others}=user._doc
         res.cookie("access_token", token,{httpOnly:true,maxAge: 7 * 24 * 60 * 60 * 1000}).status(200).json(others); 
     } catch (err) {
         res.status(500).send(err)

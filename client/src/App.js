@@ -62,13 +62,13 @@ function App() {
         <Route path="/dang_ky" element={<Register />} />
         <Route path="/dang_nhap" element={<Login />} />
         <Route path="/kich_hoat" element={<ActivateAccount />} />
-        <Route path="/dashboard" element={<DashboardAdmin />}>
+        <Route path="/dashboard" element={user&&user.role==="Admin"?<DashboardAdmin />:<Navigate to="/dang_nhap"/>}>
           <Route path="danh_sach_cua_hang" element={<ListShop />}/>
           <Route path="danh_sach_nguoi_dung" element={<Account />}/>
           <Route path="danh_sach_danh_muc" element={<ListCategory />}/>
           <Route path="danh_sach_san_pham" element={<ProductManagement />}/>
         </Route>
-        <Route path="/nguoi_ban" element={<DashboardSeller />}>
+        <Route path="/nguoi_ban" element={user?<DashboardSeller />:<Navigate to="/dang_nhap"/>}>
           <Route index element={<Statistical />}/>
           <Route path="danh_sach_san_pham" element={<ListProduct />}/>
           <Route path="danh_sach_don_hang" element={<OrderByShop />}/>
@@ -200,10 +200,24 @@ useEffect(()=>{
   useEffect(()=>{
     scoll.current?.scrollIntoView({behavior:"smooth"})
  },[messages])
+
+ // cart
+ const [cart,setCart]=useState([])
+ const getCartByUser=async()=>{
+  try {
+    const res=await axios.get('/cart/getByUser')
+    setCart(res.data)
+} catch (err) {
+    console.log(err)
+}
+ }
+ useEffect(()=>{
+  getCartByUser()
+ },[user])
   return (<div style={{position:'relative'}}>
-    <Header/>
+    <Header cart={cart}/>
     <EuiPageTemplate style={{marginTop:'100px'}}>
-      <Outlet context={{setPopover,setSelectedConversationId,setSelectedShopId}}/>
+      <Outlet context={{setPopover,setSelectedConversationId,setSelectedShopId,getCartByUser}}/>
     </EuiPageTemplate>
     <Footer/>
     <EuiPanel style={{position:'fixed',right:'20px',bottom:'5px',zIndex:100}}>

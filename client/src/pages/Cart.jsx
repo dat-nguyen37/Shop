@@ -3,12 +3,12 @@ import React, { useEffect, useState } from 'react'
 import ProductItem from '../components/productItem/ProductItem'
 import axios from '../axios'
 import {toast,ToastContainer} from 'react-toastify'
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 export default function Cart() {
     const mobile=useIsWithinBreakpoints(['xs','s'])
     const tablet=useIsWithinBreakpoints(['m','l'])
-
+    const result = useOutletContext();
     const columns=[
         {
             field:'image',
@@ -61,6 +61,7 @@ export default function Cart() {
         try {
             await axios.delete('/cart/delete/'+id)
             getCart()
+            result.getCartByUser()
             toast.success('Xóa thành công')
         } catch (err) {
             console.log(err)
@@ -77,8 +78,19 @@ export default function Cart() {
             console.log(err)
         }
     }
+    
+    const [bestSelling,setBestSelling]=useState([])
+    const getBestSelling=async()=>{
+        try {
+          const res=await axios.get('/product/getBestSelling')
+          setBestSelling(res.data) 
+        } catch (err) {
+          console.log(err)
+        }
+      }
     useEffect(()=>{
         getCart()
+        getBestSelling()
     },[])
 
     
@@ -165,8 +177,8 @@ export default function Cart() {
             </EuiFlexGroup>
             <EuiSpacer/>
             <EuiFlexGrid style={{gridTemplateColumns: mobile?'repeat(2,1fr)': tablet?'repeat(4,1fr)':'repeat(6,1fr)'}}>
-            {[1,2,3,4,5,6,7,8,9,10,11,12].map(item=>(
-              <ProductItem/>
+            {bestSelling.map(item=>(
+              <ProductItem key={item._id} product={item}/>
               ))}
             </EuiFlexGrid>
         </EuiPageTemplate.Section>

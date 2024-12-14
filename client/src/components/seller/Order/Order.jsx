@@ -1,4 +1,4 @@
-import { EuiBasicTable, EuiButton, EuiButtonIcon, EuiFlexGroup, EuiImage, EuiLink, EuiPanel, EuiSpacer, EuiText } from '@elastic/eui'
+import { EuiBasicTable, EuiButton, EuiButtonIcon, EuiFieldSearch, EuiFlexGroup, EuiImage, EuiLink, EuiPanel, EuiSpacer, EuiText } from '@elastic/eui'
 import React, { useContext, useEffect, useState } from 'react'
 import axios from '../../../axios'
 import {ShopContext} from '../../../context/ShopContext'
@@ -60,9 +60,10 @@ export default function Order() {
             console.log(err)
         }
     }
+    const [searchValue,setSearchValue]=useState("")
     const getOrder=async()=>{
         try {
-            const res=await axios.get(`/order/getByShop/${shop._id}`)
+            const res=await axios.get(`/order/getByShop/${shop._id}?orderId=${searchValue}`)
             setData(res.data?.map(item=>(
                 {id:item.id,userId:item.userId,price:item.price,payment:item.paymentStatus,status:item.confimationStatus,action:item}
             )))
@@ -72,7 +73,8 @@ export default function Order() {
     }
     useEffect(()=>{
         getOrder()
-    },[])
+        console.log(searchValue)
+    },[searchValue])
     const [pageIndex,setPageIndex]=useState(0)
     const [pageSize,setPageSize]=useState(10)
 
@@ -104,6 +106,8 @@ export default function Order() {
         <EuiFlexGroup alignItems='center' justifyContent='spaceBetween'>
             <EuiText>Danh sách đơn hàng</EuiText>
         </EuiFlexGroup>
+        <EuiSpacer/>
+        <EuiFieldSearch placeholder='Tìm kiếm theo mã đơn hàng' onChange={e=>setSearchValue(e.target.value)} fullWidth/>
         <EuiSpacer/>
         <EuiBasicTable
         tableLayout='auto'

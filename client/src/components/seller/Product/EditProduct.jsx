@@ -1,4 +1,4 @@
-import { EuiButton, EuiButtonIcon, EuiColorPicker, EuiComboBox, EuiFieldNumber, EuiFieldText, EuiFilePicker, EuiFlexGroup, EuiFlexItem, EuiFormRow, EuiIcon, EuiModal, EuiModalBody, EuiModalFooter, EuiModalHeader, EuiModalHeaderTitle, EuiPopover, EuiPopoverTitle, EuiSpacer, EuiTextArea } from '@elastic/eui'
+import { EuiButton, EuiButtonIcon, EuiColorPicker, EuiComboBox, EuiFieldNumber, EuiFieldText, EuiFilePicker, EuiFlexGroup, EuiFlexItem, EuiFormRow, EuiIcon, EuiModal, EuiModalBody, EuiModalFooter, EuiModalHeader, EuiModalHeaderTitle, EuiPopover, EuiPopoverTitle, EuiSelect, EuiSpacer, EuiTextArea } from '@elastic/eui'
 import React, { useContext, useState } from 'react'
 import {Colors} from '../../../Color'
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
@@ -21,6 +21,8 @@ export default function EditProduct({setModalUpdate,getProduct,selectedItem}) {
     const [size,setSize]=useState(selectedItem.size?.map(c=>({label:c.name,price:c.price})))
     const [nameSize,setNameSize]=useState('')
     const [sizePrice,setSizePrice]=useState()
+    const [categoryId,setCategoryId]=useState(selectedItem.categoryId)
+    const [status,setStatus]=useState(selectedItem.status)
     const [errors,setErrors]=useState({})
 
 
@@ -65,6 +67,7 @@ export default function EditProduct({setModalUpdate,getProduct,selectedItem}) {
         try {
             await axios.patch('/product/update/'+selectedItem._id,{
                 shopId:shop._id,
+                categoryId:categoryId,
                 name:name,
                 price:price,
                 image:image,
@@ -76,7 +79,8 @@ export default function EditProduct({setModalUpdate,getProduct,selectedItem}) {
                         name:s.label,
                         price:s?.price
                     }
-                ))
+                )),
+                status:status
             })
             getProduct()
             setModalUpdate(false)
@@ -148,6 +152,34 @@ export default function EditProduct({setModalUpdate,getProduct,selectedItem}) {
                         <EuiFieldNumber placeholder='Nhập giá' onChange={(e)=>setSizePrice(e.target.value)}/>
                         <EuiButton iconType="plusInCircle" fill onClick={addSize}>Thêm</EuiButton>
                 </EuiPopover>
+            </EuiFlexItem>
+        </EuiFlexGroup>
+        <EuiSpacer/>
+        <EuiFlexGroup>
+            <EuiFlexItem>
+                <EuiFormRow label="Danh mục" fullWidth isInvalid={!!errors.categoryId} error={errors.categoryId}>
+                    <EuiSelect
+                    onChange={(e)=>setCategoryId(e.target.value)}
+                    value={categoryId}
+                    options={[
+                        { text: "Chọn danh mục", value: "" },
+                        ...shop.subcategories?.map(s=>({
+                        text:s.name,
+                        value:s._id
+                    }))]} fullWidth isInvalid={!!errors.categoryId}/>          
+                </EuiFormRow>
+            </EuiFlexItem>
+            <EuiFlexItem>
+                <EuiFormRow label="Trạng thái" fullWidth>
+                    <EuiSelect
+                    value={status}
+                    options={[
+                        {value:"",label:"Chọn trạng thái"},
+                        {value:"có sẵn",label:"có sẵn"},
+                        {value:"hết hàng",label:"hết hàng"},
+                    ]}
+                    onChange={e=>setStatus(e.target.value)} fullWidth/>
+                </EuiFormRow>
             </EuiFlexItem>
         </EuiFlexGroup>
         <EuiSpacer/>

@@ -11,7 +11,7 @@ import {format} from 'timeago.js'
 export default function Dashboard() {
     const [isPoperUser,setisPopoverUser]=useState(false)
     const {shop}=useContext(ShopContext)
-    const {user}=useContext(AuthContext)
+    const {user,dispatch}=useContext(AuthContext)
     const [dots, setDots] = useState('');
     const [notificationPopover,setNotificationPopover]=useState(false)
 
@@ -68,6 +68,14 @@ export default function Dashboard() {
     }, []);
 
 
+    const handleLogout=async()=>{
+        try {
+            await axios.get('/auth/logout')
+            dispatch({type:'LOGOUT'})
+        } catch (err) {
+            console.log(err)
+        }
+    }
 
   return (
       <>
@@ -144,7 +152,7 @@ export default function Dashboard() {
                                                 </EuiFlexGroup>
                                             </EuiPopoverTitle>
                                             <EuiButtonEmpty iconType="globe" href='/'>Đến website</EuiButtonEmpty>
-                                            <EuiButtonEmpty iconType="exit">Đăng xuất</EuiButtonEmpty>
+                                            <EuiButtonEmpty iconType="exit" onClick={handleLogout}>Đăng xuất</EuiButtonEmpty>
                                         </EuiPopover>
                                     </EuiHeaderSectionItemButton>
                                 }>
@@ -159,7 +167,7 @@ export default function Dashboard() {
         {shop?(
         <EuiPageTemplate style={{paddingTop:'3rem'}}>
             <EuiPageTemplate.Sidebar minWidth='200px' style={{background:'white'}}>
-                <EuiFlexGroup direction='column'>
+                <EuiFlexGroup direction='column' style={{position:'fixed'}}>
                     <EuiFlexGroup>
                         <EuiIcon type="visLine"/>
                         <EuiLink color='text' href='/nguoi_ban'>Thống kê</EuiLink>

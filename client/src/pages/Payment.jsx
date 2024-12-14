@@ -1,7 +1,7 @@
 import { EuiBasicTable, EuiBottomBar, EuiButton, EuiButtonEmpty, EuiButtonIcon, EuiCheckbox, EuiFieldText, EuiFlexGrid, EuiFlexGroup, EuiFlexItem, EuiFormControlLayout, EuiFormRow, EuiHeader, EuiHorizontalRule, EuiIcon, EuiImage, EuiLink, EuiListGroup, EuiListGroupItem, EuiModal, EuiModalBody, EuiModalFooter, EuiModalHeader, EuiModalHeaderTitle, EuiPageTemplate, EuiPanel, EuiPopover, EuiPopoverFooter, EuiRadioGroup, EuiSpacer, EuiText, EuiTextArea, EuiTextBlockTruncate, EuiTextTruncate, useIsWithinBreakpoints } from '@elastic/eui'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import ModalVoucher from '../components/voucher/ModalVoucher'
-import { useLocation,Navigate, useNavigate } from "react-router-dom";
+import { useLocation,Navigate, useNavigate, useOutletContext } from "react-router-dom";
 import axios from '../axios'
 import Update from '../components/address/Update';
 import {toast,ToastContainer} from 'react-toastify'
@@ -18,6 +18,7 @@ export default function Payment() {
     const [modalAddAddress,setModalAddAddress]=useState(false)
     const [modalShip,setModalShip]=useState(false)
     const [addressSelected,setAddressSelected]=useState(null)
+    const result = useOutletContext();
     
     const [isModalAddress,setIsModalAddress]=useState(false)
     const [isModalVoucher,setIsModalVoucher]=useState(false)
@@ -263,7 +264,7 @@ export default function Payment() {
                 // Đợi tất cả các cuộc hội thoại và thông báo được xử lý
                 await Promise.all(promises);
             }
-    
+            result.getCartByUser()
             return order.data._id;
         } catch (err) {
             console.error("Lỗi khi tạo đơn hàng:", err);

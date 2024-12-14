@@ -1,16 +1,18 @@
 import { EuiAvatar, EuiBreadcrumbs, EuiButton, EuiButtonEmpty, EuiButtonIcon, EuiCard, EuiFieldNumber, EuiFieldText, EuiFlexGrid, EuiFlexGroup, EuiFlexItem, EuiFormControlLayout, EuiFormRow, EuiIcon, EuiImage, EuiLink, EuiModal, EuiModalBody, EuiModalFooter, EuiModalHeader, EuiModalHeaderTitle, EuiPageSection, EuiPageTemplate, EuiPagination, EuiPanel, EuiPopover, EuiPopoverFooter, EuiPopoverTitle, EuiSelectable, EuiSpacer, EuiText, EuiTextArea, EuiTitle, useIsWithinBreakpoints } from '@elastic/eui'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import StarRatings from 'react-star-ratings';
 import Footer from '../components/footer/Footer'
-import {useLocation} from 'react-router-dom'
+import {useLocation, useOutletContext} from 'react-router-dom'
 import axios from '../axios'
 import {toast,ToastContainer} from 'react-toastify'
 import moment from 'moment';
 import ProductItem from '../components/productItem/ProductItem'
+import { AuthContext } from '../context/AuthContext';
 
 export default function ProductDetail() {
     const mobile=useIsWithinBreakpoints(['xs','s'])
     const tablet=useIsWithinBreakpoints(['m','l'])
+    const {user}=useContext(AuthContext)
     const [product,setProduct]=useState(null)
     const [productByShop,setProductByShop]=useState([])
     const [listProduct,setListProduct]=useState([])
@@ -41,6 +43,9 @@ export default function ProductDetail() {
     // getProduct
     const location=useLocation()
     const [productId,setProductId]=useState(null)
+    const [category,setcategory]=useState(null)
+    const [like,setIsLike]=useState(false)
+
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
         const masp = queryParams.get('masp');
@@ -49,10 +54,12 @@ export default function ProductDetail() {
     const getProduct = async () => {
         try {
             const res = await axios.get('/product/getOne/' + productId);
-            setProduct(res.data);
-            setPrice(res.data?.price)
-            getShop(res.data.shopId)
-            getProductByShop(res.data.shopId)
+            setProduct(res.data.product);
+            setPrice(res.data.product.price)
+            setcategory(res.data.category)
+            setIsLike(res.data.product.like.includes(user?._id))
+            getShop(res.data.product.shopId)
+            getProductByShop(res.data.product.shopId)
         } catch (err) {
             console.log(err);
         }
@@ -148,7 +155,7 @@ export default function ProductDetail() {
             setQuantity(prev=>prev+1)
         }
     }
-
+    const result = useOutletContext();
     const handleAddToCart=async()=>{
         console.log(shop)
         try {
@@ -161,6 +168,7 @@ export default function ProductDetail() {
                 quantity:quantity,
                 totalAmount:price * quantity
             })
+            result.getCartByUser()
             toast.success('Đã thêm vào giỏ hàng')
         } catch (err) {
             if(err.response&&err.response.status===401){
@@ -170,6 +178,19 @@ export default function ProductDetail() {
         }
     }
 
+    //like
+    const handleLike=async()=>{
+        try {
+            const res=await axios.get('/product/like/'+productId)
+            getProduct()
+            // setIsLike(res.data.like.includes(user?._id))
+        } catch (err) {
+            if(err.response&&err.response.status===401){
+                toast.error("Bạn cần đăng nhập")
+            }
+            console.log(err)
+        }
+    }
   
 
   return (
@@ -186,6 +207,10 @@ export default function ProductDetail() {
                 href:'/'
             },
             {
+                text:category?.subcategories[0].name,
+                href:'/'
+            },
+            {
                 text: product?.name,
             },
         ]}
@@ -198,14 +223,7 @@ export default function ProductDetail() {
                         <EuiFlexGroup direction='column'>
                             <EuiImage src={product?.image} height="300px" style={{border:'1px solid'}}/>
                             <EuiFlexItem grow={false}>
-                                <EuiFlexGroup>
-                                    <EuiImage src='/assets/brand.png' size='50px' style={{border:'1px solid'}}/>
-                                    <EuiImage src='/assets/brand.png' size='50px' style={{border:'1px solid'}}/>
-                                    <EuiImage src='/assets/brand.png' size='50px' style={{border:'1px solid'}}/>
-                                </EuiFlexGroup>
-                            </EuiFlexItem>
-                            <EuiFlexItem grow={false}>
-                                <EuiFlexGroup justifyContent='spaceBetween' responsive={false}>
+                                <EuiFlexGroup justifyContent='spaceBetween' alignItems='center' responsive={false}>
                                     <EuiFlexItem >
                                         <EuiFlexGroup gutterSize='s' alignItems='center'>
                                             <EuiText>Chia sẻ:</EuiText>
@@ -215,7 +233,7 @@ export default function ProductDetail() {
                                         </EuiFlexGroup>
                                     </EuiFlexItem>
                                     <EuiFlexItem >
-                                        <EuiButtonEmpty iconType="/assets/heart.png" color=''>Đã thích (100)</EuiButtonEmpty>
+                                        <EuiButtonEmpty iconType={like?"/assets/heart1.png":"/assets/heart.png"} onClick={handleLike} color=''>{like?'Đã thích':'thích'} ({product?.like?.length})</EuiButtonEmpty>
                                     </EuiFlexItem>
                                 </EuiFlexGroup>
                             </EuiFlexItem>
@@ -334,7 +352,7 @@ export default function ProductDetail() {
             <EuiPanel hasShadow={false}>
                 <EuiFlexGroup alignItems='center'>
                     <EuiFlexItem grow={false}>
-                        <EuiAvatar name='S' imageUrl='/assets/brand.png' size='xl'/>
+                        <EuiAvatar name='S' imageUrl={shop?.shop?.avatar} size='xl'/>
                     </EuiFlexItem>
                     <EuiFlexItem grow={false}>
                         <EuiFlexGroup direction='column' gutterSize='s'>
@@ -409,6 +427,8 @@ export default function ProductDetail() {
                                     <EuiText size='s' color='blue'>Trang chủ</EuiText>
                                     <EuiIcon type="arrowRight" size='s'/>
                                     <EuiText size='s' color='blue'>{shop?.category.name}</EuiText>
+                                    <EuiIcon type="arrowRight" size='s'/>
+                                    <EuiText size='s' color='blue'>{category?.subcategories[0]?.name}</EuiText>
                                     <EuiIcon type="arrowRight" size='s'/>
                                     <EuiText size='s' color='blue'>{product?.name}</EuiText>
                                 </EuiFlexGroup>
@@ -522,10 +542,10 @@ export default function ProductDetail() {
             <EuiFlexGroup direction='column'>
                 <EuiFlexGroup alignItems='center' justifyContent='spaceBetween'>
                     <EuiText color='subdued'><h3>Các sản phẩm khác của Shop</h3></EuiText>
-                    <EuiLink color='danger'>Xem tất cả <EuiIcon type="arrowRight" size='s'/></EuiLink>
+                    <EuiLink color='danger'  href={`/shop?id=${shop?.shop._id}`}>Xem tất cả <EuiIcon type="arrowRight" size='s'/></EuiLink>
                 </EuiFlexGroup>
                 <EuiFlexGrid style={{gridTemplateColumns: mobile?'repeat(2,1fr)': tablet?'repeat(4,1fr)':'repeat(6,1fr)'}}>
-                {productByShop?.map(product=>(
+                {productByShop?.slice(0,11).map(product=>(
                     <ProductItem key={product._id} product={product}/>
                   ))}
               </EuiFlexGrid>

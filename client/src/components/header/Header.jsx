@@ -1,10 +1,10 @@
 import React, { useContext, useState } from 'react'
-import {EuiAvatar, EuiBreadcrumbs, EuiButton, EuiButtonEmpty, EuiFieldSearch, EuiFlexGroup, EuiFlexItem, EuiFormControlLayout, EuiHeader, EuiHeaderBreadcrumbs, EuiHeaderSection, EuiHeaderSectionItem, EuiHeaderSectionItemButton, EuiIcon, EuiImage, EuiLink, EuiListGroup, EuiListGroupItem, EuiPageHeader, EuiPageHeaderContent, EuiPageSidebar, EuiPopover, EuiPopoverFooter, EuiPopoverTitle, EuiSpacer, EuiText} from '@elastic/eui'
+import {EuiAvatar, EuiBreadcrumbs, EuiButton, EuiButtonEmpty, EuiFieldSearch, EuiFlexGroup, EuiFlexItem, EuiFormControlLayout, EuiHeader, EuiHeaderBreadcrumbs, EuiHeaderSection, EuiHeaderSectionItem, EuiHeaderSectionItemButton, EuiIcon, EuiImage, EuiLink, EuiListGroup, EuiListGroupItem, EuiPageHeader, EuiPageHeaderContent, EuiPageSidebar, EuiPopover, EuiPopoverFooter, EuiPopoverTitle, EuiSpacer, EuiText, EuiTextBlockTruncate} from '@elastic/eui'
 import { css } from '@emotion/react'
 import { AuthContext } from '../../context/AuthContext'
 import axios from '../../axios'
 
-export default function Header() {
+export default function Header({cart}) {
     const [isPopoverUser,setIsPopoverUSer]=useState(false)
     const [isPopoverCart,setIsPopoverCart]=useState(false)
     const {user,dispatch}=useContext(AuthContext)
@@ -47,11 +47,11 @@ export default function Header() {
                 }
             ]}
             pageTitle={
-                <EuiHeader style={{width:'100%',height:'70px',background:'#5bbb46'}}>
+                <EuiHeader style={{width:'100%',height:'70px',background:'#804040'}}>
                         <EuiHeaderSection>
                             <EuiHeaderSectionItem>
                                 {/* <EuiButtonEmpty onClick={openPopoverNav} iconType="menu" color='text' iconSize='l'/> */}
-                                <EuiImage src="/assets/logo.webp" style={{width:'300px',height:'60px'}}/>
+                                <EuiLink href="/"><EuiImage src="/assets/logo.png" style={{width:'300px',height:'60px'}}/></EuiLink>
                             </EuiHeaderSectionItem>
                         </EuiHeaderSection>
                         <EuiHeaderSection>
@@ -75,7 +75,7 @@ export default function Header() {
                             </EuiFlexGroup>
                         </EuiHeaderSection>
                     <EuiHeaderSection side="right">
-                        <EuiFlexGroup gutterSize='m'>
+                        <EuiFlexGroup gutterSize='m' alignItems='center'>
                             <EuiHeaderSectionItem>
                                 <EuiPopover
                                 panelPaddingSize='s'
@@ -83,24 +83,24 @@ export default function Header() {
                                 isOpen={isPopoverCart}
                                 closePopover={()=>setIsPopoverCart(false)}
                                 button={
-                                    <EuiHeaderSectionItemButton notification={'2'} onClick={()=>setIsPopoverCart(!isPopoverCart)}>
+                                    <EuiHeaderSectionItemButton notification={cart.length} onClick={()=>setIsPopoverCart(!isPopoverCart)}>
                                         <EuiIcon type="/assets/shopping-cart.png" size='xl' style={{color:'white'}}/>
                                     </EuiHeaderSectionItemButton>
                                 }>
                                     <EuiPopoverTitle>
                                         <EuiText>Sản phẩm mới thêm</EuiText>
                                     </EuiPopoverTitle>
-                                    <EuiFlexGroup>
-                                        <EuiFlexItem>
+                                    {user?<EuiFlexGroup direction='column'>
+                                        {cart.length?(cart.map(item=>(<EuiFlexItem key={item.cartId}>
                                             <EuiFlexGroup gutterSize='s'>
-                                                <EuiImage src='/assets/brand.png' size='50px'/>
+                                                <EuiImage src={item.product.image} size='50px'/>
                                                 <EuiFlexItem>
-                                                    <EuiText size='s'>Áo khoác gió</EuiText>
-                                                    <EuiText>x1 &nbsp;&nbsp;&nbsp;<strong style={{color:'red'}}>20,000đ</strong></EuiText>
+                                                    <EuiTextBlockTruncate lines={2}>{item.product.name}</EuiTextBlockTruncate>
+                                                    <EuiText>x{item.quantity} &nbsp;&nbsp;&nbsp;<strong style={{color:'red'}}>{(item.price).toLocaleString()}đ</strong></EuiText>
                                                 </EuiFlexItem>
                                             </EuiFlexGroup>
-                                        </EuiFlexItem>
-                                    </EuiFlexGroup>
+                                        </EuiFlexItem>))):(<EuiText>Giỏ hàng trống</EuiText>)}
+                                    </EuiFlexGroup>:<EuiText>Bạn chưa đăng nhập</EuiText>}
                                     <EuiPopoverFooter>
                                         <EuiFlexGroup justifyContent='flexEnd'>
                                             <EuiButton fill href='/cart'>Xem giỏ hàng</EuiButton>

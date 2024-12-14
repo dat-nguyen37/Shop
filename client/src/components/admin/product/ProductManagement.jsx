@@ -1,4 +1,4 @@
-import { EuiBasicTable, EuiButton, EuiButtonIcon, EuiFlexGroup, EuiImage, EuiPanel, EuiSpacer, EuiSwitch, EuiText } from '@elastic/eui'
+import { EuiBasicTable, EuiButton, EuiButtonIcon, EuiFieldSearch, EuiFlexGroup, EuiImage, EuiPanel, EuiSpacer, EuiSwitch, EuiText } from '@elastic/eui'
 import React, { useContext, useEffect, useState } from 'react'
 import axios from '../../../axios'
 import {ShopContext} from '../../../context/ShopContext'
@@ -10,7 +10,7 @@ export default function ProductManagement() {
 
     const handleUpdate=async(id,IsActivate)=>{
       try {
-        await axios.patch('/product/update/'+id,{IsActivate:IsActivate})
+        await axios.patch('/product/update/'+id,{status:IsActivate?"có sẵn":"cấm bán"})
         getProduct()
       } catch (err) {
         console.log(err)
@@ -31,13 +31,14 @@ export default function ProductManagement() {
         {field:'name',name:'Tên'},
         {field:'status',name:'Trạng thái',
             render:(item)=>(
-                <EuiSwitch checked={item.IsActivate} onChange={onChecked(item._id)}/>
+                <EuiSwitch checked={item.status!=="cấm bán"} onChange={onChecked(item._id)}/>
             )
         },
     ]
+    const [searchValue,setSearchValue]=useState("")
     const getProduct=async()=>{
         try {
-            const res=await axios.get('/product/getAll')
+            const res=await axios.get(`/product/getAll?search=${searchValue}`)
             setData(res.data?.map(item=>(
                 {id:item._id,image:item.image,name:item.name,status:item}
             )))
@@ -47,13 +48,15 @@ export default function ProductManagement() {
     }
     useEffect(()=>{
         getProduct()
-    },[])
+    },[searchValue])
   return (
     <EuiPanel>
         <ToastContainer/>
         <EuiFlexGroup alignItems='center' justifyContent='spaceBetween'>
             <EuiText>Danh sách sản phẩm</EuiText>
         </EuiFlexGroup>
+        <EuiSpacer/>
+        <EuiFieldSearch placeholder='Tìm kiếm theo tên sản phẩm' onChange={e=>setSearchValue(e.target.value)} fullWidth/>
         <EuiSpacer/>
         <EuiBasicTable
         tableLayout='auto'

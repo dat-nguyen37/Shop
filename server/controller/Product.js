@@ -1,5 +1,7 @@
 const Product=require('../model/Product')
 const User=require('../model/User')
+const Category=require('../model/Category')
+
 
 exports.create=async(req,res)=>{
     try {
@@ -31,7 +33,11 @@ exports.create=async(req,res)=>{
 
 exports.getByShop=async(req,res)=>{
     try {
-        const products=await Product.find({shopId:req.params.id,IsActivate:true}).sort({createdAt:-1})
+        const { search } = req.query;
+        const searchCondition = search
+        ? { name: { $regex: search, $options: "i" } } // Tìm tên gần đúng, không phân biệt hoa thường
+        : {};
+        const products=await Product.find({shopId:req.params.id,...searchCondition}).sort({createdAt:-1})
         res.status(200).send(products)
     } catch (err) {
         res.status(200).send(err)
@@ -70,15 +76,19 @@ exports.delete=async(req,res)=>{
 }
 exports.getAll=async(req,res)=>{
     try {
-        const product=await Product.find()
-        res.status(200).send(product)
+        const { search } = req.query;
+        const searchCondition = search
+        ? { name: { $regex: search, $options: "i" } }
+        : {};
+        const products=await Product.find({...searchCondition}).sort({createdAt:-1})
+        res.status(200).send(products)
     } catch (err) {
         res.status(500).send(err)
     }
 }
 exports.getByActive=async(req,res)=>{
     try {
-        const product=await Product.find({IsActivate:true})
+        const product=await Product.find({status:"có sẵn"})
         res.status(200).send(product)
     } catch (err) {
         res.status(500).send(err)
@@ -89,7 +99,11 @@ exports.getByActive=async(req,res)=>{
 exports.getOne=async(req,res)=>{
     try {
         const product=await Product.findById(req.params.id)
-        res.status(200).send(product)
+        const category = await Category.findOne(
+            { "subcategories._id": product.categoryId },
+            { "subcategories.$": 1, name: 1 }
+        );
+        res.status(200).send({product,category})
     } catch (err) {
         res.status(500).send(err)
     }
@@ -97,8 +111,19 @@ exports.getOne=async(req,res)=>{
 
 exports.getBestSellingByShop=async(req,res)=>{
     try {
-        const products = await Product.find({ shopId: req.params.id,IsActivate:true})
+        const products = await Product.find({ shopId: req.params.id,status:"có sẵn"})
+        .sort({ quantitySold: -1 })
+        .limit(6)     
+        res.status(200).send(products)
+    } catch (err) {
+        res.status(500).send(err)
+    }
+}
+exports.getBestSelling=async(req,res)=>{
+    try {
+        const products = await Product.find({status:"có sẵn"})
         .sort({ productSold: -1 })
+        .limit(18)
         .lean();        
         res.status(200).send(products)
     } catch (err) {
@@ -109,7 +134,7 @@ exports.search = async (req, res) => {
     try {
         const { q, categoryId,subcategoryId, shipId,shopId, min, max, rating, sort } = req.query;
 
-        let query = {IsActivate: true};
+        let query = {status:"có sẵn"};
 
         let shopIds = [];
         if (categoryId&&categoryId!=='undefined') {
@@ -176,3 +201,18 @@ exports.search = async (req, res) => {
         res.status(500).send({ message: "Lỗi server", error: err });
     }
 };
+exports.likeProduct=async(req,res)=>{
+    try {
+        const product=await Product.findById(req.params.id)
+        const alreadyLiked =product.like.includes(req.userId)
+        if(alreadyLiked){
+            product.like.pull(req.userId);
+        }else{
+            product.like.push(req.userId);
+        }
+        await product.save();
+        res.status(200).send(product)
+    } catch (err) {
+        res.status(500).send(err)
+    }
+}

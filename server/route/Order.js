@@ -8,6 +8,8 @@ router.get('/getByShop/:shopId',OrderController.getAllByShop)
 router.get('/getOrderByUser',CheckLogin,OrderController.getOrderByUser)
 router.patch('/update',OrderController.update)
 router.delete('/delete/:id',OrderController.delete)
+router.get('/statistical',OrderController.statistical)
+
 
 
 

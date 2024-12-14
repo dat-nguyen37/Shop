@@ -3,36 +3,36 @@ const Cart=require('../model/Cart')
 const Product=require('../model/Product')
 const User=require('../model/User')
 
-exports.creatOrder=async(req,res)=>{
-    try {
-        if(req.userId){
-            const newOrder=new Order({
-                userId:req.body.userId,
-                product:req.body.product,
-                price:req.body.price,
-                name:req.body.name,
-                phone:req.body.phone,
-                address:req.body.address,
-                shipping:req.body.shipping,
-                description:req.body.description
-            })
-            const order=await newOrder.save()
-            const cartItems=req.body.product.map(item=>item.productId)
-            await Cart.deleteMany({userId:req.body.userId,productId:{$in:cartItems}})
-            for (const item of req.body.product) {
-                await Product.updateOne(
-                    { _id: item.productId }, 
-                    { $inc: { quantitySold: item.quantity } } 
-                );
+    exports.creatOrder=async(req,res)=>{
+        try {
+            if(req.userId){
+                const newOrder=new Order({
+                    userId:req.body.userId,
+                    product:req.body.product,
+                    price:req.body.price,
+                    name:req.body.name,
+                    phone:req.body.phone,
+                    address:req.body.address,
+                    shipping:req.body.shipping,
+                    description:req.body.description
+                })
+                const order=await newOrder.save()
+                const cartItems=req.body.product.map(item=>item.productId)
+                await Cart.deleteMany({userId:req.body.userId,productId:{$in:cartItems}})
+                for (const item of req.body.product) {
+                    await Product.updateOne(
+                        { _id: item.productId }, 
+                        { $inc: { quantitySold: item.quantity ,quantity:-item.quantity} } 
+                    );
+                }
+                res.status(200).send(order)
+            }else{
+                res.status(401).send("Authentication")    
             }
-            res.status(200).send(order)
-        }else{
-            res.status(401).send("Authentication")    
+        } catch (err) {
+            res.status(500).send(err)
         }
-    } catch (err) {
-        res.status(500).send(err)
     }
-}
 
 exports.getByShopAndUser=async(req,res)=>{
     try {
@@ -127,6 +127,10 @@ exports.getAllByShop=async(req,res)=>{
                 }
             }
         }
+        if(req.query.orderId){
+            const order=productsByShop.filter(p=>p.id.toString()===req.query.orderId)
+            return res.status(200).send(order)
+        }
         res.status(200).send(productsByShop)
     } catch (err) {
         res.status(500).send(err)
@@ -166,3 +170,106 @@ exports.delete=async(req,res)=>{
         res.status(500).send(err)
     }
 }
+
+exports.statistical = async (req, res) => {
+    try {
+        const shopId = req.query.shopId;
+
+        const orders = await Order.aggregate([
+            {
+                $unwind: "$product" // Tách từng sản phẩm trước
+            },
+            {
+                $match: {
+                    paymentStatus: "Đã thanh toán",
+                    "product.confimationStatus": "Đã giao",
+                    "product.shopId": shopId // Chỉ giữ sản phẩm có shopId khớp
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        year: { $year: "$createdAt" }, // Nhóm theo năm
+                        month: { $month: "$createdAt" } // Nhóm theo tháng
+                    },
+                    totalRevenue: {
+                        $sum: {
+                            $multiply: ["$product.price", "$product.quantity"] // Tổng doanh thu
+                        }
+                    }
+                }
+            },
+            {
+                $sort: { "_id.year": 1, "_id.month": 1 } // Sắp xếp theo năm và tháng
+            },
+            {
+                $group: {
+                    _id: "$_id.year", // Nhóm theo năm
+                    monthlyRevenue: {
+                        $push: {
+                            month: "$_id.month",
+                            revenue: "$totalRevenue"
+                        }
+                    },
+                    total: { $sum: "$totalRevenue" } // Tổng doanh thu của cả năm
+                }
+            },
+            {
+                $addFields: {
+                    monthlyRevenue: {
+                        $map: {
+                            input: { $range: [1, 13] }, // Danh sách từ tháng 1-12
+                            as: "month",
+                            in: {
+                                month: "$$month",
+                                revenue: {
+                                    $ifNull: [
+                                        {
+                                            $arrayElemAt: [
+                                                {
+                                                    $map: {
+                                                        input: {
+                                                            $filter: {
+                                                                input: "$monthlyRevenue",
+                                                                as: "revenue",
+                                                                cond: { $eq: ["$$revenue.month", "$$month"] }
+                                                            }
+                                                        },
+                                                        as: "filteredRevenue",
+                                                        in: "$$filteredRevenue.revenue" // Chỉ lấy giá trị revenue
+                                                    }
+                                                },
+                                                0
+                                            ]
+                                        },
+                                        0 // Trả về 0 nếu không có dữ liệu
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+        ]);
+
+        const totalAmount = orders.reduce((sum, item) => {
+            return sum + item.total;
+        }, 0);
+
+        res.status(200).send({
+            data: orders.map(order => ({
+                year: order._id,
+                monthlyRevenue: order.monthlyRevenue,
+                total: order.total
+            })),
+            totalAmount: totalAmount
+        });
+    } catch (err) {
+        res.status(500).send(err);
+    }
+};
+
+
+
+

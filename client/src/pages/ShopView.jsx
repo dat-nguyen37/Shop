@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { EuiAvatar, EuiButton, EuiButtonEmpty, EuiCollapsibleNav, EuiCollapsibleNavGroup, EuiFieldNumber, EuiFlexGrid, EuiFlexGroup, EuiFlexItem, EuiFormControlLayoutDelimited, EuiIcon, EuiImage, EuiLink, EuiListGroup, EuiListGroupItem, EuiPageSection, EuiPageTemplate, EuiPopover, EuiSelect, EuiSelectable, EuiText, useIsWithinBreakpoints } from '@elastic/eui'
+import { EuiAvatar, EuiButton, EuiButtonEmpty, EuiCollapsibleNav, EuiCollapsibleNavGroup, EuiFieldNumber, EuiFlexGrid, EuiFlexGroup, EuiFlexItem, EuiFormControlLayoutDelimited, EuiIcon, EuiImage, EuiLink, EuiListGroup, EuiListGroupItem, EuiPageSection, EuiPageTemplate, EuiPagination, EuiPopover, EuiSelect, EuiSelectable, EuiText, useIsWithinBreakpoints } from '@elastic/eui'
 import Footer from '../components/footer/Footer'
 import ProductItem from '../components/productItem/ProductItem'
 import { useLocation } from 'react-router-dom'
@@ -27,6 +27,9 @@ export default function ShopView() {
     setShopId(shopId);
 }, [location.search]);
 
+  const [pageCount,setPageCount]=useState(10)
+  const [activePage,setActivePage]=useState(0)
+  const [pageSize,setPageSize]=useState(12)
   const getAllProduct=async()=>{
     try {
       const res=await axios.get(`/product/search?shopId=${shopId}&subcategoryId=${subcategoryId}&sort=${sort}&min=${min}&max=${max}`)
@@ -35,6 +38,13 @@ export default function ShopView() {
       console.log(err)
     }
   }
+  useEffect(() => {
+    const totalPageCount = Math.ceil(products?.length / pageSize);
+    setPageCount(totalPageCount);
+  }, [products, pageSize]);
+
+  const productsOfPage = products?.slice(activePage * pageSize, (activePage + 1) * pageSize);
+
   const getShop=async()=>{
     try {
       const res=await axios.get('/shop/getOne/'+shopId)
@@ -64,11 +74,11 @@ export default function ShopView() {
         <EuiFlexGroup gutterSize='m'>
             <EuiFlexItem>
               <div style={{position:'relative'}}>
-                <EuiImage src='/assets/shop1.png' allowFullScreen height="150" size='fullWidth'/>
+                <EuiImage src={shop.background} allowFullScreen height="150" size='fullWidth'/>
                 <div style={{position: 'absolute',top: 0,left: 0,right: 0,bottom: 0,backgroundColor: 'rgba(0, 0, 0, 0.5)'}}></div>
                 <EuiFlexGroup direction='column' gutterSize='s' style={{position:'absolute',top:'20%',left:'10%'}}>
                   <EuiFlexGroup alignItems='center' gutterSize='s'>
-                    <EuiAvatar name='Shop' imageUrl='/assets/logo_shop.webp' size='xl'/>
+                    <EuiAvatar name='Shop' imageUrl={shop.avatar} size='xl'/>
                     <p>
                       <EuiText color='white'>{shop?.shop?.name}</EuiText>
                       <EuiText color='white' size='xs'>Online 14 phút trước</EuiText>
@@ -145,11 +155,15 @@ export default function ShopView() {
             </EuiFlexItem>
           </EuiFlexGroup>
           
-          {products.length>0?<EuiFlexGrid style={{gridTemplateColumns: mobile?'repeat(2,1fr)': tablet?'repeat(4,1fr)':'repeat(6,1fr)'}}>
-            {products.map(product=>(
+          {productsOfPage.length>0?<EuiFlexGrid style={{gridTemplateColumns: mobile?'repeat(2,1fr)': tablet?'repeat(4,1fr)':'repeat(6,1fr)'}}>
+            {productsOfPage.map(product=>(
               <ProductItem key={product._id} product={product}/>
               ))}
             </EuiFlexGrid>:<EuiFlexGroup justifyContent='center'><EuiText>Không tìm thấy sản phẩm</EuiText></EuiFlexGroup>}
+            <EuiPagination
+              pageCount={pageCount}
+              activePage={activePage}
+              onPageClick={(activePage) => setActivePage(activePage)}/>
         </EuiFlexGroup>
       </EuiPageSection>
     </EuiPageTemplate.Section>

@@ -54,13 +54,9 @@ const ProductSchema = new mongoose.Schema({
     like: [String],
     status: {
         type: String,
-        enum: ['có sẵn', 'hết hàng'], 
+        enum: ['có sẵn', 'hết hàng','cấm bán'], 
         default: 'có sẵn'
     },
-    IsActivate:{
-        type: Boolean,
-        default:true
-    }
 },
 {
     timestamps:true
