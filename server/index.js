@@ -84,8 +84,8 @@ app.use('/notification',NotificationRoute)
 
 
 
-
-server.listen(5000,()=>{
+const port = process.env.PORT || 5000;
+server.listen(port,()=>{
     console.log("Sever is running on port 5000")
     connect()
 })
