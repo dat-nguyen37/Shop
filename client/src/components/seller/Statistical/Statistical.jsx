@@ -222,10 +222,8 @@ const [donutOptions, setDonutOptions] = useState({
           position: 'bottom'
         }
       }
-    }]
+    }],
   },
-
-
 });
 const [barOptions, setBarOptions] = useState({
   series: [{
@@ -248,7 +246,7 @@ const [barOptions, setBarOptions] = useState({
     },
     xaxis: {
       categories: [],
-    }
+    },
   },
 
 
@@ -422,11 +420,17 @@ const [barOptions, setBarOptions] = useState({
         <EuiFlexGroup>
           <EuiFlexItem>
             <EuiPanel>
-              <Chart options={donutOptions.options} series={donutOptions.series} type="donut" />
+              <EuiFlexGroup justifyContent='center'>
+                <EuiText><b>Tổng doang thu</b></EuiText>
+             </EuiFlexGroup>
+              <Chart key="donut-chart" options={donutOptions.options} series={donutOptions.series} type="donut" />
             </EuiPanel>
           </EuiFlexItem>
           <EuiFlexItem>
             <EuiPanel>
+              <EuiFlexGroup justifyContent='center'>
+                  <EuiText><b>Sản phẩm bán chạy</b></EuiText>
+              </EuiFlexGroup>
               <Chart options={barOptions.options} series={barOptions.series} type="bar" height={350} />
             </EuiPanel>
           </EuiFlexItem>

@@ -127,7 +127,7 @@ export default function Chat() {
   return (
     <EuiFlexGroup responsive={false} gutterSize='s' style={{height:'calc(100vh - 3rem)'}}>
         <EuiFlexItem grow={false} style={{background:'white',padding:'8px'}}>
-        {conversations.length&&<EuiFlexGroup direction='column' gutterSize='s'>
+        {conversations.length?<EuiFlexGroup direction='column' gutterSize='s'>
            <EuiFieldSearch placeholder='Tìm kiếm' style={{outline:'none'}}/>
             <EuiSpacer size='s'/>
             <EuiFlexGroup direction='column' gutterSize='s' className="eui-fullHeight eui-yScrollWithShadows">
@@ -143,7 +143,7 @@ export default function Chat() {
                 </EuiFlexGroup>
             </EuiFlexItem>))}
             </EuiFlexGroup>
-           </EuiFlexGroup>}
+           </EuiFlexGroup>:<EuiFlexGroup><EuiText>Không có đoạn hội thoại nào</EuiText></EuiFlexGroup>}
         </EuiFlexItem>
         {messages?(
         <EuiFlexGroup gutterSize='s' style={{padding:'8px'}}>

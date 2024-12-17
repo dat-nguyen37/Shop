@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { EuiButtonEmpty, EuiButtonIcon,EuiFlexGroup,EuiListGroup,EuiListGroupItem,EuiAccordion,EuiHeaderSectionItemButton,EuiIcon,EuiText,EuiPopover,EuiFlexItem,EuiAvatar, EuiFlyout, EuiFlyoutBody, EuiFlyoutFooter, EuiFlyoutHeader, EuiHeader, EuiHeaderSection, EuiHeaderSectionItem, EuiPageHeader, EuiPageHeaderContent, EuiPageTemplate, EuiLink, EuiFlexGrid, EuiPanel, EuiStat, EuiImage } from '@elastic/eui'
+import { EuiButtonEmpty, EuiButtonIcon,EuiFlexGroup,EuiListGroup,EuiListGroupItem,EuiAccordion,EuiHeaderSectionItemButton,EuiIcon,EuiText,EuiPopover,EuiFlexItem,EuiAvatar, EuiFlyout, EuiFlyoutBody, EuiFlyoutFooter, EuiFlyoutHeader, EuiHeader, EuiHeaderSection, EuiHeaderSectionItem, EuiPageHeader, EuiPageHeaderContent, EuiPageTemplate, EuiLink, EuiFlexGrid, EuiPanel, EuiStat, EuiImage, EuiHorizontalRule } from '@elastic/eui'
 import {Outlet} from 'react-router-dom'
 import {AuthContext} from '../../../context/AuthContext'
 import axios from '../../../axios'
@@ -22,12 +22,13 @@ export default function Dashboard() {
             <EuiFlyoutHeader style={{background:'',height:'200px'}}>
                 <EuiImage src='/assets/logo.png'/>
             </EuiFlyoutHeader>
+            <EuiHorizontalRule margin='none'/>
             <EuiFlyoutBody>
                 <EuiFlexGroup direction='column'>
                     <EuiFlexItem>
                         <EuiFlexGroup>
                             <EuiIcon type="visLine"/>
-                            <EuiLink color='text'>Thống kê</EuiLink>
+                            <EuiLink color='text' href='/dashboard'>Thống kê</EuiLink>
                         </EuiFlexGroup>
                     </EuiFlexItem>
                     <EuiFlexItem>
@@ -138,12 +139,12 @@ export default function Dashboard() {
                 </EuiFlexItem>
                 <EuiFlexItem>
                     <EuiPanel>
-                        <EuiStat title="1" description="Sản phẩm" />
+                        <EuiStat title="1" description="Cửa hàng" />
                     </EuiPanel>
                 </EuiFlexItem>
                 <EuiFlexItem>
                     <EuiPanel>
-                        <EuiStat title="1" description="Đơn hàng" />
+                        <EuiStat title="1" description="Sản phẩm" />
                     </EuiPanel>
                 </EuiFlexItem>
                 <EuiFlexItem>
