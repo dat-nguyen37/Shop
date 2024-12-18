@@ -3,6 +3,7 @@ const connect=require('./config/db')
 const cookieParser=require('cookie-parser')
 const cors=require('cors')
 const session = require('express-session')
+const MongoStore = require('connect-mongo');
 const bodyParser = require('body-parser');
 require('dotenv').config()
 const http = require('http');
@@ -30,7 +31,21 @@ app.use(cors(
     }
 ))
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(session({secret:process.env.SECRET, resave: false, saveUninitialized: true,}))
+app.use(
+    session({
+        store: MongoStore.create({
+            mongoUrl: process.env.DB_URL,
+            collectionName: 'sessions',
+          }),
+        secret:process.env.SECRET, 
+        resave: false, 
+        saveUninitialized: false,
+        cookie: {
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+          },
+    })
+)
 
 app.use(passport.initialize());
 app.use(passport.session());
