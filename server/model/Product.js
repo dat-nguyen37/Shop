@@ -52,6 +52,10 @@ const ProductSchema = new mongoose.Schema({
         max: 5
     },
     like: [String],
+    view: {
+        type: Number,
+        default:0
+    },
     status: {
         type: String,
         enum: ['có sẵn', 'hết hàng','cấm bán'], 

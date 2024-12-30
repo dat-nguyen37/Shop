@@ -50,6 +50,9 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+const createLog = require('./Log')
+app.use(createLog)
+
 
 const AuthRoute=require('./route/Auth')
 const UserRoute=require('./route/User')
@@ -65,7 +68,7 @@ const messageRoute=require('./route/Message')
 const orderRoute=require('./route/Order')
 const paymentRoute=require('./route/payment')
 const NotificationRoute = require('./route/Notification')
-
+const LogRoute = require('./route/Log')
 
 
 
@@ -90,6 +93,9 @@ app.use('/message',messageRoute)
 app.use('/order',orderRoute)
 app.use('/payment',paymentRoute)
 app.use('/notification',NotificationRoute)
+app.use('/log',LogRoute)
+
+
 
 
 

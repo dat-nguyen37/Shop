@@ -38,6 +38,7 @@ import Chat from './components/seller/Chat/Chat';
 import OrderByShop from './components/seller/Order/Order';
 import Swal from 'sweetalert2'
 import { io } from 'socket.io-client';
+import ListLog from './components/admin/log/ListLog';
 
 
 function App() {
@@ -67,6 +68,7 @@ function App() {
           <Route path="danh_sach_nguoi_dung" element={<Account />}/>
           <Route path="danh_sach_danh_muc" element={<ListCategory />}/>
           <Route path="danh_sach_san_pham" element={<ProductManagement />}/>
+          <Route path="nhat_ky" element={<ListLog />}/>
         </Route>
         <Route path="/nguoi_ban" element={user?<DashboardSeller />:<Navigate to="/dang_nhap"/>}>
           <Route index element={<Statistical />}/>

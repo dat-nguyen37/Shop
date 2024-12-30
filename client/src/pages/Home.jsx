@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { EuiButton, EuiCard, EuiFlexGrid, EuiFlexGroup, EuiFlexItem, EuiIcon, EuiImage, EuiLink, EuiPageSection, EuiPageTemplate, EuiPanel, EuiPopover, EuiText, useIsWithinBreakpoints} from '@elastic/eui'
+import { EuiButton, EuiCard, EuiFlexGrid, EuiFlexGroup, EuiFlexItem, EuiIcon, EuiImage, EuiLink, EuiPageSection, EuiPageTemplate, EuiPanel, EuiPopover, EuiText, EuiTextBlockTruncate, useIsWithinBreakpoints} from '@elastic/eui'
 import Slide from '../components/slide/Slide'
 import Footer from '../components/footer/Footer'
 import axios from '../axios'
@@ -9,6 +9,7 @@ export default function Home() {
   const mobile=useIsWithinBreakpoints(['xs','s'])
   const tablet=useIsWithinBreakpoints(['m','l'])
   const [products,setProducts]=useState([])
+  const [productByView,setProductByView]=useState([])
   const [categories,setCategories]=useState([])
 
 
@@ -16,6 +17,14 @@ export default function Home() {
     try {
       const res=await axios.get('/product/getByActive')
       setProducts(res.data)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  const getProductByView=async()=>{
+    try {
+      const res=await axios.get('/product/getByView')
+      setProductByView(res.data)
     } catch (err) {
       console.log(err)
     }
@@ -31,6 +40,7 @@ export default function Home() {
   useEffect(()=>{
     getProducts()
     getCategories()
+    getProductByView()
   },[])
   return (
     <div>
@@ -67,14 +77,21 @@ export default function Home() {
               </EuiFlexItem>
               <EuiFlexItem>
                 <EuiFlexGrid gutterSize='s' style={{gridTemplateColumns: mobile?'repeat(2,1fr)': tablet?'repeat(4,1fr)':'repeat(6,1fr)'}}>
-                  {[1,2,3,4,5,6].map(item=>(
-                    <EuiFlexItem>
+                  {productByView?.map(item=>(
+                    <EuiFlexItem key={item._id}>
                       <EuiFlexGroup direction='column' alignItems='center' gutterSize='s'>
                       <EuiFlexItem style={{position:'relative'}}>
-                        <EuiImage src='/assets/brand.png' size='m'/>
-                        <EuiText size='s' textAlign='center' color='white' style={{position:'absolute',bottom:0,background:'black',opacity:0.4,width:'100%'}}>Bán 8k+/ tháng  </EuiText>
+                        <EuiLink>
+                          <EuiImage src={item.image} 
+                          size='m'
+                          height="150"
+                          caption={
+                            <EuiTextBlockTruncate lines={3} style={{color:'black'}}>{item.name}</EuiTextBlockTruncate>
+                          }
+                          />
+                        </EuiLink>
+                        <EuiText size='s' textAlign='center' color='white' style={{position:'absolute',bottom:0,background:'black',width:'100%'}}>Đã bán {item.quantitySold}  </EuiText>
                       </EuiFlexItem>
-                      <EuiText size='m'>Thời trang nam</EuiText>
                     </EuiFlexGroup>
                   </EuiFlexItem>))}
                 </EuiFlexGrid>

@@ -14,3 +14,8 @@ code {
 .euiPopover ,.euiPopover__anchor {
   display: block !important;
   width: 100% !important;}
+
+  .euiFieldText ,.euiSelect, .euiFieldPassword, .euiTextArea,.euiFieldSearch {
+    outline: none !important;
+  }
+  

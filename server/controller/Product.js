@@ -103,11 +103,25 @@ exports.getOne=async(req,res)=>{
             { "subcategories._id": product.categoryId },
             { "subcategories.$": 1, name: 1 }
         );
+        product.view +=1
+        await product.save()
         res.status(200).send({product,category})
     } catch (err) {
         res.status(500).send(err)
     }
 }
+
+exports.getByView=async(req,res)=>{
+    try {
+        const products = await Product.find({status:"có sẵn"})
+        .sort({ view: -1 })
+        .limit(6)     
+        res.status(200).send(products)
+    } catch (err) {
+        res.status(500).send(err)
+    }
+}
+
 
 exports.getBestSellingByShop=async(req,res)=>{
     try {

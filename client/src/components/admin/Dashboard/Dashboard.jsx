@@ -45,6 +45,7 @@ export default function Dashboard() {
                                 <EuiListGroupItem href='/dashboard/danh_sach_don_hang' label='Đơn hàng'/>
                                 <EuiListGroupItem href='/dashboard/danh_sach_cua_hang' label='Cửa hàng'/>
                                 <EuiListGroupItem href='/dashboard/danh_sach_nguoi_dung' label='Tài khoản'/>
+                                <EuiListGroupItem href='/dashboard/nhat_ky' label='Nhật ký'/>
                             </EuiListGroup>
                         </EuiAccordion>
                     </EuiFlexItem>
