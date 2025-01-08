@@ -1,4 +1,4 @@
-import { EuiAvatar, EuiBreadcrumbs, EuiButton, EuiButtonEmpty, EuiButtonIcon, EuiCard, EuiFieldNumber, EuiFieldText, EuiFlexGrid, EuiFlexGroup, EuiFlexItem, EuiFormControlLayout, EuiFormRow, EuiIcon, EuiImage, EuiLink, EuiModal, EuiModalBody, EuiModalFooter, EuiModalHeader, EuiModalHeaderTitle, EuiPageSection, EuiPageTemplate, EuiPagination, EuiPanel, EuiPopover, EuiPopoverFooter, EuiPopoverTitle, EuiSelectable, EuiSpacer, EuiText, EuiTextArea, EuiTitle, useIsWithinBreakpoints } from '@elastic/eui'
+import { EuiAvatar, EuiBreadcrumbs, EuiButton, EuiButtonEmpty, EuiButtonIcon, EuiCard, EuiContextMenu, EuiFieldNumber, EuiFieldText, EuiFlexGrid, EuiFlexGroup, EuiFlexItem, EuiFormControlLayout, EuiFormRow, EuiIcon, EuiImage, EuiLink, EuiModal, EuiModalBody, EuiModalFooter, EuiModalHeader, EuiModalHeaderTitle, EuiPageSection, EuiPageTemplate, EuiPagination, EuiPanel, EuiPopover, EuiPopoverFooter, EuiPopoverTitle, EuiSelectable, EuiSpacer, EuiText, EuiTextArea, EuiTitle, useIsWithinBreakpoints } from '@elastic/eui'
 import React, { useContext, useEffect, useState } from 'react'
 import StarRatings from 'react-star-ratings';
 import Footer from '../components/footer/Footer'
@@ -8,6 +8,7 @@ import {toast,ToastContainer} from 'react-toastify'
 import moment from 'moment';
 import ProductItem from '../components/productItem/ProductItem'
 import { AuthContext } from '../context/AuthContext';
+import Report from '../components/report/Report';
 
 export default function ProductDetail() {
     const mobile=useIsWithinBreakpoints(['xs','s'])
@@ -20,17 +21,9 @@ export default function ProductDetail() {
     const [comments,setComments]=useState([])
     const [rating, setRating] = useState(5);
     const [commentText,setCommentText]=useState('')
-    const [popoverReport,setPopoverReport]=useState(false)
+    const [modalReport,setModalReport]=useState(false)
     const [isModalComment,setIsModalComment]=useState(false)
     const [price,setPrice]=useState(0)
-    const [optionReport, setOptionReport]=useState([
-        {label:'Sản phẩm bị cấm buôn bán'},
-        {label:'Sản phẩm có dấu hiệu lừa đảo'},
-        {label:'Hàng giả, hàng nhái'},
-        {label:'Sản phẩm không rõ nguồn gốc xuất xứ'},
-        {label:'Hình ảnh sản phẩm không rõ ràng'},
-        {label:'Sản phẩm có dấu hiệu tăng đơn ảo'},
-    ])
 
     const [activePage,setActivePage]=useState(0)
     const [pageCount,setPageCount]=useState(1)
@@ -157,7 +150,6 @@ export default function ProductDetail() {
     }
     const result = useOutletContext();
     const handleAddToCart=async()=>{
-        console.log(shop)
         try {
             await axios.post('/cart/create',{
                 shopId:shop.shop._id,
@@ -261,29 +253,7 @@ export default function ProductDetail() {
                                     </EuiFlexGroup>
                                     </EuiFlexItem>
                                     <EuiFlexItem grow={false}>
-                                    <EuiPopover
-                                    isOpen={popoverReport}
-                                    closePopover={()=>setPopoverReport(false)}
-                                    panelStyle={{outline:'none'}}
-                                    anchorPosition='leftUp'
-                                    button={<EuiLink onClick={()=>setPopoverReport(true)}>Tố cáo</EuiLink>}>
-                                        <EuiPopoverTitle paddingSize='s'>
-                                            <EuiText>Chọn lý do</EuiText>
-                                        </EuiPopoverTitle>
-                                            <EuiSelectable
-                                                options={optionReport}
-                                                singleSelection
-                                                onChange={(newOptions) => setOptionReport(newOptions)}
-                                                listProps={{ bordered: true }}
-                                                style={{width:'300px',height:'200px'}}>
-                                                {list => list}
-                                            </EuiSelectable>
-                                        <EuiPopoverFooter paddingSize='s'>
-                                            <EuiFlexGroup justifyContent='flexEnd'>
-                                                <EuiButton fill>Gửi tố cáo</EuiButton>
-                                            </EuiFlexGroup>
-                                        </EuiPopoverFooter>
-                                    </EuiPopover>
+                                        <EuiLink onClick={()=>setModalReport(true)}>Tố cáo</EuiLink>
                                     </EuiFlexItem>
                                 </EuiFlexGroup>
                             </EuiFlexItem>
@@ -599,6 +569,7 @@ export default function ProductDetail() {
                 </EuiFlexGroup>
             </EuiModalFooter>
         </EuiModal>}
+        {modalReport&&<Report setModalReport={setModalReport} shopId={shop?.shop._id} productId={productId}/>}
     </>
   )
 }

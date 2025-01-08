@@ -223,7 +223,8 @@ export default function Payment() {
                 name: address?.name,
                 phone: address?.phone,
                 address: `${address?.addressDetail || ''} ${address?.address || ''}`.trim(),
-                shipping: paymentMethod,
+                shipping: selectedShip.name,
+                paymentMethod:paymentMethod,
                 description: description
             });
     

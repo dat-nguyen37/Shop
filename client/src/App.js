@@ -7,7 +7,7 @@ import Login from './pages/Login';
 import ProductDetail from './pages/ProductDetail';
 import Footer from './components/footer/Footer';
 import ShopView from './pages/ShopView';
-import { EuiAbsoluteTab, EuiAvatar, EuiBottomBar, EuiButton, EuiButtonIcon, EuiFieldSearch, EuiFieldText, EuiFlexGroup, EuiFlexItem, EuiHeader, EuiHeaderSection, EuiHeaderSectionItem, EuiHorizontalRule, EuiIcon, EuiImage, EuiLink, EuiPageBody, EuiPageHeader, EuiPageSection, EuiPageTemplate, EuiPanel, EuiPopover, EuiPopoverTitle, EuiRelativeTab, EuiSpacer, EuiText } from '@elastic/eui';
+import { EuiAbsoluteTab, EuiAvatar, EuiBottomBar, EuiButton, EuiButtonIcon, EuiFieldSearch, EuiFieldText, EuiFlexGroup, EuiFlexItem, EuiHeader, EuiHeaderSection, EuiHeaderSectionItem, EuiHorizontalRule, EuiIcon, EuiImage, EuiLink, EuiListGroup, EuiListGroupItem, EuiPageBody, EuiPageHeader, EuiPageSection, EuiPageTemplate, EuiPanel, EuiPopover, EuiPopoverTitle, EuiRelativeTab, EuiSpacer, EuiText } from '@elastic/eui';
 import Cart from './pages/Cart';
 import Payment from './pages/Payment';
 import Profile from './pages/Profile';
@@ -39,6 +39,10 @@ import OrderByShop from './components/seller/Order/Order';
 import Swal from 'sweetalert2'
 import { io } from 'socket.io-client';
 import ListLog from './components/admin/log/ListLog';
+import Slide from './components/admin/slide/Slide';
+import StatisticalAdmin from './components/admin/Statistical/Statistical';
+import Report from './components/admin/report/Report';
+import ViewProduct from './components/seller/Product/ViewProduct';
 
 
 function App() {
@@ -64,15 +68,19 @@ function App() {
         <Route path="/dang_nhap" element={<Login />} />
         <Route path="/kich_hoat" element={<ActivateAccount />} />
         <Route path="/dashboard" element={user&&user.role==="Admin"?<DashboardAdmin />:<Navigate to="/dang_nhap"/>}>
+          <Route index element={<StatisticalAdmin />}/>
           <Route path="danh_sach_cua_hang" element={<ListShop />}/>
           <Route path="danh_sach_nguoi_dung" element={<Account />}/>
           <Route path="danh_sach_danh_muc" element={<ListCategory />}/>
           <Route path="danh_sach_san_pham" element={<ProductManagement />}/>
+          <Route path="danh_sach_to_cao" element={<Report />}/>
           <Route path="nhat_ky" element={<ListLog />}/>
+          <Route path="slide" element={<Slide />}/>
         </Route>
         <Route path="/nguoi_ban" element={user?<DashboardSeller />:<Navigate to="/dang_nhap"/>}>
           <Route index element={<Statistical />}/>
           <Route path="danh_sach_san_pham" element={<ListProduct />}/>
+          <Route path="san_pham" element={<ViewProduct />}/>
           <Route path="danh_sach_don_hang" element={<OrderByShop />}/>
           <Route path="danh_sach_danh_muc" element={<ListSubCategory />}/>
           <Route path="chat" element={<Chat />}/>
@@ -101,6 +109,7 @@ function App() {
 
 const Nested=()=>{
   const [popover,setPopover]=useState(false)
+  const [popoverShop,setPopoverShop]=useState(false)
   const {user}=useContext(AuthContext)
   const [messages,setMessages]=useState()
   const [conversations,setConversations]=useState([])
@@ -239,7 +248,7 @@ useEffect(()=>{
                     {conversations.map(conversation=>(
                       <EuiFlexItem grow={false} key={conversation.shop.id} onClick={()=>handleSelected(conversation.conversationId,conversation.shop._id)}>
                       <EuiFlexGroup gutterSize='s' alignItems='center' responsive={false}>
-                        <EuiAvatar name='A' size='s'/>
+                        <EuiAvatar name='A' size='s' imageUrl={conversation.shop.avatar}/>
                         <EuiFlexItem>
                           <EuiText size='s'>{conversation.shop.name}</EuiText>
                           <EuiText color='subdued' size='xs'>{conversation?.latestMessage?.sender===user._id&&'bạn:'}&nbsp;{conversation.latestMessage?.text}</EuiText>
@@ -253,18 +262,29 @@ useEffect(()=>{
               {messages?(
                 <EuiFlexItem style={{background:'#fafafa'}}>
                 <EuiPageHeader paddingSize='none'>
-                  <EuiHeader style={{width:'100%',height:'40px'}}>
-                    <EuiHeaderSection>
-                      <EuiFlexGroup alignItems='center' gutterSize='s'>
-                      <EuiHeaderSectionItem>
-                        <EuiText>{messages?.shop?.name}</EuiText>
-                      </EuiHeaderSectionItem>
-                      <EuiHeaderSectionItem>
-                        <EuiIcon type='arrowDown' size='s'/>
-                      </EuiHeaderSectionItem>
-                      </EuiFlexGroup>
-                    </EuiHeaderSection>
-                  </EuiHeader>
+                      <EuiPopover
+                      isOpen={popoverShop}
+                      closePopover={()=>setPopoverShop(false)}
+                      button={
+                        <EuiHeader style={{width:'100%',height:'40px'}}>
+                          <EuiHeaderSection onClick={()=>setPopoverShop(!popoverShop)}>
+                            <EuiFlexGroup alignItems='center' gutterSize='s'>
+                              <EuiHeaderSectionItem>
+                                <EuiText>{messages?.shop?.name}</EuiText>
+                              </EuiHeaderSectionItem>
+                              <EuiHeaderSectionItem>
+                                <EuiIcon type='arrowDown' size='s'/>
+                              </EuiHeaderSectionItem>
+                            </EuiFlexGroup>
+                          </EuiHeaderSection>
+                      </EuiHeader>
+                      }>
+                        <EuiPopoverTitle>{messages?.shop?.name}</EuiPopoverTitle>
+                        <EuiListGroup gutterSize='none'>
+                          <EuiListGroupItem label={<EuiLink href={`/shop?id=${messages?.shop.id}`}>Xem thông tin cá nhân</EuiLink>} iconType="arrowRight"/>
+                        </EuiListGroup>
+                      </EuiPopover>
+                        
                 </EuiPageHeader>
                   <EuiFlexGroup direction='column' gutterSize='s' justifyContent='spaceBetween'>
                     <EuiFlexItem style={{maxHeight:'250px'}} className="eui-fullHeight eui-yScrollWithShadows">

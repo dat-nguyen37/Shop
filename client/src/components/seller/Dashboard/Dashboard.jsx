@@ -14,6 +14,7 @@ export default function Dashboard() {
     const {user,dispatch}=useContext(AuthContext)
     const [dots, setDots] = useState('');
     const [notificationPopover,setNotificationPopover]=useState(false)
+    const [isSideBar,setisSideBar]=useState(false)
 
         //notification
         const socket=useRef(io("ws://localhost:5000"))
@@ -85,7 +86,7 @@ export default function Dashboard() {
                 <EuiHeaderSection>
                     <EuiFlexGroup>
                         <EuiHeaderSectionItem>
-                            <EuiButtonIcon iconType="menu" color='text' iconSize='l'/>
+                            <EuiButtonIcon iconType="menu" color='text' iconSize='l' onClick={()=>setisSideBar(!isSideBar)}/>
                         </EuiHeaderSectionItem>
                         <EuiHeaderSectionItem>
                             <EuiText><h3>Kênh người bán</h3></EuiText>
@@ -166,7 +167,7 @@ export default function Dashboard() {
       </EuiPageHeader>
         {shop?(
         <EuiPageTemplate style={{paddingTop:'3rem'}}>
-            <EuiPageTemplate.Sidebar minWidth='200px' style={{background:'white'}}>
+            {isSideBar&&<EuiPageTemplate.Sidebar minWidth='200px' style={{background:'white'}}>
                 <EuiFlexGroup direction='column' style={{position:'fixed'}}>
                     <EuiFlexGroup>
                         <EuiIcon type="visLine"/>
@@ -195,7 +196,7 @@ export default function Dashboard() {
                         <EuiLink color='text'>Thông báo</EuiLink>
                     </EuiFlexGroup>
                 </EuiFlexGroup>
-            </EuiPageTemplate.Sidebar>
+            </EuiPageTemplate.Sidebar>}
             <EuiPageTemplate.Section color='subdued' paddingSize='none'>
                 <Outlet/>
             </EuiPageTemplate.Section>

@@ -69,6 +69,9 @@ const orderRoute=require('./route/Order')
 const paymentRoute=require('./route/payment')
 const NotificationRoute = require('./route/Notification')
 const LogRoute = require('./route/Log')
+const SlideRoute = require('./route/Slide')
+const ReportRoute = require('./route/Report')
+
 
 
 
@@ -94,6 +97,9 @@ app.use('/order',orderRoute)
 app.use('/payment',paymentRoute)
 app.use('/notification',NotificationRoute)
 app.use('/log',LogRoute)
+app.use('/slide',SlideRoute)
+app.use('/report',ReportRoute)
+
 
 
 

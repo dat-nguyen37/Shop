@@ -47,7 +47,7 @@ export default function ListProduct() {
         {field:'action',name:'Hành động',
             render:(item)=>(
                 <EuiFlexGroup gutterSize='s'>
-                    {item.status!=="cấm bán"&&<EuiButtonIcon iconType="eye" color='success'/>}
+                    <EuiButtonIcon iconType="eye" href={`/nguoi_ban/san_pham?masp=${item._id}`} color='success'/>
                     {item.status!=="cấm bán"&&<EuiButtonIcon iconType="documentEdit" color='primary' onClick={()=>handleUpdate(item)}/>}
                     <EuiButtonIcon iconType="trash" color='danger' onClick={()=>handleDelete(item._id)}/>
                 </EuiFlexGroup>

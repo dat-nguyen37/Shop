@@ -45,6 +45,7 @@ export default function Dashboard() {
                                 <EuiListGroupItem href='/dashboard/danh_sach_don_hang' label='Đơn hàng'/>
                                 <EuiListGroupItem href='/dashboard/danh_sach_cua_hang' label='Cửa hàng'/>
                                 <EuiListGroupItem href='/dashboard/danh_sach_nguoi_dung' label='Tài khoản'/>
+                                <EuiListGroupItem href='/dashboard/danh_sach_to_cao' label='Tố cáo'/>
                                 <EuiListGroupItem href='/dashboard/nhat_ky' label='Nhật ký'/>
                             </EuiListGroup>
                         </EuiAccordion>
@@ -58,7 +59,7 @@ export default function Dashboard() {
                                 <EuiLink color='text'>Page</EuiLink>
                             </EuiFlexGroup>}>
                             <EuiListGroup flush style={{paddingInline:'30px'}}>
-                                <EuiListGroupItem href='/profile' label='Slide'/>
+                                <EuiListGroupItem href='/dashboard/slide' label='Slide'/>
                                 <EuiListGroupItem href='/profile/address' label='Login'/>
                                 <EuiListGroupItem href='/profile/password' label='Register'/>
                             </EuiListGroup>
@@ -111,7 +112,7 @@ export default function Dashboard() {
                                             <EuiFlexItem>
                                                 <EuiText><b>{user.name}</b></EuiText>
                                                 <EuiFlexGroup alignItems='center'>
-                                                    <EuiLink href='/profile'>Chỉnh sửa hồ sơ</EuiLink>
+                                                    <EuiLink href='/'>Đến website</EuiLink>
                                                     <EuiButtonEmpty onClick={handleLogout}>Đăng xuất</EuiButtonEmpty>
                                                 </EuiFlexGroup>
                                             </EuiFlexItem>
@@ -131,30 +132,6 @@ export default function Dashboard() {
                 </EuiHeader>
             </EuiPageHeaderContent>
         </EuiPageHeader>
-        <EuiPageTemplate.Section grow={false}>
-            <EuiFlexGrid columns={4}>
-                <EuiFlexItem>
-                    <EuiPanel>
-                        <EuiStat title="1" description="Người dùng" />
-                    </EuiPanel>
-                </EuiFlexItem>
-                <EuiFlexItem>
-                    <EuiPanel>
-                        <EuiStat title="1" description="Cửa hàng" />
-                    </EuiPanel>
-                </EuiFlexItem>
-                <EuiFlexItem>
-                    <EuiPanel>
-                        <EuiStat title="1" description="Sản phẩm" />
-                    </EuiPanel>
-                </EuiFlexItem>
-                <EuiFlexItem>
-                    <EuiPanel>
-                        <EuiStat title="1" description="Doanh thu" />
-                    </EuiPanel>
-                </EuiFlexItem>
-            </EuiFlexGrid>
-        </EuiPageTemplate.Section>
         <EuiPageTemplate.Section>
             <Outlet/>
         </EuiPageTemplate.Section>

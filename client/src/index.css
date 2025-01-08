@@ -19,3 +19,6 @@ code {
     outline: none !important;
   }
   
+.customMenu .euiContextMenu {
+  width: 100%;
+}

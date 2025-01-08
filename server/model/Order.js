@@ -26,6 +26,9 @@ const orderSchema=new mongoose.Schema({
         enum: ['Chưa thanh toán', 'Đã thanh toán'],
         default: 'Chưa thanh toán',
     },
+    paymentMethod:{
+        type:String,
+    },
     name:{  
         type:String
     },

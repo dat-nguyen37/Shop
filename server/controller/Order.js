@@ -14,6 +14,7 @@ const User=require('../model/User')
                     phone:req.body.phone,
                     address:req.body.address,
                     shipping:req.body.shipping,
+                    paymentMethod:req.body.paymentMethod,
                     description:req.body.description
                 })
                 const order=await newOrder.save()
@@ -67,6 +68,7 @@ exports.getOrderByUser=async(req,res)=>{
                         confimationStatus: product.confimationStatus,
                         name: order.name,
                         phone:order.phone,
+                        paymentMethod:order.paymentMethod,
                         address: order.address,
                         description: order.description,
                         paymentStatus: order.paymentStatus,
@@ -101,7 +103,7 @@ exports.getOrderByUser=async(req,res)=>{
 
 exports.getAllByShop=async(req,res)=>{
     try {
-        const orders = await Order.find();
+        const orders = await Order.find().sort({createdAt:-1});
         const productsByShop = [];
         for(let order of orders){
             for(let product of order.product){
@@ -270,6 +272,14 @@ exports.statistical = async (req, res) => {
     }
 };
 
+exports.getAll=async(req,res)=>{
+    try {
+        const orders=await Order.find()
+        res.status(200).send(orders)
+    } catch (err) {
+        res.status(500).send(err)
+    }
+}
 
 
 

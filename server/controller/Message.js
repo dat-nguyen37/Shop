@@ -35,6 +35,7 @@ exports.getConversationByUser= async(req,res)=>{
         const shop = {
             id: user.shop[0]._id,
             name: user.shop[0].name,
+            avatar: user.shop[0].avatar,
         };
         const result = {
             shop,

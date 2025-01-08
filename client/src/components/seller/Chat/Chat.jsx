@@ -18,6 +18,7 @@ export default function Chat() {
     const [newMessage,setNewMessage]=useState('')
     const [arrivalMessages,setArrivalNewMessages]=useState(null)
     const [currentTab,setCurrentTab]=useState('tab1')
+    const [isLoading,setIsLoading]=useState(true)
     const socket=useRef(io("ws://localhost:5000"))
 
     useEffect(()=>{
@@ -76,6 +77,7 @@ export default function Chat() {
       try {
         const res= await axios.get('/conversation/getByShop/'+shop._id)
         setConversations(res.data)
+        setIsLoading(false)
       } catch (err) {
         console.log(err)
       }
@@ -126,8 +128,10 @@ export default function Chat() {
 
   return (
     <EuiFlexGroup responsive={false} gutterSize='s' style={{height:'calc(100vh - 3rem)'}}>
-        <EuiFlexItem grow={false} style={{background:'white',padding:'8px'}}>
-        {conversations.length?<EuiFlexGroup direction='column' gutterSize='s'>
+        <EuiFlexItem grow={false} style={{background:'white',padding:'8px',width:'250px'}}>
+        {isLoading?<>Loading...</>
+        :conversations.length?
+        <EuiFlexGroup direction='column' gutterSize='s'>
            <EuiFieldSearch placeholder='Tìm kiếm' style={{outline:'none'}}/>
             <EuiSpacer size='s'/>
             <EuiFlexGroup direction='column' gutterSize='s' className="eui-fullHeight eui-yScrollWithShadows">

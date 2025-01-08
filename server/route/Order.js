@@ -9,6 +9,8 @@ router.get('/getOrderByUser',CheckLogin,OrderController.getOrderByUser)
 router.patch('/update',OrderController.update)
 router.delete('/delete/:id',OrderController.delete)
 router.get('/statistical',OrderController.statistical)
+router.get('/getAll',OrderController.getAll)
+
 
 
 
