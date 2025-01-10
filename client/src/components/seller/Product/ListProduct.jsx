@@ -57,7 +57,7 @@ export default function ListProduct() {
     const [searchValue,setSearchValue]=useState("")
     const getProduct=async()=>{
         try {
-            const res=await axios.get(`/product/getProductByShop/${shop._id}?search=${searchValue}`)
+            const res=await axios.get(`/product/productByElasticSearch?shopId=${shop._id}&search=${searchValue}`)
             console.log(res.data)
             setData(res.data?.map(item=>(
                 {image:item.image,name:item.name,price:item.price,quantity:item.quantity,rating:item.rating,status:item.status,action:item}

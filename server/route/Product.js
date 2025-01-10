@@ -13,6 +13,8 @@ router.get('/getBestSellingByShop/:id',productController.getBestSellingByShop)
 router.get('/getBestSelling',productController.getBestSelling)
 router.get('/search',productController.search)
 router.get('/like/:id',checkLogin,productController.likeProduct)
+router.get('/productByElasticSearch',productController.getElasticSearch)
+
 
 
 

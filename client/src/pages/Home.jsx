@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { EuiButton, EuiCard, EuiFlexGrid, EuiFlexGroup, EuiFlexItem, EuiIcon, EuiImage, EuiLink, EuiPageSection, EuiPageTemplate, EuiPanel, EuiPopover, EuiText, EuiTextBlockTruncate, useIsWithinBreakpoints} from '@elastic/eui'
 import Slide from '../components/slide/Slide'
 import Footer from '../components/footer/Footer'
 import axios from '../axios'
 import ProductItem from '../components/productItem/ProductItem'
+import { DarkModeContext } from '../context/DarkModeContext'
 
 export default function Home() {
   const mobile=useIsWithinBreakpoints(['xs','s'])
@@ -12,6 +13,7 @@ export default function Home() {
   const [productByView,setProductByView]=useState([])
   const [categories,setCategories]=useState([])
 
+  const { color } = useContext(DarkModeContext);
 
   const getProducts=async()=>{
     try {
@@ -86,7 +88,7 @@ export default function Home() {
                           size='m'
                           height="150"
                           caption={
-                            <EuiTextBlockTruncate lines={3} style={{color:'black'}}>{item.name}</EuiTextBlockTruncate>
+                            <EuiTextBlockTruncate lines={3}>{item.name}</EuiTextBlockTruncate>
                           }
                           />
                         </EuiLink>

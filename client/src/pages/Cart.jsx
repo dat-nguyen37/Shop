@@ -161,7 +161,7 @@ export default function Cart() {
                         <EuiFlexGroup alignItems='center' justifyContent='flexEnd'>
                             <EuiFlexItem grow={false}>
                                 <EuiFlexGroup alignItems='center'>
-                                    <EuiText>Tổng thanh toán ({selectedItems.length} sản phẩm):</EuiText>
+                                    <EuiText color='black'>Tổng thanh toán ({selectedItems.length} sản phẩm):</EuiText>
                                     <EuiText color='red'>₫ {totalAmount.toLocaleString()}</EuiText>
                                     <EuiButton fill color='primary' onClick={Payment}>Mua hàng</EuiButton>
                                 </EuiFlexGroup>

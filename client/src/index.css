@@ -17,6 +17,7 @@ code {
 
   .euiFieldText ,.euiSelect, .euiFieldPassword, .euiTextArea,.euiFieldSearch {
     outline: none !important;
+    background-color: white;
   }
   
 .customMenu .euiContextMenu {

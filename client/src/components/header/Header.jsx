@@ -1,14 +1,18 @@
 import React, { useContext, useState } from 'react'
-import {EuiAvatar, EuiBreadcrumbs, EuiButton, EuiButtonEmpty, EuiFieldSearch, EuiFlexGroup, EuiFlexItem, EuiFormControlLayout, EuiHeader, EuiHeaderBreadcrumbs, EuiHeaderSection, EuiHeaderSectionItem, EuiHeaderSectionItemButton, EuiIcon, EuiImage, EuiLink, EuiListGroup, EuiListGroupItem, EuiPageHeader, EuiPageHeaderContent, EuiPageSidebar, EuiPopover, EuiPopoverFooter, EuiPopoverTitle, EuiSpacer, EuiText, EuiTextBlockTruncate} from '@elastic/eui'
+import {EuiAvatar, EuiBreadcrumbs, EuiButton, EuiButtonEmpty, EuiButtonIcon, EuiFieldSearch, EuiFlexGroup, EuiFlexItem, EuiFormControlLayout, EuiHeader, EuiHeaderBreadcrumbs, EuiHeaderSection, EuiHeaderSectionItem, EuiHeaderSectionItemButton, EuiHideFor, EuiIcon, EuiImage, EuiLink, EuiListGroup, EuiListGroupItem, EuiPageHeader, EuiPageHeaderContent, EuiPageSidebar, EuiPopover, EuiPopoverFooter, EuiPopoverTitle, EuiShowFor, EuiSpacer, EuiText, EuiTextBlockTruncate} from '@elastic/eui'
 import { css } from '@emotion/react'
 import { AuthContext } from '../../context/AuthContext'
 import axios from '../../axios'
+import { DarkModeContext } from '../../context/DarkModeContext'
 
 export default function Header({cart}) {
     const [isPopoverUser,setIsPopoverUSer]=useState(false)
     const [isPopoverCart,setIsPopoverCart]=useState(false)
-    const {user,dispatch}=useContext(AuthContext)
+    const [isPopoverSearch,setIsPopoverSearch]=useState(false)
+    const {user,dispatch:authDispatch }=useContext(AuthContext)
     const [valueSearch,setValueSearch]=useState('')
+    const { color,dispatch:darkModeDispatch  } = useContext(DarkModeContext);
+    
 
     const openPopoverUser=()=>setIsPopoverUSer(!isPopoverUser)
     const closePopoverUser=()=>setIsPopoverUSer(false)
@@ -21,11 +25,18 @@ export default function Header({cart}) {
     const handleLogout=async()=>{
         try {
             await axios.get('/auth/logout')
-            dispatch({type:'LOGOUT'})
+            authDispatch({type:'LOGOUT'})
         } catch (err) {
             console.log(err)
         }
     }
+    const toggleTheme = () => {
+        if (color === 'dark') {
+          darkModeDispatch({ type: 'STATE_LIGHT' });
+        } else {
+          darkModeDispatch({ type: 'STATE_DARK' });
+        }
+      };
 
   return (
     <div>
@@ -49,36 +60,46 @@ export default function Header({cart}) {
             pageTitle={
                 <EuiHeader style={{width:'100%',height:'70px',background:'#804040'}}>
                         <EuiHeaderSection>
-                            <EuiHeaderSectionItem>
-                                {/* <EuiButtonEmpty onClick={openPopoverNav} iconType="menu" color='text' iconSize='l'/> */}
-                                <EuiLink href="/"><EuiImage src="/assets/logo.png" style={{width:'300px',height:'60px'}}/></EuiLink>
-                            </EuiHeaderSectionItem>
-                        </EuiHeaderSection>
-                        <EuiHeaderSection>
-                            <EuiFlexGroup>
+                            <EuiHideFor sizes={["xs"]}>
                                 <EuiHeaderSectionItem>
-                                    <EuiFormControlLayout style={{fontSize:'14px'}} fullWidth>
-                                        <EuiFieldSearch placeholder='Tìm kiếm sản phẩm' onChange={(e) => setValueSearch(e.target.value)} onKeyDown={handleKeyPress} style={{width:'500px'}}/>
-                                    </EuiFormControlLayout>
+                                    <EuiLink href="/"><EuiImage src="/assets/logo.png" style={{width:'300px',height:'60px'}}/></EuiLink>
                                 </EuiHeaderSectionItem>
-                                <EuiHeaderSectionItem>
-                                    <EuiFlexGroup alignItems='center' gutterSize='s'>
-                                        <EuiFlexItem grow={false}>
-                                            <EuiImage src='/assets/phone-call.webp'/>
-                                        </EuiFlexItem>
-                                        <EuiFlexItem>
-                                            <EuiText color='white'><p>Hỗ trợ khách hàng</p></EuiText>
-                                            <EuiText color='white'><p>099999999</p></EuiText>
-                                        </EuiFlexItem>
-                                    </EuiFlexGroup>
-                                </EuiHeaderSectionItem>
-                            </EuiFlexGroup>
+                            </EuiHideFor>
+                                <EuiHideFor sizes={["xs","s","m"]}>
+                                    <EuiHeaderSectionItem>
+                                        <EuiFormControlLayout style={{fontSize:'14px'}} fullWidth>
+                                            <EuiFieldSearch placeholder='Tìm kiếm sản phẩm' onChange={(e) => setValueSearch(e.target.value)} onKeyDown={handleKeyPress} style={{width:"500px",backgroundColor:"white"}}/>
+                                        </EuiFormControlLayout>
+                                        <EuiButtonIcon iconType="search" size='m' display="fill" href={`/search?key=${encodeURIComponent(valueSearch)}`}/>
+                                    </EuiHeaderSectionItem>
+                                </EuiHideFor>
                         </EuiHeaderSection>
                     <EuiHeaderSection side="right">
-                        <EuiFlexGroup gutterSize='m' alignItems='center'>
-                            <EuiHeaderSectionItem>
+                        <EuiFlexGroup gutterSize='m' alignItems='center' responsive={false}>
+                            <EuiShowFor sizes={["xs","s","m"]}>
+                                <EuiHeaderSectionItem>
+                                    <EuiPopover
+                                    hasArrow={false}
+                                    isOpen={isPopoverSearch}
+                                    closePopover={()=>setIsPopoverSearch(false)}
+                                    button={
+                                        <EuiHeaderSectionItemButton onClick={()=>setIsPopoverSearch(!isPopoverSearch)}>
+                                            <EuiIcon type="search" size='l' style={{color:'white'}}/>
+                                        </EuiHeaderSectionItemButton>
+                                    }>
+                                        <EuiFlexGroup responsive={false} gutterSize='s'>
+                                            <EuiFormControlLayout style={{fontSize:'14px'}} fullWidth>
+                                                <EuiFieldSearch placeholder='Tìm kiếm sản phẩm' onChange={(e) => setValueSearch(e.target.value)} onKeyDown={handleKeyPress} />
+                                                </EuiFormControlLayout>
+                                            <EuiButtonIcon iconType="search" size='m' display="fill" href={`/search?key=${encodeURIComponent(valueSearch)}`}/>
+                                        </EuiFlexGroup>
+                                    </EuiPopover>
+                                </EuiHeaderSectionItem>
+                            </EuiShowFor>
+                            <EuiHeaderSectionItem >
                                 <EuiPopover
                                 panelPaddingSize='s'
+                                anchorPosition='downRight'
                                 panelStyle={{outline:'none',width:'300px'}}
                                 isOpen={isPopoverCart}
                                 closePopover={()=>setIsPopoverCart(false)}
@@ -145,7 +166,7 @@ export default function Header({cart}) {
                                 </EuiHeaderSectionItemButton>
                             </EuiHeaderSectionItem>
                             <EuiHeaderSectionItem>
-                                <EuiButtonEmpty iconType="apps" iconSize='xl' color=""/>
+                                <EuiButtonEmpty onClick={toggleTheme} iconType={color==="light"?"./assets/sleep-mode.png":"./assets/day-mode.png"} iconSize='xl' color=""/>
                             </EuiHeaderSectionItem>
                         </EuiFlexGroup>
                     </EuiHeaderSection>

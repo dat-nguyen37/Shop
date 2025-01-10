@@ -7,7 +7,7 @@ import Login from './pages/Login';
 import ProductDetail from './pages/ProductDetail';
 import Footer from './components/footer/Footer';
 import ShopView from './pages/ShopView';
-import { EuiAbsoluteTab, EuiAvatar, EuiBottomBar, EuiButton, EuiButtonIcon, EuiFieldSearch, EuiFieldText, EuiFlexGroup, EuiFlexItem, EuiHeader, EuiHeaderSection, EuiHeaderSectionItem, EuiHorizontalRule, EuiIcon, EuiImage, EuiLink, EuiListGroup, EuiListGroupItem, EuiPageBody, EuiPageHeader, EuiPageSection, EuiPageTemplate, EuiPanel, EuiPopover, EuiPopoverTitle, EuiRelativeTab, EuiSpacer, EuiText } from '@elastic/eui';
+import { EuiAbsoluteTab, EuiAvatar, EuiBottomBar, EuiButton, EuiButtonIcon, EuiFieldSearch, EuiFieldText, EuiFlexGroup, EuiFlexItem, EuiHeader, EuiHeaderSection, EuiHeaderSectionItem, EuiHorizontalRule, EuiIcon, EuiImage, EuiLink, EuiListGroup, EuiListGroupItem, EuiPageBody, EuiPageHeader, EuiPageSection, EuiPageTemplate, EuiPanel, EuiPopover, EuiPopoverTitle, EuiProvider, EuiRelativeTab, EuiSpacer, EuiText } from '@elastic/eui';
 import Cart from './pages/Cart';
 import Payment from './pages/Payment';
 import Profile from './pages/Profile';
@@ -43,6 +43,7 @@ import Slide from './components/admin/slide/Slide';
 import StatisticalAdmin from './components/admin/Statistical/Statistical';
 import Report from './components/admin/report/Report';
 import ViewProduct from './components/seller/Product/ViewProduct';
+import { DarkModeContext } from './context/DarkModeContext';
 
 
 function App() {
@@ -60,8 +61,10 @@ function App() {
     getLogin()
   },[])
 
+    const { color } = useContext(DarkModeContext);
+  
   return (
-    <>
+  <EuiProvider colorMode={color}>
       <Routes>
         <Route path="/dangky_nguoiban" element={user?<RegisterSeller />:<Navigate to="/dang_nhap"/>} />
         <Route path="/dang_ky" element={<Register />} />
@@ -103,7 +106,7 @@ function App() {
           </Route>
         </Route>
       </Routes>
-    </>
+      </EuiProvider>
   );
 }
 
@@ -138,7 +141,6 @@ const Nested=()=>{
     { getMessage()
       getConversations()
     }
-    console.log(arrivalMessages)
 },[arrivalMessages,curentChat])
 
 const handleSelected=(conversationId,selectedShopId)=>{
@@ -235,14 +237,14 @@ useEffect(()=>{
           {!popover&&<EuiLink onClick={()=>setPopover(true)} color='danger'><EuiIcon type="discuss"/>&nbsp;<b>Chat</b></EuiLink>}
         {popover&&<EuiFlexGroup direction='column' gutterSize='s' style={{background:'white',width:"500px",padding:"5px"}}>
               <EuiFlexGroup justifyContent='spaceBetween' alignItems='center'>
-                <EuiText>Chat</EuiText>
+                <EuiText style={{color:"black"}}>Chat</EuiText>
                 <EuiButtonIcon iconType="arrowDown" display='fill' color='text' onClick={()=>setPopover(false)}/>
               </EuiFlexGroup>
             <EuiHorizontalRule margin='none'/>
             {user?(
               conversations.length?<EuiFlexGroup style={{height:'330px'}} responsive={false} gutterSize='s'>
               <EuiFlexItem grow={false} style={{width:'180px'}}>
-                  <EuiFieldSearch placeholder='Tìm kiếm' style={{outline:'none'}}/>
+                  <EuiFieldSearch placeholder='Tìm kiếm' style={{outline:'none',backgroundColor:"white",color:'black'}}/>
                   <EuiSpacer size='s'/>
                   <EuiFlexGroup direction='column' gutterSize='s' className="eui-fullHeight eui-yScrollWithShadows">
                     {conversations.map(conversation=>(
@@ -250,7 +252,7 @@ useEffect(()=>{
                       <EuiFlexGroup gutterSize='s' alignItems='center' responsive={false}>
                         <EuiAvatar name='A' size='s' imageUrl={conversation.shop.avatar}/>
                         <EuiFlexItem>
-                          <EuiText size='s'>{conversation.shop.name}</EuiText>
+                          <EuiText size='s' style={{color:"black"}}>{conversation.shop.name}</EuiText>
                           <EuiText color='subdued' size='xs'>{conversation?.latestMessage?.sender===user._id&&'bạn:'}&nbsp;{conversation.latestMessage?.text}</EuiText>
                         </EuiFlexItem>
                         <EuiText size='xs' color='subdued'>{moment(conversation?.latestMessage?.createdAt).format("DD/MM")}</EuiText>
@@ -300,7 +302,7 @@ useEffect(()=>{
                     </EuiFlexItem>
                     <EuiFlexItem grow={false} style={{background:'white'}}>
                       <EuiFlexGroup alignItems='center' gutterSize='s' responsive={false}>
-                        <EuiFieldText placeholder='Viết gì đó ...' onChange={(e)=>setNewMessage(e.target.value)} style={{outline:'none'}}/>
+                        <EuiFieldText placeholder='Viết gì đó ...' onChange={(e)=>setNewMessage(e.target.value)} style={{outline:'none',}}/>
                         <EuiButtonIcon iconType="/assets/send-message.png" iconSize='m' onClick={sendMessage}/>
                       </EuiFlexGroup>
                     </EuiFlexItem>

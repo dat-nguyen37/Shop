@@ -60,7 +60,6 @@ export default function AddCategory({setModalAdd,}) {
 
   return (
     <EuiModal onClose={()=>setModalAdd(false)}>
-        <ToastContainer/>
         <EuiModalHeader>
             <EuiModalHeaderTitle>Thêm mới</EuiModalHeaderTitle>
         </EuiModalHeader>
