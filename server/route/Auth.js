@@ -4,7 +4,7 @@ const Passport=require('passport')
 const User=require('../model/User')
 const jwt =require('jsonwebtoken')
 
-const CLIENT_URL="https://shop-fe.onrender.com/:3000"
+const CLIENT_URL="https://shop-fe.onrender.com"
 const checkLogin=require('../verifyToken')
 
 route.post('/register',AuthController.register)
