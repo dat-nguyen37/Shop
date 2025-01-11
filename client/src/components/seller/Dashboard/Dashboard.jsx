@@ -17,14 +17,14 @@ export default function Dashboard() {
     const [isSideBar,setisSideBar]=useState(false)
 
         //notification
-        const socket=useRef(io("ws://localhost:5000"))
+        const socket=useRef(io("wss://shop-oyck.onrender.com"))
 
         const [notifications,setNotifications]=useState([])
         const [newNotification,setNewNotification]=useState(null)
     
         useEffect(()=>{
           // khởi tạo kết nối
-           socket.current=io("ws://localhost:5000")
+           socket.current=io("wss://shop-oyck.onrender.com")
            socket.current.on("getNotification",data=>{
             setNewNotification({
              sender:data.senderId,

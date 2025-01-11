@@ -175,11 +175,11 @@ export default function Payment() {
     },[])
 
     //notification
-    const socket=useRef(io("ws://localhost:5000"))
+    const socket=useRef(io("wss://shop-oyck.onrender.com"))
 
     useEffect(()=>{
       // khởi tạo kết nối
-       socket.current=io("ws://localhost:5000")
+       socket.current=io("wss://shop-oyck.onrender.com")
     },[])
 
     useEffect(()=>{

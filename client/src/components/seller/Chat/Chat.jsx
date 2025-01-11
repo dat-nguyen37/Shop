@@ -19,11 +19,11 @@ export default function Chat() {
     const [arrivalMessages,setArrivalNewMessages]=useState(null)
     const [currentTab,setCurrentTab]=useState('tab1')
     const [isLoading,setIsLoading]=useState(true)
-    const socket=useRef(io("ws://localhost:5000"))
+    const socket=useRef(io("wss://shop-oyck.onrender.com"))
 
     useEffect(()=>{
       // khởi tạo kết nối
-       socket.current=io("ws://localhost:5000")
+       socket.current=io("wss://shop-oyck.onrender.com")
        // lắng nghe tin nhắn
        socket.current.on("getMessage",data=>{
              setArrivalNewMessages({
