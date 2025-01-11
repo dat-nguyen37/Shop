@@ -51,13 +51,6 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use((req, res, next) => {
-    res.setHeader(
-      "Content-Security-Policy",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com blob:; worker-src blob:;"
-    );
-    next();
-  });
 
 const createLog = require('./Log')
 app.use(createLog)
