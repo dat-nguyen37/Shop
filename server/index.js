@@ -2,7 +2,7 @@ const express=require('express')
 const connect=require('./config/db')
 const cookieParser=require('cookie-parser')
 const cors=require('cors')
-const sessionCookie = require('express-session')
+const sessionCookie = require('cookie-session');
 const MongoStore = require('connect-mongo');
 const bodyParser = require('body-parser');
 require('dotenv').config()
@@ -24,32 +24,22 @@ socketHandlers(io);
 
 app.use(express.json())
 app.use(cookieParser())
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieSession({
+    name: 'session',
+    secret: process.env.SECRET,
+    maxAge: 24 * 60 * 60 * 1000
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(cors(
     {
         origin: 'https://shop-fe.onrender.com',
         credentials: true,
     }
 ))
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(
-    sessionCookie({
-        store: MongoStore.create({
-            mongoUrl: process.env.DB_URL,
-            collectionName: 'sessions',
-        }),
-        secret:process.env.SECRET, 
-        resave: false, 
-        saveUninitialized: false,
-        cookie: {
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'None',
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-        },
-    })
-)
-
-app.use(passport.initialize());
-app.use(passport.session());
 
 
 const createLog = require('./Log')
