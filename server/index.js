@@ -52,10 +52,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(passport.initialize());
 app.use(passport.session());
-app.use((req, res, next) => {
-    console.log("Session User:", req.user); // Kiểm tra user trong session
-    next();
-});
+
 
 const createLog = require('./Log')
 app.use(createLog)
