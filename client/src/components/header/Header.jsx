@@ -142,7 +142,7 @@ export default function Header({cart}) {
                                         closePopover={closePopoverUser}
                                         button={<EuiAvatar onClick={openPopoverUser} name='EL' color="#68C4A2" size='m' imageUrl={user?.imageUrl}/>}
                                     >
-                                        {user?(<EuiFlexGroup gutterSize='s' alignItems='center'>
+                                        {user?(<EuiFlexGroup gutterSize='s' alignItems='center' responsive={false}>
                                             <EuiFlexItem grow={false}>
                                                 <EuiAvatar name='EL' color="#68C4A2" size='xl' imageUrl={user?.imageUrl}/>
                                             </EuiFlexItem>
@@ -154,7 +154,7 @@ export default function Header({cart}) {
                                                 </EuiFlexGroup>
                                             </EuiFlexItem>
                                         </EuiFlexGroup>):(
-                                            <EuiFlexGroup gutterSize='s' alignItems='center'>
+                                            <EuiFlexGroup gutterSize='s' alignItems='center' responsive={false}>
                                                 <EuiFlexItem grow={false}>
                                                     <EuiAvatar name='EL' color="#68C4A2" size='m' />
                                                 </EuiFlexItem>

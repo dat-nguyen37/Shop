@@ -21,6 +21,7 @@ route.get("/login/success",async(req,res)=>{
          const token=jwt.sign({userId:user._id,role:user.role},process.env.SECRET)
          const {password,role,shop,status,...others}=user._doc
         res.cookie("access_token", token,{
+          path:'/',
           httpOnly:true,
           secure: process.env.NODE_ENV === 'production',
           sameSite: 'None',
