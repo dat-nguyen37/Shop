@@ -22,7 +22,7 @@ route.get("/login/success",async(req,res)=>{
          const {password,role,shop,status,...others}=user._doc
         res.cookie("access_token", token,{
           httpOnly:true,
-          secure: true,
+          secure: process.env.NODE_ENV === 'production',
           sameSite: 'None',
           maxAge: 7 * 24 * 60 * 60 * 1000}).status(200).send(others); 
         } catch (err) {

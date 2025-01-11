@@ -72,7 +72,7 @@ exports.login=async(req,res)=>{
         const {password,shop,status,...others}=user._doc
         res.cookie("access_token", token,{
             httpOnly:true,
-            secure: true,
+            secure: process.env.NODE_ENV === 'production',
             sameSite: 'None',
             maxAge: 7 * 24 * 60 * 60 * 1000}).status(200).json(others); 
     } catch (err) {
