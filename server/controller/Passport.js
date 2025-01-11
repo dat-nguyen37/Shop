@@ -7,7 +7,7 @@ const User=require('../model/User')
 passport.use(new GoogleStrategy({
   clientID: "1084805314648-iidnjt0lqi2ivn0e1cvmqpo66ba9ucan.apps.googleusercontent.com",
   clientSecret: "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",
-  callbackURL: "http://localhost:5000/auth/google/callback"
+  callbackURL: "https://shop-oyck.onrender.com/auth/google/callback"
   },
   function (accessToken, refreshToken, profile, done) {
    // cb(undefined,profile)
@@ -32,7 +32,7 @@ passport.use(new GoogleStrategy({
 passport.use(new GithubStrategy({
   clientID: "8cbb53140120b4bd80be",
   clientSecret: "09d902b17621ca490bab0e057f115518fcbd2d58",
-  callbackURL: "http://localhost:5000/auth/github/callback",
+  callbackURL: "https://shop-oyck.onrender.com/auth/github/callback",
   scope: ["user:email"]
   },
   function (accessToken, refreshToken, profile, done) {

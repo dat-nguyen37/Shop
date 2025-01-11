@@ -18,7 +18,7 @@ exports.register=async(req,res)=>{
             process.env.SECRET,
             { expiresIn: "1h" }
         );
-        const verificationLink = `http://localhost:3000/kich_hoat?token=${verificationToken}`;
+        const verificationLink = `https://shop-fe.onrender.com/kich_hoat?token=${verificationToken}`;
         await sendMail({
             from: process.env.EMAIL,
             to: email,

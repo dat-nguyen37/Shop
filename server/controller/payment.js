@@ -85,9 +85,9 @@ exports.vnpay_return=(req, res)=> {
     if(secureHash === signed){
         //Kiem tra xem du lieu trong db co hop le hay khong va thong bao ket qua
         // reply.send({ code: vnp_Params['vnp_ResponseCode'], message: 'success' });
-        res.redirect(`http://localhost:3000/payment?Message=Success&id=${orderId}`)
+        res.redirect(`https://shop-fe.onrender.com/payment?Message=Success&id=${orderId}`)
     } else {
-        res.redirect("http://localhost:3000/payment?Message=Failure")
+        res.redirect("https://shop-fe.onrender.com/payment?Message=Failure")
 
     }
 }
