@@ -38,7 +38,7 @@ app.use(
             collectionName: 'sessions',
           }),
         secret:process.env.SECRET, 
-        resave: false, 
+        resave: true, 
         saveUninitialized: false,
         cookie: {
             httpOnly:true,
