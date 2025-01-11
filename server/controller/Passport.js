@@ -61,5 +61,6 @@ passport.serializeUser((user,done)=>{
 })
 
 passport.deserializeUser((user,done)=>{
+  console.log("Deserialized user:", user);
     done(null,user)
 })
