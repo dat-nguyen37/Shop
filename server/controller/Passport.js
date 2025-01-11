@@ -37,7 +37,7 @@ passport.use(new GithubStrategy({
   },
   function (accessToken, refreshToken, profile, done) {
    // done(undefined,profile)
-   console.log(profile);
+   console.log("profile",profile);
     if(profile.id){
       User.findOne({email:profile.email})
       .then((user)=>{
