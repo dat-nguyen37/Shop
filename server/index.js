@@ -51,6 +51,11 @@ app.use(cors(
         credentials: true,
     }
 ))
+app.use((req, res, next) => {
+    console.log('Cookies:', req.cookies); // Log cookie từ client
+    console.log('Session:', req.session); // Log session khôi phục
+    next();
+});
 
 
 const createLog = require('./Log')
