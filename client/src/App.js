@@ -52,6 +52,7 @@ function App() {
   const getLogin=async()=>{
     try {
       const res=await axios.get('/auth/login/success')
+      console.log(res.data)
       dispatch({type:'LOGIN_SUCCESS',payload:res.data})
     } catch (err) {
       console.log(err)
