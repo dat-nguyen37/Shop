@@ -42,9 +42,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
             saveUninitialized: false,
             cookie: {
                 path:'/',
-                httpOnly:true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'None',
+                // httpOnly:true,
+                // secure: process.env.NODE_ENV === 'production',
+                // sameSite: 'None',
                 maxAge: 7 * 24 * 60 * 60 * 1000,
             },
         })
