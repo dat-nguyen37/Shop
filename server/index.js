@@ -50,11 +50,6 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
-app.use((req, res, next) => {
-    console.log("Session:", req.session); // Kiểm tra session có chứa user không
-    next();
-  });
-
 
 const createLog = require('./Log')
 app.use(createLog)
