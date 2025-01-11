@@ -1,8 +1,8 @@
 const express=require('express')
 const connect=require('./config/db')
-const cookieParser=require('express-session')
+const cookieParser=require('cookie-parser')
 const cors=require('cors')
-const sessionCookie = require('cookie-session');
+const sessionCookie = require('express-session')
 const MongoStore = require('connect-mongo');
 const bodyParser = require('body-parser');
 require('dotenv').config()
@@ -27,21 +27,20 @@ app.use(cookieParser())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
     sessionCookie({
-      secret: process.env.SECRET,
-      resave: false,
-      saveUninitialized: false,
-      store: MongoStore.create({
-        mongoUrl: process.env.DB_URL, // URL MongoDB
-        ttl: 24 * 60 * 60, // Thời gian sống của session (1 ngày)
-      }),
-      cookie: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // Chỉ gửi cookie qua HTTPS trong môi trường production
-        sameSite: 'None',
-        maxAge: 24 * 60 * 60 * 1000, // 1 ngày
-      },
+        store: MongoStore.create({
+            mongoUrl: process.env.DB_URL,
+            collectionName: 'sessions',
+        }),
+        secret:process.env.SECRET, 
+        resave: false, 
+        saveUninitialized: false,
+        cookie: {
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'None',
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        },
     })
-  );
+)
 
 app.use(passport.initialize());
 app.use(passport.session());

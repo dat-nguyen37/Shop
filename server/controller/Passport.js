@@ -10,7 +10,7 @@ passport.use(new GoogleStrategy({
   },
   function (accessToken, refreshToken, profile, done) {
    // cb(undefined,profile)
-   console.log("profile",profile);
+  //  console.log("profile",profile);
     if(profile.id){
       User.findOne({email:profile.emails[0].value})
       .then((user)=>{
