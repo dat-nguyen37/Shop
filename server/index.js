@@ -25,7 +25,7 @@ socketHandlers(io);
 app.use(express.json())
 app.use(cookieParser())
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieSession({
+app.use(sessionCookie({
     name: 'session',
     secret: process.env.SECRET,
     maxAge: 24 * 60 * 60 * 1000
