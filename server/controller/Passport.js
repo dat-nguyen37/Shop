@@ -1,6 +1,5 @@
 const passport=require('passport')
 const GoogleStrategy= require('passport-google-oauth20').Strategy
-const GithubStrategy= require('passport-github2').Strategy 
 const User=require('../model/User')
 
 // google
@@ -29,32 +28,7 @@ passport.use(new GoogleStrategy({
   )
   }
 }));
-// github
-// passport.use(new GithubStrategy({
-//   clientID: "8cbb53140120b4bd80be",
-//   clientSecret: "09d902b17621ca490bab0e057f115518fcbd2d58",
-//   callbackURL: "https://shop-oyck.onrender.com/auth/github/callback",
-//   scope: ["user:email"]
-//   },
-//   function (accessToken, refreshToken, profile, done) {
-//    // done(undefined,profile)
-//     if(profile.id){
-//       User.findOne({email:profile.email})
-//       .then((user)=>{
-//          if(user){
-//           done(null,user)
-//          }else{
-//           new User({
-//             name: profile.displayName,
-//             email: profile.email,
-//             imageUrl: profile.photos[0].value,
-//           }).save()
-//           .then(user => done(null, user));
-//          }
-//     }
-//   )
-//   }
-// }));
+
 passport.serializeUser((user,done)=>{
     console.log("Serialized user:", user)
     done(null,user)

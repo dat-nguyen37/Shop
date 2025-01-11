@@ -31,26 +31,30 @@ app.use(cors(
     }
 ))
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(
-    session({
-        store: MongoStore.create({
-            mongoUrl: process.env.DB_URL,
-            collectionName: 'sessions',
-          }),
-        secret:process.env.SECRET, 
-        resave: true, 
-        saveUninitialized: false,
-        cookie: {
-            httpOnly:true,
-            secure: true,
-            sameSite: 'None',
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-          },
-    })
-)
+    app.use(
+        session({
+            store: MongoStore.create({
+                mongoUrl: process.env.DB_URL,
+                collectionName: 'sessions',
+            }),
+            secret:process.env.SECRET, 
+            resave: false, 
+            saveUninitialized: false,
+            cookie: {
+                httpOnly:true,
+                secure: true,
+                sameSite: 'None',
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+            },
+        })
+    )
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use((req, res, next) => {
+    console.log("Session User:", req.user); // Kiểm tra user trong session
+    next();
+});
 
 const createLog = require('./Log')
 app.use(createLog)

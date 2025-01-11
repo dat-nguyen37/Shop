@@ -15,7 +15,6 @@ route.post('/verifyPassword',checkLogin,AuthController.verifyPassword)
 
 // google
 route.get("/login/success",async(req,res)=>{  
-  console.log("req.user",req.session);
     if(req.user){
         try {
          const user=await User.findOne({email:req.user.email})
@@ -35,14 +34,9 @@ route.get("/login/success",async(req,res)=>{
  route.get("/google/callback",Passport.authenticate("google", { 
    failureRedirect: `${CLIENT_URL}/dang_nhap`,
    successRedirect: CLIENT_URL
-}));
-// github
-// route.get("/github",Passport.authenticate("github", {scope:["email","profile"]}))
-// route.get("/github/callback", Passport.authenticate("github",{
-//   failureRedirect: `${CLIENT_URL}/dang_nhap`,
-//   successRedirect: CLIENT_URL
-// }))
-
+}), (req, res) => {
+  console.log("Google callback - req.user", req.user);  // Kiểm tra sau khi xác thực
+});
 
 
 module.exports=route
