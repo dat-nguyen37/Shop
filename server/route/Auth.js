@@ -15,7 +15,7 @@ route.post('/verifyPassword',checkLogin,AuthController.verifyPassword)
 
 // google
 route.get("/login/success",async(req,res)=>{  
-    console.log("user",req.user)
+    console.log("user",req)
     if(req.user){
         try {
          const user=await User.findOne({email:req.user.email})
