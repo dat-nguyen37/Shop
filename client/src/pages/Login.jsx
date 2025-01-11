@@ -73,7 +73,7 @@ export default function Login() {
     }
 
     const google=()=>{
-        window.open("http://localhost:5000/auth/google", "_self")
+        window.open("https://shop-oyck.onrender.com/auth/google", "_self")
      }
      
   return (
