@@ -24,6 +24,7 @@ socketHandlers(io);
 
 app.use(express.json())
 app.use(cookieParser())
+app.set('trust proxy', 1);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
     sessionCookie({
@@ -54,8 +55,10 @@ app.use(cors(
 app.use((req, res, next) => {
     console.log('Cookies:', req.cookies); // Log cookie từ client
     console.log('Session:', req.session); // Log session khôi phục
+    console.log('Environment:', process.env.NODE_ENV);
     next();
 });
+
 
 
 const createLog = require('./Log')
