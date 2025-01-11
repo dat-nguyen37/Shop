@@ -30,8 +30,8 @@ passport.use(new GoogleStrategy({
 }));
 
 passport.serializeUser((user,done)=>{
-    console.log("Serialized user:", user.email)
-    done(null,user.email)
+    console.log("Serialized user:", user)
+    done(null,user)
 })
 
 passport.deserializeUser((user,done)=>{
