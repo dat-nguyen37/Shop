@@ -56,6 +56,7 @@ passport.use(new GithubStrategy({
   }
 }));
 passport.serializeUser((user,done)=>{
+    console.log("Serialized user:", user)
     done(null,user)
 })
 
