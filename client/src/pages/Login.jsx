@@ -73,7 +73,7 @@ export default function Login() {
     }
 
     const google=()=>{
-        window.open("https://shop-oyck.onrender.com/auth/google", "_blank")
+        window.open("https://shop-oyck.onrender.com/auth/google", "_self")
      }
      
   return (
