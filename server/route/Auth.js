@@ -29,8 +29,6 @@ route.get("/login/success",async(req,res)=>{
         } catch (err) {
           res.send(err)
         }
-    }else{
-        res.status(401).send("Unauthorized")
     }
  })
  route.get("/google",Passport.authenticate("google", {scope:["email","profile"]}))
