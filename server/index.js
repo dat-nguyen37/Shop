@@ -31,17 +31,34 @@ app.use(cors(
     }
 ))
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(session({
-    secret: process.env.SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        httpOnly: true,   // Không thể truy cập cookie từ JavaScript
-        secure: process.env.NODE_ENV === 'production',  // Chỉ sử dụng cookie trên HTTPS
-        sameSite: 'None',  // Cho phép cookie giữa các miền
-        maxAge: 7 * 24 * 60 * 60 * 1000  // Thời gian hết hạn cookie
+// app.use(
+//     session({
+//         store: MongoStore.create({
+//             mongoUrl: process.env.DB_URL,
+//             collectionName: 'sessions',
+//         }),
+//         secret:process.env.SECRET, 
+//         resave: false, 
+//         saveUninitialized: false,
+//         cookie: {
+//             // httpOnly:true,
+//             // secure: process.env.NODE_ENV === 'production',
+//             // sameSite: 'None',
+//             maxAge: 7 * 24 * 60 * 60 * 1000,
+//         },
+//     })
+// )
+app.use(session(
+    {
+        secret: process.env.SECRET,
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+          maxAge: 7*24 * 60 * 60 * 1000,
+        },
     }
-}));
+))
+
 app.use(passport.initialize());
 app.use(passport.session());
 
