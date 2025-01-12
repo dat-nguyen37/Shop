@@ -88,7 +88,7 @@ function App() {
           <Route path="san_pham" element={<ViewProduct />}/>
           <Route path="danh_sach_don_hang" element={<OrderByShop />}/>
           <Route path="danh_sach_danh_muc" element={<ListSubCategory />}/>
-          <Route path="danh_sach_bai_viet" element={<News />}/>
+          <Route path="danh_sach_bai_viet" element={<News/>}/>
           <Route path="chat" element={<Chat />}/>
         </Route>
         <Route path="/" element={<Nested />} >

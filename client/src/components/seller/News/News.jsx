@@ -1,9 +1,6 @@
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 import React, { useRef, useState } from 'react';
 import { EuiBasicTable, EuiButton, EuiButtonIcon, EuiFlexGroup, EuiPanel, EuiSpacer, EuiText } from '@elastic/eui';
 import AddNew from './AddNew';
-import { render } from 'timeago.js';
 
 export default function News() {
     const [isModalAddNewVisible, setIsModalAddNewVisible] = useState(false);
