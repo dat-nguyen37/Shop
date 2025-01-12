@@ -91,40 +91,42 @@ exports.getAll = async (req, res) => {
             index: 'products',
             body: {
                 query: {
-                    bool: {
-                        must: []
-                    }
+                    match_all: {},
                 },
                 size: 50,
             }
         };
 
         if (search) {
-            query.body.query.bool.must.push({
-                match: {
-                    "product.name": {
-                        query: search,
-                        fuzziness: "1",
-                        operator: "and"
-                    }
-                }
-            });
-        } else {
-            // Nếu không có search, dùng match_all
             query.body.query = {
-                match_all: {}
+                bool: {
+                    must: [
+                        {
+                            match: {
+                                "product.name": {
+                                    query: search,
+                                    fuzziness: "1",
+                                    operator: "and"
+                                }
+                            }
+                        }
+                    ]
+                }
             };
         }
 
-
+        // Thực hiện tìm kiếm trên Elasticsearch
         const result = await Client.search(query);
-        const products = result.hits.hits.map(hit => hit._source.product);
+        const products = result.hits.hits
+            .map(hit => hit._source.product)
+            .filter(product => product !== null && product !== undefined); 
         res.status(200).send(products);
     } catch (err) {
         console.error("Error in Elasticsearch query:", err);
         res.status(500).send(err);
     }
 };
+
 
 exports.getByActive=async(req,res)=>{
     try {
