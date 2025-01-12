@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { EuiButton, EuiCard, EuiFlexGrid, EuiFlexGroup, EuiFlexItem, EuiIcon, EuiImage, EuiLink, EuiPageSection, EuiPageTemplate, EuiPanel, EuiPopover, EuiText, EuiTextBlockTruncate, useIsWithinBreakpoints} from '@elastic/eui'
+import { EuiButton, EuiCard, EuiFlexGrid, EuiFlexGroup, EuiFlexItem, EuiIcon, EuiImage, EuiLink, EuiPageSection, EuiPageTemplate, EuiPanel, EuiPopover, EuiSpacer, EuiText, EuiTextBlockTruncate, useIsWithinBreakpoints} from '@elastic/eui'
 import Slide from '../components/slide/Slide'
 import Footer from '../components/footer/Footer'
 import axios from '../axios'
@@ -48,6 +48,27 @@ export default function Home() {
     <div>
         <Slide/>
         <EuiPageTemplate.Section color='transparent'>
+          <EuiFlexGroup direction='column'>
+            <EuiFlexGroup alignItems='center' justifyContent='spaceBetween'>
+              <EuiText>Tin tức</EuiText>
+              <EuiLink>Xem thêm</EuiLink>
+            </EuiFlexGroup>
+            <EuiFlexGrid columns={4}>
+              <EuiImage 
+                src='/assets/profile.jpg' 
+                alt=''
+                hasShadow
+                caption={
+                    <p>
+                        <EuiText textAlign='center' size='s'><b>4 nguyên tắc thiết kế cửa sổ bếp hợp phong thủy, hút tài lộc</b></EuiText>
+                        <EuiText color='subdued' size='xs'>30/1/2024</EuiText>
+                        <EuiText textAlign='center' size='s'>Bếp không chỉ là nơi nấu nướng mà còn là trái tim của ngôi nhà, nơi giữ lửa hạnh phúc và tài lộc</EuiText>
+                    </p>
+                }
+                height="200"/>
+            </EuiFlexGrid>
+          </EuiFlexGroup>
+          <EuiSpacer/>
           <EuiPanel>
             <EuiFlexGroup direction='column'>
               <EuiFlexItem>
