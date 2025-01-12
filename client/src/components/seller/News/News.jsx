@@ -1,61 +1,48 @@
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import React, { useRef, useState } from 'react';
-import { EuiPanel } from '@elastic/eui';
+import { EuiBasicTable, EuiButton, EuiButtonIcon, EuiFlexGroup, EuiPanel, EuiSpacer, EuiText } from '@elastic/eui';
+import AddNew from './AddNew';
+import { render } from 'timeago.js';
 
 export default function News() {
-    const [value, setValue] = useState('');
-    const reactQuillRef = useRef(null);
-    console.log(value);
+    const [isModalAddNewVisible, setIsModalAddNewVisible] = useState(false);
+
+    const columns = [
+        {
+            field: 'title',
+            name: 'Tiêu đề',
+        },
+        {
+            field: 'content',
+            name: 'Nội dung',
+        },
+        {
+            field: 'action',
+            name: 'Hành động',
+            render: () => (
+                <EuiFlexGroup>
+                    <EuiButtonIcon iconType="indexEdit"/>
+                    <EuiButtonIcon iconType="trash" color='danger'/>
+                </EuiFlexGroup>
+            )
+        },
+    ]
+    const items = [
+    ]
 
     return (
         <EuiPanel style={{height:'calc(100vh - 3rem'}}>
-            <ReactQuill
-                ref={reactQuillRef}
-                theme="snow"
-                placeholder="Start writing..."
-                modules={{
-                    toolbar: {
-                    container: [
-                        [{ header: "1" }, { header: "2" }, { font: [] }],
-                        [{ size: [] }],
-                        ["bold", "italic", "underline", "strike", "blockquote"],
-                        [
-                        { list: "ordered" },
-                        { list: "bullet" },
-                        { indent: "-1" },
-                        { indent: "+1" },
-                        ],
-                        ["link", "image", "video"],
-                        ["code-block"],
-                        ["clean"],
-                    ],
-                    },
-                    clipboard: {
-                    matchVisual: false,
-                    },
-                }}
-                formats={[
-                    "header",
-                    "font",
-                    "size",
-                    "bold",
-                    "italic",
-                    "underline",
-                    "strike",
-                    "blockquote",
-                    "list",
-                    "bullet",
-                    "indent",
-                    "link",
-                    "image",
-                    "video",
-                    "code-block",
-                ]}
-                value={value}
-                onChange={setValue}
-                />
-
+            <EuiFlexGroup>
+                <EuiText><h3>Danh sách bài viết</h3></EuiText>
+                <EuiButton onClick={setIsModalAddNewVisible(true)}>Thêm bài viết</EuiButton>
+            </EuiFlexGroup>
+            <EuiSpacer/>
+            <EuiBasicTable
+            columns={columns}
+            items={items}
+            />
+            {isModalAddNewVisible&&<AddNew setIsModalAddNewVisible={setIsModalAddNewVisible}/>}
         </EuiPanel>
     );
 }
