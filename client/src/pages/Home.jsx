@@ -135,7 +135,9 @@ export default function Home() {
               <EuiLink>Xem thêm</EuiLink>
             </EuiFlexGroup>
             <EuiFlexGrid columns={4}>
-              {news.slice(0,4).map(item=>(<EuiLink key={item._id} href={`/blog/chi_tiet?ma=${item._id}`}>
+              {news.slice(0,4).map(item=>(
+              <EuiFlexItem key={item._id}>
+                <EuiLink href={`/blog/chi_tiet?ma=${item._id}`}>
                 <EuiCard
                     textAlign='left'
                     hasBorder={true}
@@ -151,7 +153,9 @@ export default function Home() {
                         <EuiTextBlockTruncate lines={2}>{item?.content}</EuiTextBlockTruncate>
                       </>
                     }/>
-              </EuiLink>))}
+              </EuiLink>
+              </EuiFlexItem>
+            ))}
             </EuiFlexGrid>
           </EuiFlexGroup>}
         </EuiPageTemplate.Section>
