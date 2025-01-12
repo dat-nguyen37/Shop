@@ -48,9 +48,7 @@ export default function Blog() {
                 text:"Tin tức",
                 href:"/blog"
             },
-            {
-                text:blog.title,
-            },
+            ...(blog ? [{ text: blog.title }] : [])
         ]}/>
         <EuiSpacer/>
         <EuiFlexGroup>

@@ -7,6 +7,9 @@ import moment from 'moment'
 
 export default function Blogs() {
     const [news,setNews]=useState([])
+    const [pageCount,setPageCount]=useState(10)
+    const [activePage,setActivePage]=useState(0)
+    const [pageSize,setPageSize]=useState(10)
     const getNews=async()=>{
         try {
           const res=await axios.get('/new/getAll')
@@ -18,10 +21,16 @@ export default function Blogs() {
       useEffect(()=>{
         getNews()
       },[])
+      useEffect(() => {
+          const totalPageCount = Math.ceil(news?.length / pageSize);
+          setPageCount(totalPageCount);
+        }, [news, pageSize]);
+      
+        const newsOfPage = news?.slice(activePage * pageSize, (activePage + 1) * pageSize);
   return (
     <EuiPageTemplate.Section>
         <EuiFlexGroup direction='column'>
-            {news.length&&news.map(item=>(
+            {news.length&&newsOfPage.map(item=>(
                 <EuiFlexItem key={item._id} grow={false}>
                      <EuiFlexGroup>
                         <EuiImage src={item.image} width="100" height="100"/>
@@ -36,6 +45,11 @@ export default function Blogs() {
                 </EuiFlexItem>
            ))}
         </EuiFlexGroup>
+        <EuiSpacer/>
+        <EuiPagination
+              pageCount={pageCount}
+              activePage={activePage}
+              onPageClick={(activePage) => setActivePage(activePage)}/>
     </EuiPageTemplate.Section>
   )
 }
