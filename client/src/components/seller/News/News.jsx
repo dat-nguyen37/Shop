@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { EuiBasicTable, EuiButton, EuiButtonIcon, EuiFlexGroup, EuiPanel, EuiSpacer, EuiText } from '@elastic/eui';
+import { EuiBasicTable, EuiButton, EuiButtonIcon, EuiFlexGroup, EuiPanel, EuiSpacer, EuiText, EuiTextBlockTruncate, EuiTextTruncate } from '@elastic/eui';
 import AddNew from './AddNew';
 import axios from '../../../axios';
 import {ShopContext} from '../../../context/ShopContext'
@@ -18,6 +18,9 @@ export default function News() {
         {
             field: 'content',
             name: 'Nội dung',
+            render:(item)=>(
+                <EuiTextBlockTruncate lines={2}>{item}</EuiTextBlockTruncate>
+            )
         },
         {
             field: 'action',
