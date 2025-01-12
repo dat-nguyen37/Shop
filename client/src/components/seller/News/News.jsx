@@ -56,6 +56,7 @@ export default function News() {
             </EuiFlexGroup>
             <EuiSpacer/>
             <EuiBasicTable
+            tableLayout='auto'
             columns={columns}
             items={items}
             />

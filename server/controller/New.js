@@ -33,3 +33,11 @@ exports.getAll=async(req,res)=>{
         res.status(500).send(err)
     }
 }
+exports.getOne=async(req,res)=>{
+    try {
+        const news=await New.findById(req.params.id)
+        res.status(200).send(news)
+    } catch (err) {
+        res.status(500).send(err)
+    }
+}

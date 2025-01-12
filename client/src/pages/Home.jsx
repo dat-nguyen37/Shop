@@ -132,7 +132,7 @@ export default function Home() {
           {news.length&&<EuiFlexGroup direction='column'>
             <EuiFlexGroup alignItems='center' justifyContent='spaceBetween'>
               <EuiText><h3>Tin tức</h3></EuiText>
-              <EuiLink>Xem thêm</EuiLink>
+              <EuiLink href='/blog'>Xem thêm</EuiLink>
             </EuiFlexGroup>
             <EuiFlexGrid columns={4}>
               {news.slice(0,4).map(item=>(
@@ -150,7 +150,7 @@ export default function Home() {
                     description={
                       <>
                         <EuiText size='xs' color='subdued'>{moment(item?.createdAt).format("DD/MM/YYYY")}</EuiText>
-                        <EuiTextBlockTruncate lines={2}>{item?.content}</EuiTextBlockTruncate>
+                        <EuiText color='black'><EuiTextBlockTruncate lines={2}>{item?.content}</EuiTextBlockTruncate></EuiText>
                       </>
                     }/>
               </EuiLink>

@@ -40,8 +40,8 @@ export default function Blog() {
                 <EuiSpacer/>
                 <EuiFlexGroup direction='column'>
                     {news.length&&news.slice(0,6).map(item=>(<EuiFlexGroup key={item._id}>
-                        <EuiImage src={item.image} width="60" height="60"/>
-                        <EuiLink href={`/blog/chitiet?ma=${item._id}`} color='text'><EuiText><b>{item.title}</b></EuiText></EuiLink>
+                        <EuiImage src={item.image} width="50" height="50"/>
+                        <EuiLink href={`/blog/chi_tiet?ma=${item._id}`} color='text'><EuiText><b>{item.title}</b></EuiText></EuiLink>
                     </EuiFlexGroup>))}
                 </EuiFlexGroup>
             </EuiFlexItem>
