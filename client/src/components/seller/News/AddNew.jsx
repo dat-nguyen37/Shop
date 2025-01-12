@@ -39,7 +39,7 @@ export default function AddNew({setIsModalAddNewVisible}) {
     }
     const handleAddNew=async()=>{
         try {
-            await axios.post('/news/create',{
+            await axios.post('/new/create',{
                 author:shop._id,
                 title,
                 content,
