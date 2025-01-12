@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
 import { EuiPanel } from '@elastic/eui';
 
 export default function News() {
+    const [editorData, setEditorData] = useState("");
+
     const cloud = useCKEditorCloud({
         version: '44.1.0',
         premium: true
@@ -30,11 +32,17 @@ export default function News() {
 
     const { FormatPainter } = cloud.CKEditorPremiumFeatures;
 
+    const handleEditorChange = (event, editor) => {
+        const data = editor.getData();
+        setEditorData(data);
+    };
+
     return (
         <EuiPanel style={{ minHeight: 'calc(100vh - 3rem)' }}>
             <CKEditor
                 editor={ClassicEditor}
-                data={'<p>Hello world!</p>'}
+                data={editorData}
+                onChange={handleEditorChange}
                 config={{
                     licenseKey: '<YOUR_LICENSE_KEY>',
                     plugins: [
@@ -56,10 +64,6 @@ export default function News() {
                         // URL API nơi ảnh sẽ được upload
                         uploadUrl: 'https://example.com/api/upload',
                         
-                        // Token hoặc header nếu cần xác thực
-                        headers: {
-                            Authorization: 'Bearer <YOUR_ACCESS_TOKEN>'
-                        }
                     }
                 }}
             />
