@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { EuiBasicTable, EuiButton, EuiButtonIcon, EuiFlexGroup, EuiPanel, EuiSpacer, EuiText, EuiTextBlockTruncate, EuiTextTruncate } from '@elastic/eui';
+import { EuiBasicTable, EuiButton, EuiButtonIcon, EuiFlexGroup, EuiImage, EuiPanel, EuiSpacer, EuiText, EuiTextBlockTruncate, EuiTextTruncate } from '@elastic/eui';
 import AddNew from './AddNew';
 import axios from '../../../axios';
 import {ShopContext} from '../../../context/ShopContext'
@@ -12,16 +12,15 @@ export default function News() {
 
     const columns = [
         {
-            field: 'title',
-            name: 'Tiêu đề',
-            width:"200px"
+            field: 'image',
+            name: 'Ảnh',
+            render:(item)=>(
+                <EuiImage src={item} width="50" height="50" />
+            )
         },
         {
-            field: 'content',
-            name: 'Nội dung',
-            render:(item)=>(
-                <EuiTextBlockTruncate lines={2}>{item}</EuiTextBlockTruncate>
-            )
+            field: 'title',
+            name: 'Tiêu đề',
         },
         {
             field: 'action',
@@ -38,7 +37,7 @@ export default function News() {
         try {
             const res=await axios.get(`/new/getByUser/${shop._id}`)
             setItems(res.data?.map(item=>(
-                {title:item.title,content:item.content,action:item._id}
+                {image:item.image,title:item.title,action:item._id}
             )))
         } catch (err) {
             console.log(err)
@@ -47,6 +46,34 @@ export default function News() {
     useEffect(()=>{
         getNews()
     },[shop])
+    const [pageIndex,setPageIndex]=useState(0)
+    const [pageSize,setPageSize]=useState(10)
+
+    const onChange=({page})=>{
+        if(page){
+            const {index:pageIndex,size:pageSize}=page
+            setPageIndex(pageIndex)
+            setPageSize(pageSize)
+        }
+    }
+    const itemOfPage=(items,pageIndex,pageSize)=>{
+        
+        let itemOfPages;
+        if(!pageIndex && !pageSize){
+            itemOfPages=items
+        }else{
+            itemOfPages=items.slice(pageIndex*pageSize,(pageIndex+1)*pageSize)
+        }
+        return {itemOfPages}
+    }
+    const {itemOfPages}=itemOfPage(items,pageIndex,pageSize)
+
+    const paginations={
+        pageIndex,
+        pageSize,
+        totalItemCount:items.length,
+        pageSizeOptions:[0,10,20]
+    }
     
 
     return (
@@ -59,7 +86,9 @@ export default function News() {
             <EuiBasicTable
             tableLayout='auto'
             columns={columns}
-            items={items}
+            items={itemOfPages}
+            pagination={paginations}
+            onChange={onChange}
             />
             {isModalAddNewVisible&&<AddNew setIsModalAddNewVisible={setIsModalAddNewVisible}/>}
         </EuiPanel>
