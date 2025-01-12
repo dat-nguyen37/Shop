@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ckeditor/ckeditor5-react": "^9.4.0",
     "@elastic/datemath": "^5.0.3",
     "@elastic/eui": "90.0",
     "@emotion/css": "^11.13.4",

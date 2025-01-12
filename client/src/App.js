@@ -44,6 +44,7 @@ import StatisticalAdmin from './components/admin/Statistical/Statistical';
 import Report from './components/admin/report/Report';
 import ViewProduct from './components/seller/Product/ViewProduct';
 import { DarkModeContext } from './context/DarkModeContext';
+import News from './components/seller/News/News';
 
 
 function App() {
@@ -87,6 +88,7 @@ function App() {
           <Route path="san_pham" element={<ViewProduct />}/>
           <Route path="danh_sach_don_hang" element={<OrderByShop />}/>
           <Route path="danh_sach_danh_muc" element={<ListSubCategory />}/>
+          <Route path="danh_sach_bai_viet" element={<News />}/>
           <Route path="chat" element={<Chat />}/>
         </Route>
         <Route path="/" element={<Nested />} >
