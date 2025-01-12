@@ -30,9 +30,9 @@ export default function News() {
 
     return (
         <EuiPanel style={{height:'calc(100vh - 3rem'}}>
-            <EuiFlexGroup>
+            <EuiFlexGroup alignItems='center' justifyContent='spaceBetween'>
                 <EuiText><h3>Danh sách bài viết</h3></EuiText>
-                <EuiButton onClick={()=>setIsModalAddNewVisible(true)}>Thêm bài viết</EuiButton>
+                <EuiButton onClick={()=>setIsModalAddNewVisible(true)} fill>Thêm bài viết</EuiButton>
             </EuiFlexGroup>
             <EuiSpacer/>
             <EuiBasicTable

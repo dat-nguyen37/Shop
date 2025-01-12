@@ -14,16 +14,16 @@ export default function AddNew({setIsModalAddNewVisible}) {
                 <h2>Thêm bài viết</h2>
             </EuiModalHeader>
             <EuiModalBody>
-                <EuiFormRow label="Tiêu đề">
-                    <EuiFieldText placeholder="Nhập tiêu đề"/>
+                <EuiFormRow label="Tiêu đề" fullWidth>
+                    <EuiFieldText placeholder="Nhập tiêu đề" fullWidth/>
                 </EuiFormRow>
-                <EuiFormRow label="Nội dung">
-                    <EuiFieldText placeholder="Nhập nội dung"/>
+                <EuiFormRow label="Nội dung" fullWidth>
+                    <EuiFieldText placeholder="Nhập nội dung" fullWidth/>
                 </EuiFormRow>
-                <EuiFormRow label="Ảnh đại diện">
-                    <EuiFieldText placeholder="Chọn ảnh"/>
+                <EuiFormRow label="Ảnh đại diện" fullWidth>
+                    <EuiFieldText placeholder="Chọn ảnh" fullWidth/>
                 </EuiFormRow>
-                <EuiFormRow label="Nội dung chi tiết">
+                <EuiFormRow label="Nội dung chi tiết" fullWidth>
                     <ReactQuill
                         ref={reactQuillRef}
                         theme="snow"
