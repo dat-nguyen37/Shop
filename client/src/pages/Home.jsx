@@ -122,12 +122,11 @@ export default function Home() {
             </EuiFlexItem>
             <EuiFlexItem>
               <EuiFlexGrid style={{gridTemplateColumns: mobile?'repeat(2,1fr)': tablet?'repeat(4,1fr)':'repeat(6,1fr)'}}>
-                {products.map(product=>(
+                {products?.slice(0,18).map(product=>(
                   <ProductItem product={product} key={product._id}/>
                 ))}
               </EuiFlexGrid>
             </EuiFlexItem>
-            <EuiText textAlign='center'><EuiLink><b>Xem thêm</b></EuiLink></EuiText>
           </EuiFlexGroup>
           <EuiSpacer/>
           {news.length&&<EuiFlexGroup direction='column'>

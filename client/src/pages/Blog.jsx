@@ -26,7 +26,7 @@ export default function Blog() {
             },
             {
                 text:"Tin tức",
-                href:"/tin_tuc"
+                href:"/blog"
             },
             {
                 text:"4 nguyên tắc thiết kế cửa sổ bếp hợp phong thủy, hút tài lộc",
