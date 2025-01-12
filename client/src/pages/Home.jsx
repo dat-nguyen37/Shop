@@ -67,18 +67,21 @@ export default function Home() {
             </EuiFlexGroup>
             <EuiFlexGrid columns={4}>
               {news.slice(0,4).map(item=>(<EuiLink key={item._id}>
-                <EuiImage 
-                  src={item.image}
-                  alt=''
-                  hasShadow
-                  caption={
-                      <p>
-                          <EuiText textAlign='center' size='s'><b>{item.title}</b></EuiText>
-                          <EuiText color='subdued' size='xs'>{moment(item.createdAt).format("DD/MM/YYYY")}</EuiText>
-                          <EuiTextBlockTruncate lines={2} size='xs'>{item.content}</EuiTextBlockTruncate>
-                      </p>
-                  }
-                  height="200"/>
+                <EuiCard
+                    textAlign='left'
+                    hasBorder={true}
+                    image={<>
+                    <img src={item?.image} style={{width:'100%',height:'200px',objectFit:'contain'}}/>
+                    </>}
+                    title={
+                      <EuiText><b>{item?.title}</b></EuiText>
+                    }
+                    description={
+                      <>
+                        <EuiText size='xs' color='subdued'>{moment(item?.createdAt).format("DD/MM/YYYY")}</EuiText>
+                        <EuiTextBlockTruncate lines={2}>{item?.content}</EuiTextBlockTruncate>
+                      </>
+                    }/>
               </EuiLink>))}
             </EuiFlexGrid>
           </EuiFlexGroup>}
