@@ -5,6 +5,7 @@ import Footer from '../components/footer/Footer'
 import axios from '../axios'
 import ProductItem from '../components/productItem/ProductItem'
 import { DarkModeContext } from '../context/DarkModeContext'
+import moment from 'moment'
 
 export default function Home() {
   const mobile=useIsWithinBreakpoints(['xs','s'])
@@ -12,6 +13,8 @@ export default function Home() {
   const [products,setProducts]=useState([])
   const [productByView,setProductByView]=useState([])
   const [categories,setCategories]=useState([])
+  const [news,setNews]=useState([])
+
 
   const { color } = useContext(DarkModeContext);
 
@@ -39,35 +42,46 @@ export default function Home() {
       console.log(err)
     }
   }
+  const getNews=async()=>{
+    try {
+      const res=await axios.get('/new/getAll')
+      setNews(res.data)
+    } catch (err) {
+      console.log(err)
+    }
+  }
   useEffect(()=>{
     getProducts()
     getCategories()
     getProductByView()
+    getNews()
   },[])
   return (
     <div>
         <Slide/>
         <EuiPageTemplate.Section color='transparent'>
-          <EuiFlexGroup direction='column'>
+          {news.length&&<EuiFlexGroup direction='column'>
             <EuiFlexGroup alignItems='center' justifyContent='spaceBetween'>
-              <EuiText>Tin tức</EuiText>
+              <EuiText><h3>Tin tức</h3></EuiText>
               <EuiLink>Xem thêm</EuiLink>
             </EuiFlexGroup>
             <EuiFlexGrid columns={4}>
-              <EuiImage 
-                src='/assets/profile.jpg' 
-                alt=''
-                hasShadow
-                caption={
-                    <p>
-                        <EuiText textAlign='center' size='s'><b>4 nguyên tắc thiết kế cửa sổ bếp hợp phong thủy, hút tài lộc</b></EuiText>
-                        <EuiText color='subdued' size='xs'>30/1/2024</EuiText>
-                        <EuiText textAlign='center' size='s'>Bếp không chỉ là nơi nấu nướng mà còn là trái tim của ngôi nhà, nơi giữ lửa hạnh phúc và tài lộc</EuiText>
-                    </p>
-                }
-                height="200"/>
+              {news?.map(item=>(<EuiLink>
+                <EuiImage 
+                  src={item.image}
+                  alt=''
+                  hasShadow
+                  caption={
+                      <p>
+                          <EuiText textAlign='center' size='s'><b>{item.title}</b></EuiText>
+                          <EuiText color='subdued' size='xs'>{moment(item.createdAt)}</EuiText>
+                          <EuiTextBlockTruncate lines={2} size='xs'>{item.content}</EuiTextBlockTruncate>
+                      </p>
+                  }
+                  height="200"/>
+              </EuiLink>))}
             </EuiFlexGrid>
-          </EuiFlexGroup>
+          </EuiFlexGroup>}
           <EuiSpacer/>
           <EuiPanel>
             <EuiFlexGroup direction='column'>
