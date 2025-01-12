@@ -19,6 +19,24 @@ export default function News() {
                 editor={ClassicEditor}
                 data={editorData}
                 onChange={handleEditorChange}
+                config={{
+                    toolbar: [
+                        'heading',
+                        '|',
+                        'bold',
+                        'italic',
+                        'link',
+                        'bulletedList',
+                        'numberedList',
+                        '|',
+                        'blockQuote',
+                        'insertTable',
+                        'mediaEmbed',
+                        '|',
+                        'undo',
+                        'redo'
+                    ]
+                }}
             />
         </EuiPanel>
     );
