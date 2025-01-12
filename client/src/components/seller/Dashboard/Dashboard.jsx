@@ -184,7 +184,7 @@ export default function Dashboard() {
                             <EuiListGroupItem href='/nguoi_ban/danh_sach_san_pham' label='Sản phẩm'/>
                             <EuiListGroupItem href='/nguoi_ban/danh_sach_don_hang' label='Đơn hàng'/>
                             <EuiListGroupItem href='/nguoi_ban/danh_sach_danh_muc' label='Danh mục'/>
-                            <EuiListGroupItem href='/nguoi_ban/danh_sach_don_hang' label='Khuyến mãi'/>
+                            <EuiListGroupItem href='/nguoi_ban/danh_sach_bai_viet' label='Bài viết'/>
                         </EuiListGroup>
                     </EuiAccordion>
                     <EuiFlexGroup>
