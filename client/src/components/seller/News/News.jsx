@@ -1,6 +1,6 @@
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { EuiPanel } from '@elastic/eui';
 
 export default function News() {
