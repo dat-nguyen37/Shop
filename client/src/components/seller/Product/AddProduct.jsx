@@ -1,11 +1,13 @@
 import { EuiButton, EuiButtonIcon, EuiColorPicker, EuiComboBox, EuiFieldNumber, EuiFieldText, EuiFilePicker, EuiFlexGroup, EuiFlexItem, EuiFormRow, EuiIcon, EuiModal, EuiModalBody, EuiModalFooter, EuiModalHeader, EuiModalHeaderTitle, EuiPopover, EuiPopoverTitle, EuiSelect, EuiSpacer, EuiTextArea } from '@elastic/eui'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import {Colors} from '../../../Color'
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
 import { imgDb } from '../../../firebase'
 import { ToastContainer,toast } from 'react-toastify'
 import axios from '../../../axios'
 import {ShopContext} from '../../../context/ShopContext'
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 
 export default function AddProduct({setModalAdd,getProduct}) {
@@ -24,7 +26,7 @@ export default function AddProduct({setModalAdd,getProduct}) {
     const [errors,setErrors]=useState({})
     const [percent,setPercent]=useState(0)
 
-
+    const reactQuillRef = useRef(null);
     const addSize=()=>{
         setSize((prevSizes) => [
             ...prevSizes,
@@ -165,18 +167,57 @@ export default function AddProduct({setModalAdd,getProduct}) {
             </EuiFlexItem>
         </EuiFlexGroup>
         <EuiSpacer/>
-        <EuiFlexGroup>
-            <EuiFlexItem>
-                <EuiFormRow label="Mô tả" fullWidth>
-                    <EuiTextArea rows={5} placeholder='Viết gì đó...' onChange={(e)=>setDescription(e.target.value)} fullWidth/>
-                </EuiFormRow>
-            </EuiFlexItem>
-            <EuiFlexItem>
-                <EuiFormRow label="Ảnh" fullWidth isInvalid={!!errors.image} error={errors.image} >
-                    <EuiFilePicker onChange={changeFile} multiple fullWidth isInvalid={!!errors.image} isLoading={percent<100}/>
-                </EuiFormRow>
-            </EuiFlexItem>
-        </EuiFlexGroup>
+        <EuiFormRow label="Mô tả" fullWidth>
+            <ReactQuill
+                ref={reactQuillRef}
+                theme="snow"
+                placeholder="Start writing..."
+                modules={{
+                    toolbar: {
+                    container: [
+                        [{ header: "1" }, { header: "2" }, { font: [] }],
+                        [{ size: [] }],
+                        ["bold", "italic", "underline", "strike", "blockquote"],
+                        [
+                        { list: "ordered" },
+                        { list: "bullet" },
+                        { indent: "-1" },
+                        { indent: "+1" },
+                        ],
+                        ["link", "image", "video"],
+                        ["code-block"],
+                        ["clean"],
+                    ],
+                    },
+                    clipboard: {
+                    matchVisual: false,
+                    },
+                }}
+                formats={[
+                    "header",
+                    "font",
+                    "size",
+                    "bold",
+                    "italic",
+                    "underline",
+                    "strike",
+                    "blockquote",
+                    "list",
+                    "bullet",
+                    "indent",
+                    "link",
+                    "image",
+                    "video",
+                    "code-block",
+                ]}
+                value={description}
+                onChange={setDescription}
+            />
+        </EuiFormRow>
+        <EuiSpacer/>
+        <EuiFormRow label="Ảnh" fullWidth isInvalid={!!errors.image} error={errors.image} >
+            <EuiFilePicker onChange={changeFile} multiple fullWidth isInvalid={!!errors.image} isLoading={percent<100}/>
+        </EuiFormRow>
         <EuiModalFooter>
             <EuiFlexGroup alignItems='center' justifyContent='flexEnd'>
                 <EuiButton onClick={()=>setModalAdd(false)}>Hủy</EuiButton>
