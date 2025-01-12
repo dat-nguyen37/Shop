@@ -1,5 +1,6 @@
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
 import React, { useState } from 'react';
-import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
 import { EuiPanel } from '@elastic/eui';
 
 export default function News() {
@@ -9,41 +10,17 @@ export default function News() {
         const data = editor.getData();
         setEditorData(data);
     };
-    const cloud = useCKEditorCloud( {
-        version: '44.1.0',
-        premium: true
-    } );
-
-    if ( cloud.status === 'error' ) {
-        return <div>Error!</div>;
-    }
-
-    if ( cloud.status === 'loading' ) {
-        return <div>Loading...</div>;
-    }
-
-    const {
-        ClassicEditor,
-        Essentials,
-        Paragraph,
-        Bold,
-        Italic
-    } = cloud.CKEditor;
-
-    const { FormatPainter } = cloud.CKEditorPremiumFeatures;
 
     return (
-        <EuiPanel style={{ minHeight: 'calc(100vh - 3rem)' }}>
-             <CKEditor
-            editor={ ClassicEditor }
-            data={editorData}
-            onChange={handleEditorChange}
-            config={ {
-                licenseKey: '<YOUR_LICENSE_KEY>',
-                plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
-                toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
-            } }
-        />
+        <EuiPanel style={{height:'calc(100vh - 3rem'}}>
+            <CKEditor
+                editor={ClassicEditor}
+                data={editorData}
+                onChange={handleEditorChange}
+                config={{
+                    toolbar: ['bold', 'italic', 'undo', 'redo']
+                }}
+            />
         </EuiPanel>
     );
-};
+}
