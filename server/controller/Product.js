@@ -86,10 +86,30 @@ exports.delete=async(req,res)=>{
 exports.getAll=async(req,res)=>{
     try {
         const { search } = req.query;
-        const searchCondition = search
-        ? { name: { $regex: search, $options: "i" } }
-        : {};
-        const products=await Product.find({...searchCondition}).sort({createdAt:-1})
+        const query = {
+            index: 'products',
+            body: {
+                query: {
+                    bool: {
+                        must: [],
+                    }
+                },
+                size: 50,
+            }
+        };
+        if (search) {
+            query.body.query.bool.must.push({
+                match: {
+                    "product.name": {
+                        query: search,
+                        fuzziness: "AUTO",
+                        operator: "and"
+                    }
+                }
+            });
+        }
+        const result = await Client.search(query);
+        const products = result.hits.hits.map(hit => hit._source.product);
         res.status(200).send(products)
     } catch (err) {
         res.status(500).send(err)
