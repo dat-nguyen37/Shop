@@ -52,20 +52,22 @@ export default function Blog() {
         ]}/>
         <EuiSpacer/>
         <EuiFlexGroup>
-            <EuiFlexItem grow={1} style={{border:'1px solid #e3e5ec',padding:"10px"}}>
-                <EuiText textAlign='center'><h3>Bài viết mới nhất</h3></EuiText>
-                <EuiHorizontalRule size='half' margin='xs' style={{height:'2px'}}/>
-                <EuiSpacer/>
-                <EuiFlexGroup direction='column'>
-                    {news.length&&news.slice(0,6).map(item=>(
-                    <EuiFlexItem key={item._id} grow={false}>
-                        <EuiFlexGroup>
-                            <EuiImage src={item.image} width="50" height="50"/>
-                            <EuiLink href={`/blog/chi_tiet?ma=${item._id}`} color='text'><EuiText><b>{item.title}</b></EuiText></EuiLink>
-                        </EuiFlexGroup>
-                    </EuiFlexItem>
-                ))}
-                </EuiFlexGroup>
+            <EuiFlexItem grow={1}>
+                <div style={{border:'1px solid #e3e5ec',padding:"10px",width:"100%"}}>
+                    <EuiText textAlign='center'><h3>Bài viết mới nhất</h3></EuiText>
+                    <EuiHorizontalRule size='half' margin='xs' style={{height:'2px'}}/>
+                    <EuiSpacer/>
+                    <EuiFlexGroup direction='column'>
+                        {news.length&&news.slice(0,6).map(item=>(
+                        <EuiFlexItem key={item._id} grow={false}>
+                            <EuiFlexGroup>
+                                <EuiImage src={item.image} width="50" height="50"/>
+                                <EuiLink href={`/blog/chi_tiet?ma=${item._id}`} color='text'><EuiText><b>{item.title}</b></EuiText></EuiLink>
+                            </EuiFlexGroup>
+                        </EuiFlexItem>
+                    ))}
+                    </EuiFlexGroup>
+                </div>
             </EuiFlexItem>
             <EuiFlexItem grow={3}>
                 <Outlet/>
