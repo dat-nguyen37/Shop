@@ -45,6 +45,9 @@ import Report from './components/admin/report/Report';
 import ViewProduct from './components/seller/Product/ViewProduct';
 import { DarkModeContext } from './context/DarkModeContext';
 import News from './components/seller/News/News';
+import Blog from './pages/Blog';
+import Blogs from './components/blog/Blogs';
+import BlogDetail from './pages/BlogDetail';
 
 
 function App() {
@@ -106,6 +109,10 @@ function App() {
             <Route path="setting" element={<Setting />} />
             <Route path="password" element={<Password />} />
             <Route path="order" element={<Order />} />
+          </Route>
+          <Route path="/blog" element={<Blog />}>
+            <Route index element={<Blogs />} />
+            <Route path="/chi_tiet" element={<BlogDetail />} />
           </Route>
         </Route>
       </Routes>

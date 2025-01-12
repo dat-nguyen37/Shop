@@ -60,32 +60,6 @@ export default function Home() {
     <div>
         <Slide/>
         <EuiPageTemplate.Section color='transparent'>
-          {news.length&&<EuiFlexGroup direction='column'>
-            <EuiFlexGroup alignItems='center' justifyContent='spaceBetween'>
-              <EuiText><h3>Tin tức</h3></EuiText>
-              <EuiLink>Xem thêm</EuiLink>
-            </EuiFlexGroup>
-            <EuiFlexGrid columns={4}>
-              {news.slice(0,4).map(item=>(<EuiLink key={item._id}>
-                <EuiCard
-                    textAlign='left'
-                    hasBorder={true}
-                    image={<>
-                    <img src={item?.image} style={{width:'100%',height:'200px',objectFit:'contain'}}/>
-                    </>}
-                    title={
-                      <EuiText><b>{item?.title}</b></EuiText>
-                    }
-                    description={
-                      <>
-                        <EuiText size='xs' color='subdued'>{moment(item?.createdAt).format("DD/MM/YYYY")}</EuiText>
-                        <EuiTextBlockTruncate lines={2}>{item?.content}</EuiTextBlockTruncate>
-                      </>
-                    }/>
-              </EuiLink>))}
-            </EuiFlexGrid>
-          </EuiFlexGroup>}
-          <EuiSpacer/>
           <EuiPanel>
             <EuiFlexGroup direction='column'>
               <EuiFlexItem>
@@ -155,6 +129,32 @@ export default function Home() {
             </EuiFlexItem>
             <EuiText textAlign='center'><EuiLink><b>Xem thêm</b></EuiLink></EuiText>
           </EuiFlexGroup>
+          <EuiSpacer/>
+          {news.length&&<EuiFlexGroup direction='column'>
+            <EuiFlexGroup alignItems='center' justifyContent='spaceBetween'>
+              <EuiText><h3>Tin tức</h3></EuiText>
+              <EuiLink>Xem thêm</EuiLink>
+            </EuiFlexGroup>
+            <EuiFlexGrid columns={4}>
+              {news.slice(0,4).map(item=>(<EuiLink key={item._id} href={`/blog/chi_tiet?ma=${item._id}`}>
+                <EuiCard
+                    textAlign='left'
+                    hasBorder={true}
+                    image={<>
+                    <img src={item?.image} style={{width:'100%',height:'150px',objectFit:'contain'}}/>
+                    </>}
+                    title={
+                      <EuiText><b>{item?.title}</b></EuiText>
+                    }
+                    description={
+                      <>
+                        <EuiText size='xs' color='subdued'>{moment(item?.createdAt).format("DD/MM/YYYY")}</EuiText>
+                        <EuiTextBlockTruncate lines={2}>{item?.content}</EuiTextBlockTruncate>
+                      </>
+                    }/>
+              </EuiLink>))}
+            </EuiFlexGrid>
+          </EuiFlexGroup>}
         </EuiPageTemplate.Section>
         
     </div>
