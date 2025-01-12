@@ -3,16 +3,16 @@ import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
 import { EuiPanel } from '@elastic/eui';
 
 export default function News() {
-    const cloud = useCKEditorCloud( {
+    const cloud = useCKEditorCloud({
         version: '44.1.0',
         premium: true
-    } );
+    });
 
-    if ( cloud.status === 'error' ) {
+    if (cloud.status === 'error') {
         return <div>Error!</div>;
     }
 
-    if ( cloud.status === 'loading' ) {
+    if (cloud.status === 'loading') {
         return <div>Loading...</div>;
     }
 
@@ -21,21 +21,47 @@ export default function News() {
         Essentials,
         Paragraph,
         Bold,
-        Italic
+        Italic,
+        Image,
+        ImageToolbar,
+        ImageUpload,
+        SimpleUploadAdapter,
     } = cloud.CKEditor;
 
     const { FormatPainter } = cloud.CKEditorPremiumFeatures;
 
     return (
-        <EuiPanel style={{minHeight:'calc(100vh - 3rem)'}}>
+        <EuiPanel style={{ minHeight: 'calc(100vh - 3rem)' }}>
             <CKEditor
-                editor={ ClassicEditor }
-                data={ '<p>Hello world!</p>' }
-                config={ {
+                editor={ClassicEditor}
+                data={'<p>Hello world!</p>'}
+                config={{
                     licenseKey: '<YOUR_LICENSE_KEY>',
-                    plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
-                    toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
-                } }
+                    plugins: [
+                        Essentials,
+                        Paragraph,
+                        Bold,
+                        Italic,
+                        Image,
+                        ImageToolbar,
+                        ImageUpload,
+                        SimpleUploadAdapter,
+                        FormatPainter
+                    ],
+                    toolbar: [
+                        'undo', 'redo', '|', 'bold', 'italic', '|',
+                        'insertImage', 'formatPainter'
+                    ],
+                    simpleUpload: {
+                        // URL API nơi ảnh sẽ được upload
+                        uploadUrl: 'https://example.com/api/upload',
+                        
+                        // Token hoặc header nếu cần xác thực
+                        headers: {
+                            Authorization: 'Bearer <YOUR_ACCESS_TOKEN>'
+                        }
+                    }
+                }}
             />
         </EuiPanel>
     );
