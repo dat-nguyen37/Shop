@@ -32,10 +32,12 @@ export default function Blog() {
                 text:"4 nguyên tắc thiết kế cửa sổ bếp hợp phong thủy, hút tài lộc",
             },
         ]}/>
+        <EuiSpacer/>
         <EuiFlexGroup>
             <EuiFlexItem grow={1} style={{border:'1px solid #e3e5ec',padding:"10px"}}>
                 <EuiText textAlign='center'><h3>Bài viết mới nhất</h3></EuiText>
                 <EuiHorizontalRule size='half' margin='xs' style={{height:'2px'}}/>
+                <EuiSpacer/>
                 <EuiFlexGroup direction='column'>
                     {news.length&&news.slice(0,6).map(item=>(<EuiFlexGroup key={item._id}>
                         <EuiImage src={item.image} width="60" height="60"/>
