@@ -25,10 +25,10 @@ export default function News() {
         {
             field: 'action',
             name: 'Hành động',
-            render: () => (
+            render: (item) => (
                 <EuiFlexGroup responsive={false} gutterSize='s'>
                     <EuiButtonIcon iconType="indexEdit"/>
-                    <EuiButtonIcon iconType="trash" color='danger'/>
+                    <EuiButtonIcon iconType="trash" color='danger' onClick={()=>Delete(item)}/>
                 </EuiFlexGroup>
             )
         },
@@ -39,6 +39,14 @@ export default function News() {
             setItems(res.data?.map(item=>(
                 {image:item.image,title:item.title,action:item._id}
             )))
+        } catch (err) {
+            console.log(err)
+        }
+    }
+    const Delete=async(item)=>{
+        try {
+            await axios.delete(`/new/delete/${item}`)
+            getNews()
         } catch (err) {
             console.log(err)
         }
@@ -90,7 +98,7 @@ export default function News() {
             pagination={paginations}
             onChange={onChange}
             />
-            {isModalAddNewVisible&&<AddNew setIsModalAddNewVisible={setIsModalAddNewVisible}/>}
+            {isModalAddNewVisible&&<AddNew setIsModalAddNewVisible={setIsModalAddNewVisible} getNews={getNews}/>}
         </EuiPanel>
     );
 }

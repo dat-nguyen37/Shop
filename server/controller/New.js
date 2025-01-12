@@ -41,3 +41,11 @@ exports.getOne=async(req,res)=>{
         res.status(500).send(err)
     }
 }
+exports.delete=async(req,res)=>{
+    try {
+        const news=await New.findByIdAndDelete(req.params.id,{new:true})
+        res.status(200).send(news)
+    } catch (err) {
+        res.status(500).send(err)
+    }
+}

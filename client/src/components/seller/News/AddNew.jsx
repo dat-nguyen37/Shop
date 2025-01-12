@@ -7,7 +7,7 @@ import { imgDb } from '../../../firebase'
 import axios from '../../../axios'
 import {ShopContext} from '../../../context/ShopContext'
 
-export default function AddNew({setIsModalAddNewVisible}) {
+export default function AddNew({setIsModalAddNewVisible,getNews}) {
     const {shop}=useContext(ShopContext)
     const [detail, setDetail] = useState('');
     const reactQuillRef = useRef(null);
@@ -47,6 +47,7 @@ export default function AddNew({setIsModalAddNewVisible}) {
                 detail
             })
             setIsModalAddNewVisible(false)
+            getNews()
         }
         catch(err){
             console.log("Error adding new:",err)
