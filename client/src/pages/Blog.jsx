@@ -33,13 +33,13 @@ export default function Blog() {
             },
         ]}/>
         <EuiFlexGroup>
-            <EuiFlexItem grow={1} style={{border:'1px solid black'}}>
-                <h3>Bài viết mới nhất</h3>
-                <EuiHorizontalRule size='half'/>
+            <EuiFlexItem grow={1} style={{border:'1px solid #e3e5ec',padding:"10px"}}>
+                <EuiText textAlign='center'><h3>Bài viết mới nhất</h3></EuiText>
+                <EuiHorizontalRule size='half' margin='xs' style={{height:'2px'}}/>
                 <EuiFlexGroup direction='column'>
                     {news.length&&news.slice(0,6).map(item=>(<EuiFlexGroup key={item._id}>
                         <EuiImage src={item.image} width="100" height="100"/>
-                        <EuiLink href={`/blog/chitiet?ma=${item._id}`} color='text'><EuiText>{item.content}</EuiText></EuiLink>
+                        <EuiLink href={`/blog/chitiet?ma=${item._id}`} color='text'><EuiText><b>{item.content}</b></EuiText></EuiLink>
                     </EuiFlexGroup>))}
                 </EuiFlexGroup>
             </EuiFlexItem>
