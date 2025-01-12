@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { EuiAccordion, EuiAvatar, EuiBreadcrumbs, EuiFlexGroup, EuiFlexItem, EuiIcon, EuiImage, EuiLink, EuiListGroup, EuiListGroupItem, EuiPage, EuiPageSection, EuiPageSidebar, EuiPageTemplate, EuiPanel, EuiSpacer, EuiText, EuiTextBlockTruncate } from '@elastic/eui'
+import { EuiAccordion, EuiAvatar, EuiBreadcrumbs, EuiFlexGroup, EuiFlexItem, EuiIcon, EuiImage, EuiLink, EuiListGroup, EuiListGroupItem, EuiPage, EuiPageSection, EuiPageSidebar, EuiPageTemplate, EuiPagination, EuiPanel, EuiSpacer, EuiText, EuiTextBlockTruncate } from '@elastic/eui'
 import { Outlet, useOutletContext } from 'react-router-dom'
 import axios from '../../axios'
 import moment from 'moment'

@@ -14,6 +14,7 @@ export default function News() {
         {
             field: 'title',
             name: 'Tiêu đề',
+            width:"200px"
         },
         {
             field: 'content',
@@ -26,7 +27,7 @@ export default function News() {
             field: 'action',
             name: 'Hành động',
             render: () => (
-                <EuiFlexGroup>
+                <EuiFlexGroup responsive={false} gutterSize='s'>
                     <EuiButtonIcon iconType="indexEdit"/>
                     <EuiButtonIcon iconType="trash" color='danger'/>
                 </EuiFlexGroup>
