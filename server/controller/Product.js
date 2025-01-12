@@ -83,38 +83,49 @@ exports.delete=async(req,res)=>{
         res.status(500).send(err)
     }
 }
-exports.getAll=async(req,res)=>{
+exports.getAll = async (req, res) => {
     try {
         const { search } = req.query;
+
         const query = {
             index: 'products',
             body: {
                 query: {
                     bool: {
-                        must: [],
+                        must: []
                     }
                 },
                 size: 50,
             }
         };
+
         if (search) {
             query.body.query.bool.must.push({
                 match: {
                     "product.name": {
                         query: search,
-                        fuzziness: "AUTO",
+                        fuzziness: "1",
                         operator: "and"
                     }
                 }
             });
+        } else {
+            // Nếu không có search, dùng match_all
+            query.body.query = {
+                match_all: {}
+            };
         }
+
+
         const result = await Client.search(query);
         const products = result.hits.hits.map(hit => hit._source.product);
-        res.status(200).send(products)
+        res.status(200).send(products);
     } catch (err) {
-        res.status(500).send(err)
+        console.error("Error in Elasticsearch query:", err);
+        res.status(500).send(err);
     }
-}
+};
+
 exports.getByActive=async(req,res)=>{
     try {
         const product=await Product.find({status:"có sẵn"})

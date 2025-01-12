@@ -76,7 +76,7 @@ export default function Dashboard() {
       
         // Gộp products
         products.forEach((product) => {
-          const { year, month } = getYearAndMonth(product.createdAt);
+          const { year, month } = getYearAndMonth(product?.createdAt);
           addToGroup(year, month, "product");
         });
       
