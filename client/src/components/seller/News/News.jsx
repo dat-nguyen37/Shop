@@ -1,36 +1,12 @@
 import React, { useState } from 'react';
 import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { EuiPanel } from '@elastic/eui';
 
 export default function News() {
     const [editorData, setEditorData] = useState("");
 
-    const cloud = useCKEditorCloud({
-        version: '44.1.0',
-        premium: true
-    });
 
-    if (cloud.status === 'error') {
-        return <div>Error!</div>;
-    }
-
-    if (cloud.status === 'loading') {
-        return <div>Loading...</div>;
-    }
-
-    const {
-        ClassicEditor,
-        Essentials,
-        Paragraph,
-        Bold,
-        Italic,
-        Image,
-        ImageToolbar,
-        ImageUpload,
-        SimpleUploadAdapter,
-    } = cloud.CKEditor;
-
-    const { FormatPainter } = cloud.CKEditorPremiumFeatures;
 
     const handleEditorChange = (event, editor) => {
         const data = editor.getData();
@@ -43,29 +19,6 @@ export default function News() {
                 editor={ClassicEditor}
                 data={editorData}
                 onChange={handleEditorChange}
-                config={{
-                    licenseKey: '<YOUR_LICENSE_KEY>',
-                    plugins: [
-                        Essentials,
-                        Paragraph,
-                        Bold,
-                        Italic,
-                        Image,
-                        ImageToolbar,
-                        ImageUpload,
-                        SimpleUploadAdapter,
-                        FormatPainter
-                    ],
-                    toolbar: [
-                        'undo', 'redo', '|', 'bold', 'italic', '|',
-                        'insertImage', 'formatPainter'
-                    ],
-                    simpleUpload: {
-                        // URL API nơi ảnh sẽ được upload
-                        uploadUrl: 'https://example.com/api/upload',
-                        
-                    }
-                }}
             />
         </EuiPanel>
     );
