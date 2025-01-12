@@ -66,7 +66,7 @@ export default function Home() {
               <EuiLink>Xem thêm</EuiLink>
             </EuiFlexGroup>
             <EuiFlexGrid columns={4}>
-              {news?.map(item=>(<EuiLink>
+              {news.slice(0,4).map(item=>(<EuiLink key={item._id}>
                 <EuiImage 
                   src={item.image}
                   alt=''
@@ -74,7 +74,7 @@ export default function Home() {
                   caption={
                       <p>
                           <EuiText textAlign='center' size='s'><b>{item.title}</b></EuiText>
-                          <EuiText color='subdued' size='xs'>{moment(item.createdAt)}</EuiText>
+                          <EuiText color='subdued' size='xs'>{moment(item.createdAt).format("DD/MM/YYYY")}</EuiText>
                           <EuiTextBlockTruncate lines={2} size='xs'>{item.content}</EuiTextBlockTruncate>
                       </p>
                   }
