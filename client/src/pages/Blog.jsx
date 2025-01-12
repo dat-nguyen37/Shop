@@ -1,10 +1,30 @@
 import React, { useEffect, useState } from 'react'
 import { EuiAccordion, EuiAvatar, EuiBreadcrumbs, EuiFlexGroup, EuiFlexItem, EuiHorizontalRule, EuiIcon, EuiImage, EuiLink, EuiListGroup, EuiListGroupItem, EuiPage, EuiPageSection, EuiPageSidebar, EuiPageTemplate, EuiPanel, EuiSpacer, EuiText } from '@elastic/eui'
-import { Outlet, useOutletContext } from 'react-router-dom'
+import { Outlet, useLocation, useOutletContext } from 'react-router-dom'
 import axios from '../axios'
 
 export default function Blog() {
     const [news,setNews]=useState([])
+    const [blogId,setBlogId]=useState(null)
+    const location=useLocation()
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const ma = queryParams.get('ma');
+        setBlogId(ma);
+    }, [location.search]);
+
+    const [blog,setBlog]=useState('')
+    const getBlog=async()=>{
+        try {
+            const res=await axios.get(`/new/getOne/${blogId}`)
+            setBlog(res.data)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+    useEffect(()=>{
+        getBlog()
+    },[blogId])
     const getNews=async()=>{
         try {
           const res=await axios.get('/new/getAll')
@@ -29,7 +49,7 @@ export default function Blog() {
                 href:"/blog"
             },
             {
-                text:"4 nguyên tắc thiết kế cửa sổ bếp hợp phong thủy, hút tài lộc",
+                text:blog.title,
             },
         ]}/>
         <EuiSpacer/>
@@ -39,10 +59,14 @@ export default function Blog() {
                 <EuiHorizontalRule size='half' margin='xs' style={{height:'2px'}}/>
                 <EuiSpacer/>
                 <EuiFlexGroup direction='column'>
-                    {news.length&&news.slice(0,6).map(item=>(<EuiFlexGroup key={item._id}>
-                        <EuiImage src={item.image} width="50" height="50"/>
-                        <EuiLink href={`/blog/chi_tiet?ma=${item._id}`} color='text'><EuiText><b>{item.title}</b></EuiText></EuiLink>
-                    </EuiFlexGroup>))}
+                    {news.length&&news.slice(0,6).map(item=>(
+                    <EuiFlexItem grow={false}>
+                        <EuiFlexGroup key={item._id}>
+                            <EuiImage src={item.image} width="50" height="50"/>
+                            <EuiLink href={`/blog/chi_tiet?ma=${item._id}`} color='text'><EuiText><b>{item.title}</b></EuiText></EuiLink>
+                        </EuiFlexGroup>
+                    </EuiFlexItem>
+                ))}
                 </EuiFlexGroup>
             </EuiFlexItem>
             <EuiFlexItem grow={3}>
