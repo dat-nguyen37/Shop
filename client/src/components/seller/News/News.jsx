@@ -6,8 +6,6 @@ import { EuiPanel } from '@elastic/eui';
 export default function News() {
     const [editorData, setEditorData] = useState("");
 
-
-
     const handleEditorChange = (event, editor) => {
         const data = editor.getData();
         setEditorData(data);
@@ -19,6 +17,11 @@ export default function News() {
                 editor={ClassicEditor}
                 data={editorData}
                 onChange={handleEditorChange}
+                onReady={editor => {
+                    // You can store the "editor" and use when it is needed.
+                    console.log('Editor is ready to use!', editor);
+                }
+                }
                 config={{
                     toolbar: [
                         'heading',
