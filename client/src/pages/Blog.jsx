@@ -38,7 +38,7 @@ export default function Blog() {
                 <EuiHorizontalRule size='half' margin='xs' style={{height:'2px'}}/>
                 <EuiFlexGroup direction='column'>
                     {news.length&&news.slice(0,6).map(item=>(<EuiFlexGroup key={item._id}>
-                        <EuiImage src={item.image} width="100" height="100"/>
+                        <EuiImage src={item.image} width="60" height="60"/>
                         <EuiLink href={`/blog/chitiet?ma=${item._id}`} color='text'><EuiText><b>{item.content}</b></EuiText></EuiLink>
                     </EuiFlexGroup>))}
                 </EuiFlexGroup>
