@@ -1,12 +1,58 @@
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import React, { useRef, useState } from 'react';
-import { EuiButton, EuiFieldText, EuiFlexGroup, EuiForm, EuiFormRow, EuiModal, EuiModalBody, EuiModalFooter, EuiModalHeader, EuiPanel } from '@elastic/eui';
+import React, { useContext, useRef, useState } from 'react';
+import { EuiButton, EuiFieldText, EuiFilePicker, EuiFlexGroup, EuiForm, EuiFormRow, EuiModal, EuiModalBody, EuiModalFooter, EuiModalHeader, EuiPanel } from '@elastic/eui';
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
+import { imgDb } from '../../../firebase'
+import axios from '../../../axios'
+import {ShopContext} from '../../../context/ShopContext'
 
 export default function AddNew({setIsModalAddNewVisible}) {
-    const [value, setValue] = useState('');
+    const {shop}=useContext(ShopContext)
+    const [detail, setDetail] = useState('');
     const reactQuillRef = useRef(null);
-    console.log(value);
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
+    const [image,setImage]=useState([])
+    const [percent,setPercent]=useState(0)
+    const changeFile=async(files)=>{
+        const file=Array.from(files)[0]
+        try {
+            const imgRef=ref(imgDb,`/news/${file.name}`)
+            const uploadTask=uploadBytesResumable(imgRef,file)
+            uploadTask.on(
+                "state_changed",
+                (snapshot)=>{
+                    const percent=Math.round((snapshot.bytesTransferred/snapshot.totalBytes)*100)
+                    setPercent(percent)
+                },
+                (err)=>console.log(err),
+                async()=>{
+                    const url=await getDownloadURL(uploadTask.snapshot.ref)
+                    setImage(url)
+                }
+            )
+        } catch (err) {
+            console.log("Error uploading image:",err)
+        }
+
+    }
+    const handleAddNew=async()=>{
+        try {
+            await axios.post('/news/create',{
+                author:shop._id,
+                title,
+                content,
+                image,
+                detail
+            })
+            setIsModalAddNewVisible(false)
+        }
+        catch(err){
+            console.log("Error adding new:",err)
+        }
+    }
+    
 
     return (
         <EuiModal onClose={() => setIsModalAddNewVisible(false)} style={{width:'70vw'}}>
@@ -15,13 +61,13 @@ export default function AddNew({setIsModalAddNewVisible}) {
             </EuiModalHeader>
             <EuiModalBody>
                 <EuiFormRow label="Tiêu đề" fullWidth>
-                    <EuiFieldText placeholder="Nhập tiêu đề" fullWidth/>
+                    <EuiFieldText placeholder="Nhập tiêu đề" onChange={(e)=>setTitle(e.target.value)} fullWidth/>
                 </EuiFormRow>
                 <EuiFormRow label="Nội dung" fullWidth>
-                    <EuiFieldText placeholder="Nhập nội dung" fullWidth/>
+                    <EuiFieldText placeholder="Nhập nội dung" onChange={(e)=>setContent(e.target.value)} fullWidth/>
                 </EuiFormRow>
                 <EuiFormRow label="Ảnh đại diện" fullWidth>
-                    <EuiFieldText placeholder="Chọn ảnh" fullWidth/>
+                    <EuiFilePicker onChange={changeFile} multiple fullWidth isLoading={percent<100}/>
                 </EuiFormRow>
                 <EuiFormRow label="Nội dung chi tiết" fullWidth>
                     <ReactQuill
@@ -66,15 +112,15 @@ export default function AddNew({setIsModalAddNewVisible}) {
                             "video",
                             "code-block",
                         ]}
-                        value={value}
-                        onChange={setValue}
+                        value={detail}
+                        onChange={setDetail}
                     />
                 </EuiFormRow>
             </EuiModalBody>
             <EuiModalFooter>
                 <EuiFlexGroup justifyContent="flexEnd">
                     <EuiButton onClick={() => setIsModalAddNewVisible(false)}>Hủy</EuiButton>
-                    <EuiButton fill>Thêm</EuiButton>
+                    <EuiButton fill onClick={handleAddNew}>Thêm</EuiButton>
                 </EuiFlexGroup>
             </EuiModalFooter>
         </EuiModal>

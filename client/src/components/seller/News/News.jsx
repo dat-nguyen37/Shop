@@ -1,9 +1,14 @@
-import React, { useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { EuiBasicTable, EuiButton, EuiButtonIcon, EuiFlexGroup, EuiPanel, EuiSpacer, EuiText } from '@elastic/eui';
 import AddNew from './AddNew';
+import axios from '../../../axios';
+import {ShopContext} from '../../../context/ShopContext'
+
 
 export default function News() {
+    const {shop}=useContext(ShopContext)
     const [isModalAddNewVisible, setIsModalAddNewVisible] = useState(false);
+    const [items, setItems] = useState([])
 
     const columns = [
         {
@@ -25,8 +30,20 @@ export default function News() {
             )
         },
     ]
-    const items = [
-    ]
+    const getNews=async()=>{
+        try {
+            const res=await axios.get(`/new/getByUser/${shop._id}`)
+            setItems(res.data?.map(item=>(
+                {title:item.title,content:item.content,action:item._id}
+            )))
+        } catch (err) {
+            console.log(err)
+        }
+    }
+    useEffect(()=>{
+        getNews()
+    },[shop])
+    
 
     return (
         <EuiPanel style={{height:'calc(100vh - 3rem'}}>

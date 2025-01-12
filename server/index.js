@@ -82,6 +82,8 @@ const NotificationRoute = require('./route/Notification')
 const LogRoute = require('./route/Log')
 const SlideRoute = require('./route/Slide')
 const ReportRoute = require('./route/Report')
+const NewRoute = require('./route/New')
+
 
 
 
@@ -110,6 +112,8 @@ app.use('/notification',NotificationRoute)
 app.use('/log',LogRoute)
 app.use('/slide',SlideRoute)
 app.use('/report',ReportRoute)
+app.use('/new',NewRoute)
+
 
 
 
