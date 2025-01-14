@@ -50,7 +50,7 @@ export default function ActivateAccount() {
         } 
       }, [location]);
   return (
-    <EuiPageTemplate style={{backgroundImage:'url("/assets/bg.png")',width:'100vw',height:'100vh',backgroundRepeat:'no-repeat',backgroundSize:'cover'}}>
+    <EuiPageTemplate style={{backgroundImage:'url("/assets/bg.jpg")',width:'100vw',height:'100vh',backgroundRepeat:'no-repeat',backgroundSize:'cover'}}>
       <EuiFlexGroup justifyContent='center' alignItems='center' style={{width:'100%',height:'100%'}}>
       {isModalVisible && (
           <EuiPanel style={{maxWidth:'500px'}}>
