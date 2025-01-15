@@ -214,6 +214,7 @@ export default function Dashboard() {
             <EuiPanel>
                 <EuiText><h2>Thống kê</h2></EuiText>
                 <EuiSelect
+                value={year}
                 options={listYear.map(year=>(
                   {value:year,label:year}
                 ))}
