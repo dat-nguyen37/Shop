@@ -73,11 +73,30 @@ export default function Order() {
     }
     const ExportFile=async()=>{
         try {
-            const res=await axios.post(`/order/exportFile?year=2024`,{
+            const res=await axios.post(`/order/exportFile`,{
                 data:data.map(item=>(
                     {"Mã đơn hàng":item.id,"Giá đơn":item.price,"Trạng thái thanh toán":item.paymentStatus}
                 ))
-            })
+            },{
+                responseType: 'blob',
+              })
+              const blob = new Blob([response.data], {
+                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+              });
+          
+              // Tạo một URL tạm từ Blob
+              const url = window.URL.createObjectURL(blob);
+          
+              // Tạo thẻ <a> động và kích hoạt tải file
+              const link = document.createElement('a');
+              link.href = url;
+              link.setAttribute('download', 'DanhSachDonHang.xlsx'); // Tên file tải về
+              document.body.appendChild(link);
+              link.click();
+          
+              // Dọn dẹp URL Blob và xóa thẻ <a>
+              link.parentNode.removeChild(link);
+              window.URL.revokeObjectURL(url);
         } catch (err) {
             console.log(err)
         }

@@ -319,10 +319,15 @@ exports.exportFile =async (req,res) => {
     });
 
     // Xuất file
-    const filePath = path.resolve('E:/DataFiles/DanhSachDonHang.xlsx');
-    await workbook.xlsx.writeFile(filePath);
+    const buffer = await workbook.xlsx.writeBuffer();
 
-    console.log(`Tệp Excel đã được tạo tại: ${filePath}`);
+    // Thiết lập header để tải file về
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename=DanhsachDonHang.xlsx');
+
+    // Gửi buffer về client
+    res.send(buffer);
+    // console.log(`Tệp Excel đã được tạo tại: ${filePath}`);
 };
 
 
