@@ -3,7 +3,9 @@ const Cart=require('../model/Cart')
 const Product=require('../model/Product')
 const User=require('../model/User')
 const reader = require('xlsx')
-const fs=require('fs')
+const ExcelJS = require('exceljs');
+const fs = require('fs');
+const path = require('path');
 
 exports.creatOrder=async(req,res)=>{
     try {
@@ -284,28 +286,44 @@ exports.getAll=async(req,res)=>{
 }
 
 exports.exportFile =async (req,res) => {
-    const year=req.query.year
-    const {data}=req.body
-    console.log(data)
-    const filePath = `C:/DataFiles/Dulieu${year}.xlsx`;
+    const data=req.body.data
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Danh sách đơn hàng');
 
-    // Kiểm tra và tạo thư mục nếu cần thiết
-    const dirPath = filePath.substring(0, filePath.lastIndexOf('/'));
-    if (!fs.existsSync(dirPath)) {
-        fs.mkdirSync(dirPath, { recursive: true });
-    }
+    // Tiêu đề bảng
+    worksheet.mergeCells('A1:B1');
+    const header = worksheet.getCell('A1');
+    header.value = 'Danh sách đơn hàng';
+    header.font = { bold: true, size: 14 };
+    header.alignment = { horizontal: 'center' };
 
-    // Chuyển đổi dữ liệu thành worksheet
-    const ws = reader.utils.json_to_sheet(data);
+    // Thời gian tạo
+    worksheet.getCell('A2').value = `Thời gian tạo: ${new Date().toLocaleString()}`;
+    worksheet.getCell('A2').font = { italic: true };
 
-    // Tạo file Excel mới
-    const workbook = reader.utils.book_new();
-    reader.utils.book_append_sheet(workbook, ws, 'Dulieu');
+    // Tiêu đề cột
+    worksheet.getCell('A3').value = 'Mã đơn hàng';
+    worksheet.getCell('B3').value = 'Giá đơn';
+    worksheet.getRow(3).font = { bold: true };
 
-    // Ghi dữ liệu vào file
-    reader.writeFile(workbook, filePath);
+    // Điền dữ liệu vào bảng
+    data.forEach((order, index) => {
+        const rowIndex = index + 4; // Bắt đầu từ dòng thứ 4
+        worksheet.getCell(`A${rowIndex}`).value = order['Mã đơn hàng'];
+        worksheet.getCell(`B${rowIndex}`).value = order['Giá đơn'];
+    });
 
-    console.log(`Tệp đã được lưu tại: ${filePath}`);
+    // Auto width columns
+    worksheet.columns.forEach((column) => {
+        column.width = 25; // Đặt độ rộng cột
+    });
+
+    // Xuất file
+    const filePath = path.resolve('E:/DataFiles/DanhSachDonHang.xlsx');
+    await workbook.xlsx.writeFile(filePath);
+
+    console.log(`Tệp Excel đã được tạo tại: ${filePath}`);
 };
+
 
 
