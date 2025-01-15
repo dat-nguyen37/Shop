@@ -94,8 +94,8 @@ export default function Dashboard() {
             groupDataByYearAndMonth();
         }
       }, [users, shops, products]);
-      
-      const dataByYear=data.filter(d=>d.year===2025)
+      const [year,setYear]=useState(Date().getFullYear())
+      const dataByYear=data.filter(d=>d.year===year)
       const listYear=data.map(y=>y.year)
 
       //order
@@ -216,7 +216,8 @@ export default function Dashboard() {
                 <EuiSelect
                 options={listYear.map(year=>(
                   {value:year,label:year}
-                ))}/>
+                ))}
+                onChange={(e)=>setYear(e.target.value)}/>
                 <EuiSpacer/>
             <LineChart width={730} height={250} data={dataByYear[0]?.months}
                 margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
