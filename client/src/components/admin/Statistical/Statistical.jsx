@@ -96,6 +96,7 @@ export default function Dashboard() {
       }, [users, shops, products]);
       const [year,setYear]=useState(new Date().getFullYear())
       const dataByYear=data.filter(d=>d.year===year)
+      console.log(dataByYear)
       const listYear=data.map(y=>y.year)
 
       //order
