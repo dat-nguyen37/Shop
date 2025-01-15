@@ -285,7 +285,8 @@ exports.getAll=async(req,res)=>{
 
 exports.exportFile =async (req,res) => {
     const year=req.query.year
-    const data=req.body
+    const {data}=req.body
+    console.log(data)
     const filePath = `E:/DataFiles/Dulieu${year}.xlsx`;
 
     // Kiểm tra và tạo thư mục nếu cần thiết
