@@ -73,7 +73,11 @@ export default function Order() {
     }
     const ExportFile=async()=>{
         try {
-            const res=await axios.post(`/order/exportFile?year=2024`,{data:data})
+            const res=await axios.post(`/order/exportFile?year=2024`,{
+                data:data.map(item=>(
+                    {"Mã đơn hàng":item.id,"Giá đơn":item.price,"Trạng thái thanh toán":item.paymentStatus}
+                ))
+            })
         } catch (err) {
             console.log(err)
         }
