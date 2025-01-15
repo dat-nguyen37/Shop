@@ -287,6 +287,7 @@ exports.getAll=async(req,res)=>{
 
 exports.exportFile =async (req,res) => {
     const data=req.body.data
+    console.log(data)
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Danh sách đơn hàng');
 
@@ -304,6 +305,7 @@ exports.exportFile =async (req,res) => {
     // Tiêu đề cột
     worksheet.getCell('A3').value = 'Mã đơn hàng';
     worksheet.getCell('B3').value = 'Giá đơn';
+    worksheet.getCell('C3').value = 'Trạng thái thanh toán';
     worksheet.getRow(3).font = { bold: true };
 
     // Điền dữ liệu vào bảng
@@ -311,6 +313,7 @@ exports.exportFile =async (req,res) => {
         const rowIndex = index + 4; // Bắt đầu từ dòng thứ 4
         worksheet.getCell(`A${rowIndex}`).value = order['Mã đơn hàng'];
         worksheet.getCell(`B${rowIndex}`).value = order['Giá đơn'];
+        worksheet.getCell(`B${rowIndex}`).value = order['Trạng thái thanh toán'];
     });
 
     // Auto width columns
