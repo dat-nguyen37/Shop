@@ -94,7 +94,7 @@ export default function Dashboard() {
             groupDataByYearAndMonth();
         }
       }, [users, shops, products]);
-      const [year,setYear]=useState(Date().getFullYear())
+      const [year,setYear]=useState(new Date().getFullYear())
       const dataByYear=data.filter(d=>d.year===year)
       const listYear=data.map(y=>y.year)
 
