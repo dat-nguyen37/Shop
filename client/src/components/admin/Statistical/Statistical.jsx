@@ -214,12 +214,16 @@ export default function Dashboard() {
             <EuiSpacer/>
             <EuiPanel>
                 <EuiText><h2>Thống kê</h2></EuiText>
-                <EuiSelect
-                value={year}
-                options={listYear.map(year=>(
-                  {value:year,label:year}
-                ))}
-                onChange={(e)=>setYear(e.target.value)}/>
+                <EuiSpacer size='s'/>
+                <EuiFlexGroup alignItems='center' gutterSize='s'>
+                    <EuiText>Năm</EuiText>
+                    <EuiSelect
+                    value={year}
+                    options={listYear.map(year=>(
+                      {value:year,label:year}
+                    ))}
+                    onChange={(e)=>setYear(e.target.value)}/>
+                </EuiFlexGroup>
                 <EuiSpacer/>
             <LineChart width={730} height={250} data={dataByYear[0]?.months}
                 margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
