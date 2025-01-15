@@ -71,6 +71,13 @@ export default function Order() {
             console.log(err)
         }
     }
+    const ExportFile=async()=>{
+        try {
+            const res=await axios.post(`/order/exportFile?year=2024`,{data})
+        } catch (err) {
+            console.log(err)
+        }
+    }
     useEffect(()=>{
         getOrder()
         console.log(searchValue)
@@ -105,6 +112,7 @@ export default function Order() {
         <ToastContainer/>
         <EuiFlexGroup alignItems='center' justifyContent='spaceBetween'>
             <EuiText>Danh sách đơn hàng</EuiText>
+            <EuiButton iconType="/assets/excel.png" iconSide='right' onClick={ExportFile}>Xuất file</EuiButton>
         </EuiFlexGroup>
         <EuiSpacer/>
         <EuiFieldSearch placeholder='Tìm kiếm theo mã đơn hàng' onChange={e=>setSearchValue(e.target.value)} fullWidth/>

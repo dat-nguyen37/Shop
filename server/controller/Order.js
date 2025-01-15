@@ -2,38 +2,40 @@ const Order =require('../model/Order')
 const Cart=require('../model/Cart')
 const Product=require('../model/Product')
 const User=require('../model/User')
+const reader = require('xlsx')
+const fs=require('fs')
 
-    exports.creatOrder=async(req,res)=>{
-        try {
-            if(req.userId){
-                const newOrder=new Order({
-                    userId:req.body.userId,
-                    product:req.body.product,
-                    price:req.body.price,
-                    name:req.body.name,
-                    phone:req.body.phone,
-                    address:req.body.address,
-                    shipping:req.body.shipping,
-                    paymentMethod:req.body.paymentMethod,
-                    description:req.body.description
-                })
-                const order=await newOrder.save()
-                const cartItems=req.body.product.map(item=>item.productId)
-                await Cart.deleteMany({userId:req.body.userId,productId:{$in:cartItems}})
-                for (const item of req.body.product) {
-                    await Product.updateOne(
-                        { _id: item.productId }, 
-                        { $inc: { quantitySold: item.quantity ,quantity:-item.quantity} } 
-                    );
-                }
-                res.status(200).send(order)
-            }else{
-                res.status(401).send("Authentication")    
+exports.creatOrder=async(req,res)=>{
+    try {
+        if(req.userId){
+            const newOrder=new Order({
+                userId:req.body.userId,
+                product:req.body.product,
+                price:req.body.price,
+                name:req.body.name,
+                phone:req.body.phone,
+                address:req.body.address,
+                shipping:req.body.shipping,
+                paymentMethod:req.body.paymentMethod,
+                description:req.body.description
+            })
+            const order=await newOrder.save()
+            const cartItems=req.body.product.map(item=>item.productId)
+            await Cart.deleteMany({userId:req.body.userId,productId:{$in:cartItems}})
+            for (const item of req.body.product) {
+                await Product.updateOne(
+                    { _id: item.productId }, 
+                    { $inc: { quantitySold: item.quantity ,quantity:-item.quantity} } 
+                );
             }
-        } catch (err) {
-            res.status(500).send(err)
+            res.status(200).send(order)
+        }else{
+            res.status(401).send("Authentication")    
         }
+    } catch (err) {
+        res.status(500).send(err)
     }
+}
 
 exports.getByShopAndUser=async(req,res)=>{
     try {
@@ -281,5 +283,28 @@ exports.getAll=async(req,res)=>{
     }
 }
 
+exports.exportFile =async (req,res) => {
+    const year=req.query.year
+    const data=req.body
+    const filePath = `E:/DataFiles/Dulieu${year}.xlsx`;
+
+    // Kiểm tra và tạo thư mục nếu cần thiết
+    const dirPath = filePath.substring(0, filePath.lastIndexOf('/'));
+    if (!fs.existsSync(dirPath)) {
+        fs.mkdirSync(dirPath, { recursive: true });
+    }
+
+    // Chuyển đổi dữ liệu thành worksheet
+    const ws = reader.utils.json_to_sheet(data);
+
+    // Tạo file Excel mới
+    const workbook = reader.utils.book_new();
+    reader.utils.book_append_sheet(workbook, ws, 'Dulieu');
+
+    // Ghi dữ liệu vào file
+    reader.writeFile(workbook, filePath);
+
+    console.log(`Tệp đã được lưu tại: ${filePath}`);
+};
 
 
