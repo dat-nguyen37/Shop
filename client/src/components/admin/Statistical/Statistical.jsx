@@ -94,10 +94,10 @@ export default function Dashboard() {
             groupDataByYearAndMonth();
         }
       }, [users, shops, products]);
+      const listYear=data.map(y=>y.year)
       const [year,setYear]=useState(new Date().getFullYear())
       const dataByYear=data.filter(d=>d.year===year)
       console.log(dataByYear)
-      const listYear=data.map(y=>y.year)
 
       //order
       const [orders,setOrders]=useState([])
