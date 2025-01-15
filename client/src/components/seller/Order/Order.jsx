@@ -73,7 +73,7 @@ export default function Order() {
     }
     const ExportFile=async()=>{
         try {
-            const res=await axios.post(`/order/exportFile`,{
+            const response=await axios.post(`/order/exportFile`,{
                 data:data.map(item=>(
                     {"Mã đơn hàng":item.id,"Giá đơn":item.price,"Trạng thái thanh toán":item.paymentStatus}
                 ))
