@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { EuiButtonEmpty, EuiButtonIcon,EuiFlexGroup,EuiListGroup,EuiListGroupItem,EuiAccordion,EuiHeaderSectionItemButton,EuiIcon,EuiText,EuiPopover,EuiFlexItem,EuiAvatar, EuiFlyout, EuiFlyoutBody, EuiFlyoutFooter, EuiFlyoutHeader, EuiHeader, EuiHeaderSection, EuiHeaderSectionItem, EuiPageHeader, EuiPageHeaderContent, EuiPageTemplate, EuiLink, EuiFlexGrid, EuiPanel, EuiStat, EuiImage, EuiHorizontalRule, EuiSpacer } from '@elastic/eui'
+import { EuiButtonEmpty, EuiButtonIcon,EuiFlexGroup,EuiListGroup,EuiListGroupItem,EuiAccordion,EuiHeaderSectionItemButton,EuiIcon,EuiText,EuiPopover,EuiFlexItem,EuiAvatar, EuiFlyout, EuiFlyoutBody, EuiFlyoutFooter, EuiFlyoutHeader, EuiHeader, EuiHeaderSection, EuiHeaderSectionItem, EuiPageHeader, EuiPageHeaderContent, EuiPageTemplate, EuiLink, EuiFlexGrid, EuiPanel, EuiStat, EuiImage, EuiHorizontalRule, EuiSpacer, EuiSelect } from '@elastic/eui'
 import {Outlet} from 'react-router-dom'
 import {AuthContext} from '../../../context/AuthContext'
 import axios from '../../../axios'
@@ -96,7 +96,7 @@ export default function Dashboard() {
       }, [users, shops, products]);
       
       const dataByYear=data.filter(d=>d.year===2025)
-      console.log(dataByYear)
+      const listYear=data.map(y=>y.year)
 
       //order
       const [orders,setOrders]=useState([])
@@ -213,6 +213,10 @@ export default function Dashboard() {
             <EuiSpacer/>
             <EuiPanel>
                 <EuiText><h2>Thống kê</h2></EuiText>
+                <EuiSelect
+                options={listYear.map(year=>(
+                  {value:year,label:year}
+                ))}/>
                 <EuiSpacer/>
             <LineChart width={730} height={250} data={dataByYear[0]?.months}
                 margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
