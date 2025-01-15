@@ -75,7 +75,7 @@ export default function Order() {
         try {
             const response=await axios.post(`/order/exportFile`,{
                 data:data.map(item=>(
-                    {"Mã đơn hàng":item.id,"Giá đơn":item.price,"Trạng thái thanh toán":item.paymentStatus}
+                    {"Mã đơn hàng":item.id,"Giá đơn":item.price,}
                 ))
             },{
                 responseType: 'blob',

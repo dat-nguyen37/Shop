@@ -24,7 +24,7 @@ exports.getByShop=async(req,res)=>{
         const notification = await Notification.find({
             conversationId: { $in: conversations.map(conv => conv._id) },
             isRead:false
-        })
+        }).sort({createdAt:-1})
         res.status(200).send(notification)
     } catch (err) {
         res.status(500).send(err)
