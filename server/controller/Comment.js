@@ -30,8 +30,15 @@ exports.create=async(req,res)=>{
 
 exports.getAll=async(req,res)=>{
     try {
+        const data=[]
         const comments=await Comment.find({productId:req.params.id})
-        res.status(200).send(comments)
+        for (const comment of comments) {
+            const user = await User.findById(comment.userId);
+            if (user) {
+                data.push({ name: user.name, image: user.image, commentText: comment.commentText,rating:comment.rating,createdAt:comment.createdAt });
+            }
+        }
+        res.status(200).send(data)
     } catch (err) {
         res.status(500).send(err)
     }
