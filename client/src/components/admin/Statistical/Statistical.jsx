@@ -95,7 +95,7 @@ export default function Dashboard() {
         }
       }, [users, shops, products]);
       
-      const dataByYear=data.filter(d=>d.year===2024)
+      const dataByYear=data.filter(d=>d.year===2025)
       console.log(dataByYear)
 
       //order
