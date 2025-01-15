@@ -96,6 +96,7 @@ export default function Dashboard() {
       }, [users, shops, products]);
       
       const dataByYear=data.filter(d=>d.year===2024)
+      console.log(dataByYear)
 
       //order
       const [orders,setOrders]=useState([])
