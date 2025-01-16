@@ -468,7 +468,7 @@ export default function ProductDetail() {
                         </EuiFlexItem>
                         <EuiFlexItem >
                                 <EuiFlexGroup responsive={false} alignItems='center' wrap={true}>
-                                    <EuiFlexItem grow={false} style={{border:selectRating===''?'2px solid red':'2px solid #B6C4CB',width:'90px',height:'30px',textAlign:'center'}} onClick={()=>setSelectRating(null)}><EuiText>Tất cả</EuiText></EuiFlexItem>
+                                    <EuiFlexItem grow={false} style={{border:selectRating===''?'2px solid red':'2px solid #B6C4CB',width:'90px',height:'30px',textAlign:'center'}} onClick={()=>setSelectRating('')}><EuiText>Tất cả</EuiText></EuiFlexItem>
                                     <EuiFlexItem grow={false} style={{border:selectRating===5?'2px solid red':'2px solid #B6C4CB',width:'90px',height:'30px',textAlign:'center'}} onClick={()=>setSelectRating(5)}><EuiText>5 sao</EuiText></EuiFlexItem>
                                     <EuiFlexItem grow={false} style={{border:selectRating===4?'2px solid red':'2px solid #B6C4CB',width:'90px',height:'30px',textAlign:'center'}} onClick={()=>setSelectRating(4)}><EuiText>4 sao</EuiText></EuiFlexItem>
                                     <EuiFlexItem grow={false} style={{border:selectRating===3?'2px solid red':'2px solid #B6C4CB',width:'90px',height:'30px',textAlign:'center'}} onClick={()=>setSelectRating(3)}><EuiText>3 sao</EuiText></EuiFlexItem>
