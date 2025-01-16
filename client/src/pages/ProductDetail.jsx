@@ -88,7 +88,7 @@ export default function ProductDetail() {
     //comment
     const getComment = async () => {
         try {
-            const res = await axios.get(`/comment/getAll/${productId}` + productId);
+            const res = await axios.get(`/comment/getAll/${productId}?rating=${selectRating}`);
             setComments(res.data);
         } catch (err) {
             console.log(err);
