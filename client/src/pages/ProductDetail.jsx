@@ -84,10 +84,11 @@ export default function ProductDetail() {
         }
       }
 
+      const [selectRating,setSelectRating]=useState(null)
     //comment
     const getComment = async () => {
         try {
-            const res = await axios.get('/comment/getAll/' + productId);
+            const res = await axios.get(`/comment/getAll/${productId}` + productId);
             setComments(res.data);
         } catch (err) {
             console.log(err);
@@ -467,12 +468,12 @@ export default function ProductDetail() {
                         </EuiFlexItem>
                         <EuiFlexItem >
                                 <EuiFlexGroup responsive={false} alignItems='center' wrap={true}>
-                                    <EuiFlexItem grow={false} style={{border:'2px solid #B6C4CB',width:'90px',height:'30px',textAlign:'center'}}><EuiText>Tất cả</EuiText></EuiFlexItem>
-                                    <EuiFlexItem grow={false} style={{border:'2px solid #B6C4CB',width:'90px',height:'30px',textAlign:'center'}}><EuiText>5 sao (6,7k)</EuiText></EuiFlexItem>
-                                    <EuiFlexItem grow={false} style={{border:'2px solid #B6C4CB',width:'90px',height:'30px',textAlign:'center'}}><EuiText>4 sao (900)</EuiText></EuiFlexItem>
-                                    <EuiFlexItem grow={false} style={{border:'2px solid #B6C4CB',width:'90px',height:'30px',textAlign:'center'}}><EuiText>3 sao (200)</EuiText></EuiFlexItem>
-                                    <EuiFlexItem grow={false} style={{border:'2px solid #B6C4CB',width:'90px',height:'30px',textAlign:'center'}}><EuiText>2 sao (100)</EuiText></EuiFlexItem>
-                                    <EuiFlexItem grow={false} style={{border:'2px solid #B6C4CB',width:'90px',height:'30px',textAlign:'center'}}><EuiText>1 sao (100)</EuiText></EuiFlexItem>
+                                    <EuiFlexItem grow={false} style={{border:selectRating===null?'2px solid red':'2px solid #B6C4CB',width:'90px',height:'30px',textAlign:'center'}} onClick={()=>setSelectRating(null)}><EuiText>Tất cả</EuiText></EuiFlexItem>
+                                    <EuiFlexItem grow={false} style={{border:selectRating===5?'2px solid red':'2px solid #B6C4CB',width:'90px',height:'30px',textAlign:'center'}} onClick={()=>setSelectRating(5)}><EuiText>5 sao ({comments.length})</EuiText></EuiFlexItem>
+                                    <EuiFlexItem grow={false} style={{border:selectRating===4?'2px solid red':'2px solid #B6C4CB',width:'90px',height:'30px',textAlign:'center'}} onClick={()=>setSelectRating(4)}><EuiText>4 sao ({comments.length})</EuiText></EuiFlexItem>
+                                    <EuiFlexItem grow={false} style={{border:selectRating===3?'2px solid red':'2px solid #B6C4CB',width:'90px',height:'30px',textAlign:'center'}} onClick={()=>setSelectRating(3)}><EuiText>3 sao ({comments.length})</EuiText></EuiFlexItem>
+                                    <EuiFlexItem grow={false} style={{border:selectRating===2?'2px solid red':'2px solid #B6C4CB',width:'90px',height:'30px',textAlign:'center'}} onClick={()=>setSelectRating(2)}><EuiText>2 sao ({comments.length})</EuiText></EuiFlexItem>
+                                    <EuiFlexItem grow={false} style={{border:selectRating===1?'2px solid red':'2px solid #B6C4CB',width:'90px',height:'30px',textAlign:'center'}} onClick={()=>setSelectRating(1)}><EuiText>1 sao ({comments.length})</EuiText></EuiFlexItem>
                                 <EuiButton onClick={()=>setIsModalComment(true)} fill iconType="documentEdit">Đánh giá</EuiButton>
                             </EuiFlexGroup>
                         </EuiFlexItem>

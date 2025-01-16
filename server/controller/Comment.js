@@ -30,8 +30,14 @@ exports.create=async(req,res)=>{
 
 exports.getAll=async(req,res)=>{
     try {
+        const { rating } = req.query;
+        const filter = { productId: req.params.id };
+        
+        if (rating) {
+            filter.rating = rating;
+        }
         const data=[]
-        const comments=await Comment.find({productId:req.params.id})
+        const comments=await Comment.find(filter)
         for (const comment of comments) {
             const user = await User.findById(comment.userId);
             if (user) {
