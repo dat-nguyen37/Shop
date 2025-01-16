@@ -184,7 +184,7 @@ export default function ProductDetail() {
             }
             console.log(err)
         }
-    }
+    }   
 
     const currentUrl = window.location.href;
     useEffect(()=>{
