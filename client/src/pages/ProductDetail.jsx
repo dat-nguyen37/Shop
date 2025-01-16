@@ -187,10 +187,10 @@ export default function ProductDetail() {
 
     const currentUrl = window.location.href;
     useEffect(()=>{
-        document.querySelector('meta[property="og:title"]').innerText=product.name;
-        document.querySelector('meta[property="og:image"]').innerText=product.image;
+        document.querySelector('meta[property="og:title"]').innerText=product?.name;
+        document.querySelector('meta[property="og:image"]').innerText=product?.image;
         document.querySelector('meta[property="og:url"]').innerText=currentUrl;
-        document.querySelector('meta[property="og:description"]').innerText=product.description;
+        document.querySelector('meta[property="og:description"]').innerText=product?.description;
     },[product,currentUrl])
     const handleShare = () => {
         const currentUrl = window.location.href; // Lấy URL hiện tại của trang
