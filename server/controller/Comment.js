@@ -37,7 +37,7 @@ exports.getAll=async(req,res)=>{
             filter.rating = rating;
         }
         const data=[]
-        const comments=await Comment.find(filter)
+        const comments=await Comment.find(filter).sort({createdAt:-1})
         for (const comment of comments) {
             const user = await User.findById(comment.userId);
             if (user) {
