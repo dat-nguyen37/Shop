@@ -211,7 +211,7 @@ export default function ProductDetail() {
             },
             {
                 text:shop?.category.name,
-                href:'/'
+                href:`/danh_muc?ma=${shop?.category._id}`
             },
             {
                 text:category?.subcategories[0].name,
@@ -236,7 +236,7 @@ export default function ProductDetail() {
                                             <EuiText>Chia sẻ:</EuiText>
                                             <FacebookShareButton
                                                 url={currentUrl} // URL của sản phẩm
-                                                quote={product?.description} // Trích dẫn hiển thị trên Facebook
+                                                quote={product?.name} // Trích dẫn hiển thị trên Facebook
                                                 hashtag="#noi_that" // Hashtag (tuỳ chọn)
                                             >
                                                 <FacebookIcon size={32} round={true} /> {/* Icon Facebook */}
@@ -281,7 +281,6 @@ export default function ProductDetail() {
                             <EuiFlexItem grow={false} style={{background:'rgba(208,1,27,.08)',padding:'10px'}}>
                                 <EuiFlexGroup>
                                     <EuiText color='danger'><h3>₫{price?.toLocaleString()}</h3></EuiText>
-                                    <EuiText color='subdued'><s>₫304.000</s></EuiText>
                                 </EuiFlexGroup>
                             </EuiFlexItem>
                             <EuiFlexItem grow={false}>
