@@ -107,7 +107,7 @@ export default function ProductDetail() {
             getComment()
             getListProduct()
         }
-    }, [productId]);
+    }, [productId,selectRating]);
 
     const handleComment=async()=>{
         try {
