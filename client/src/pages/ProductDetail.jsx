@@ -9,6 +9,7 @@ import moment from 'moment';
 import ProductItem from '../components/productItem/ProductItem'
 import { AuthContext } from '../context/AuthContext';
 import Report from '../components/report/Report';
+import { FacebookShareButton, FacebookIcon } from "react-share";
 
 export default function ProductDetail() {
     const mobile=useIsWithinBreakpoints(['xs','s'])
@@ -186,17 +187,17 @@ export default function ProductDetail() {
     }
 
     const currentUrl = window.location.href;
-    useEffect(()=>{
-        document.querySelector('meta[property="og:title"]').setAttribute('content', product?.name);
-        document.querySelector('meta[property="og:image"]').setAttribute('content', product?.image);
-        document.querySelector('meta[property="og:url"]').setAttribute('content', currentUrl);
-        document.querySelector('meta[property="og:description"]').setAttribute('content', product?.description);
-    },[product,currentUrl])
-    const handleShare = () => {
-        const currentUrl = window.location.href; // Lấy URL hiện tại của trang
-        const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
-        window.open(shareUrl, '_blank', 'width=600,height=400');
-      };
+    // useEffect(()=>{
+    //     document.querySelector('meta[property="og:title"]').setAttribute('content', product?.name);
+    //     document.querySelector('meta[property="og:image"]').setAttribute('content', product?.image);
+    //     document.querySelector('meta[property="og:url"]').setAttribute('content', currentUrl);
+    //     document.querySelector('meta[property="og:description"]').setAttribute('content', product?.description);
+    // },[product,currentUrl])
+    // const handleShare = () => {
+    //     const currentUrl = window.location.href; // Lấy URL hiện tại của trang
+    //     const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
+    //     window.open(shareUrl, '_blank', 'width=600,height=400');
+    //   };
   
 
   return (
@@ -233,7 +234,13 @@ export default function ProductDetail() {
                                     <EuiFlexItem >
                                         <EuiFlexGroup gutterSize='s' alignItems='center'>
                                             <EuiText>Chia sẻ:</EuiText>
-                                            <EuiButtonIcon onClick={handleShare} iconType="/assets/facebook.png" iconSize='l'/>
+                                            <FacebookShareButton
+                                                url={currentUrl} // URL của sản phẩm
+                                                quote={product?.description} // Trích dẫn hiển thị trên Facebook
+                                                hashtag="#noi_that" // Hashtag (tuỳ chọn)
+                                            >
+                                                <FacebookIcon size={32} round={true} /> {/* Icon Facebook */}
+                                            </FacebookShareButton>
                                             <EuiButtonIcon iconType="/assets/youtube.svg" iconSize='l'/>
                                             <EuiButtonIcon iconType="/assets/google.png" iconSize='l'/>
                                         </EuiFlexGroup>
