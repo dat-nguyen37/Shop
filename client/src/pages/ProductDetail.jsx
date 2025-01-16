@@ -187,7 +187,10 @@ export default function ProductDetail() {
 
     const handleShare = () => {
         const currentUrl = window.location.href; // Lấy URL hiện tại của trang
-        console.log(currentUrl)
+        document.querySelector('meta[property="og:title"]').setAttribute('content', product.name);
+        document.querySelector('meta[property="og:image"]').setAttribute('content', product.image);
+        document.querySelector('meta[property="og:url"]').setAttribute('content', currentUrl);
+        document.querySelector('meta[property="og:description"]').setAttribute('content', product.description);
         const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
         window.open(shareUrl, '_blank', 'width=600,height=400');
       };
