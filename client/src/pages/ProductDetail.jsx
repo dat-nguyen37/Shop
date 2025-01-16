@@ -84,7 +84,7 @@ export default function ProductDetail() {
         }
       }
 
-      const [selectRating,setSelectRating]=useState()
+      const [selectRating,setSelectRating]=useState('')
     //comment
     const getComment = async () => {
         try {
