@@ -187,6 +187,7 @@ export default function ProductDetail() {
 
     const handleShare = () => {
         const currentUrl = window.location.href; // Lấy URL hiện tại của trang
+        console.log(currentUrl)
         const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
         window.open(shareUrl, '_blank', 'width=600,height=400');
       };
