@@ -187,7 +187,7 @@ export default function ProductDetail() {
 
     const currentUrl = window.location.href;
     useEffect(()=>{
-        document.querySelector('meta[property="og:title"]').setAttribute('content', product?.title);
+        document.querySelector('meta[property="og:title"]').setAttribute('content', product?.name);
         document.querySelector('meta[property="og:image"]').setAttribute('content', product?.image);
         document.querySelector('meta[property="og:url"]').setAttribute('content', currentUrl);
         document.querySelector('meta[property="og:description"]').setAttribute('content', product?.description);
