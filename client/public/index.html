@@ -45,7 +45,8 @@
     
     <script src="https://sf-cdn.coze.com/obj/unpkg-va/flow-platform/chat-app-sdk/1.1.0-beta.0/libs/oversea/index.js"></script>
     <script>
-        new CozeWebSDK.WebChatClient({
+      document.addEventListener('DOMContentLoaded', () => {
+        const widget = new CozeWebSDK.WebChatClient({
           config: {
             bot_id: '7460483641689686024',
           },
@@ -53,6 +54,21 @@
             title: 'Bot',
           },
         });
+    
+        // Chờ DOM được cập nhật với widget
+        const observer = new MutationObserver(() => {
+          const widgetElement = document.querySelector('.ab1ac9d9bab12da47298'); // Thay bằng lớp hoặc ID chính xác
+          if (widgetElement) {
+            widgetElement.style.position = 'fixed';
+            widgetElement.style.bottom = '100px';
+            widgetElement.style.right = '20px';
+            widgetElement.style.zIndex = '1000';
+            // observer.disconnect(); // Ngừng quan sát sau khi chỉnh sửa CSS
+          }
+        });
+    
+        observer.observe(document.body, { childList: true, subtree: true });
+      });
     </script>
   
   </body>
