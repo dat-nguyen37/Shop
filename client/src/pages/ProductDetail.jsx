@@ -187,12 +187,12 @@ export default function ProductDetail() {
     }
 
     const currentUrl = window.location.href;
-    // useEffect(()=>{
-    //     document.querySelector('meta[property="og:title"]').setAttribute('content', product?.name);
-    //     document.querySelector('meta[property="og:image"]').setAttribute('content', product?.image);
-    //     document.querySelector('meta[property="og:url"]').setAttribute('content', currentUrl);
-    //     document.querySelector('meta[property="og:description"]').setAttribute('content', product?.description);
-    // },[product,currentUrl])
+    useEffect(()=>{
+        document.querySelector('meta[property="og:title"]').setAttribute('content', product?.name);
+        document.querySelector('meta[property="og:image"]').setAttribute('content', product?.image);
+        document.querySelector('meta[property="og:url"]').setAttribute('content', currentUrl);
+        document.querySelector('meta[property="og:description"]').setAttribute('content', product?.description);
+    },[product,currentUrl])
     // const handleShare = () => {
     //     const currentUrl = window.location.href; // Lấy URL hiện tại của trang
     //     const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
