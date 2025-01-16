@@ -191,7 +191,7 @@ export default function ProductDetail() {
         document.querySelector('meta[property="og:image"]').innerText=product.image;
         document.querySelector('meta[property="og:url"]').innerText=currentUrl;
         document.querySelector('meta[property="og:description"]').innerText=product.description;
-    },[product])
+    },[product,currentUrl])
     const handleShare = () => {
         const currentUrl = window.location.href; // Lấy URL hiện tại của trang
         const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
