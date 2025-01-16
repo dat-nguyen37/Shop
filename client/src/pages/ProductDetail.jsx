@@ -184,6 +184,12 @@ export default function ProductDetail() {
             console.log(err)
         }
     }
+
+    const handleShare = () => {
+        const currentUrl = window.location.href; // Lấy URL hiện tại của trang
+        const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
+        window.open(shareUrl, '_blank', 'width=600,height=400');
+      };
   
 
   return (
@@ -220,7 +226,7 @@ export default function ProductDetail() {
                                     <EuiFlexItem >
                                         <EuiFlexGroup gutterSize='s' alignItems='center'>
                                             <EuiText>Chia sẻ:</EuiText>
-                                            <EuiButtonIcon iconType="/assets/facebook.png" iconSize='l'/>
+                                            <EuiButtonIcon onClick={handleShare} iconType="/assets/facebook.png" iconSize='l'/>
                                             <EuiButtonIcon iconType="/assets/youtube.svg" iconSize='l'/>
                                             <EuiButtonIcon iconType="/assets/google.png" iconSize='l'/>
                                         </EuiFlexGroup>
