@@ -38,7 +38,7 @@ export default function Chat() {
       getConversations()
          if(arrivalMessages &&curentChat?.members.includes(arrivalMessages.sender))
          {
-          setMessages(prev=>[...prev,arrivalMessages])
+          console.log(arrivalMessages,curentChat)
           getMessage()
           getConversations()
          }
