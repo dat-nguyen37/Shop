@@ -41,12 +41,12 @@ export default function Chat() {
     // cập nhật tin nhắn mới
     useEffect(()=>{
       getConversations()
-         if(arrivalMessages &&curentChat?.members.includes(arrivalMessages.sender))
-         {
+        //  if(arrivalMessages &&curentChat?.members.includes(arrivalMessages.sender))
+        //  {
           console.log(arrivalMessages,curentChat)
           getMessage()
           getConversations()
-         }
+        //  }
     },[arrivalMessages,curentChat])
 
     const handleSelected=(conversationId,selectedUserId)=>{

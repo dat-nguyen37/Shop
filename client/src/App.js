@@ -152,12 +152,12 @@ const Nested=()=>{
      })
   },[])
   useEffect(()=>{
-    if(arrivalMessages &&curentChat?.members.includes(arrivalMessages.sender))
-    { 
+    // if(arrivalMessages &&curentChat?.members.includes(arrivalMessages.sender))
+    // { 
       console.log(arrivalMessages,curentChat)
       getMessage()
       getConversations()
-    }
+    // }
 },[arrivalMessages,curentChat])
 
 const handleSelected=(conversationId,selectedShopId)=>{
