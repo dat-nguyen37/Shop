@@ -149,7 +149,7 @@ export default function Header({cart}) {
                                             <EuiFlexItem>
                                                 <EuiFlexGroup justifyContent='spaceBetween'>
                                                     <EuiText><b>{user.name}</b></EuiText>
-                                                    {user.role==="Admin"&&<EuiText><b>Dashboard</b></EuiText>}
+                                                    {user.role==="Admin"&&<EuiLink href='/dashboard'><b>Dashboard</b></EuiLink>}
                                                 </EuiFlexGroup>
                                                 <EuiFlexGroup alignItems='center'>
                                                     <EuiLink href='/profile'>Chỉnh sửa hồ sơ</EuiLink>
