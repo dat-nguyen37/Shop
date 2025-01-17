@@ -23,7 +23,12 @@ export default function Chat() {
 
     useEffect(()=>{
       // khởi tạo kết nối
-       socket.current=io("wss://shop-oyck.onrender.com")
+      socket.current=io("wss://shop-oyck.onrender.com", {
+          transports: ["websocket"],
+          reconnection: true,        // Tự động kết nối lại
+          reconnectionAttempts: 5,   // Số lần thử kết nối lại
+          reconnectionDelay: 1000,
+      })
        // lắng nghe tin nhắn
        socket.current.on("getMessage",data=>{
              setArrivalNewMessages({
