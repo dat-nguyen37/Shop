@@ -148,7 +148,9 @@ const Nested=()=>{
   },[])
   useEffect(()=>{
     if(arrivalMessages &&curentChat?.members.includes(arrivalMessages.sender))
-    { getMessage()
+    { 
+      setMessages(prev=>[...prev,arrivalMessages])
+      getMessage()
       getConversations()
     }
 },[arrivalMessages,curentChat])

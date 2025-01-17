@@ -37,7 +37,9 @@ export default function Chat() {
     useEffect(()=>{
       getConversations()
          if(arrivalMessages &&curentChat?.members.includes(arrivalMessages.sender))
-         {getMessage()
+         {
+          setMessages(prev=>[...prev,arrivalMessages])
+          getMessage()
           getConversations()
          }
     },[arrivalMessages,curentChat])
