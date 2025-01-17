@@ -19,7 +19,7 @@ export default function Chat() {
     const [arrivalMessages,setArrivalNewMessages]=useState(null)
     const [currentTab,setCurrentTab]=useState('tab1')
     const [isLoading,setIsLoading]=useState(true)
-    const socket=useRef(io("wss://shop-oyck.onrender.com"))
+    const socket = useRef(null);
 
     useEffect(()=>{
       // khởi tạo kết nối
