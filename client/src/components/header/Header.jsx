@@ -147,7 +147,10 @@ export default function Header({cart}) {
                                                 <EuiAvatar name='EL' color="#68C4A2" size='xl' imageUrl={user?.imageUrl}/>
                                             </EuiFlexItem>
                                             <EuiFlexItem>
-                                                <EuiText><b>{user.name}</b></EuiText>
+                                                <EuiFlexGroup justifyContent='spaceBetween'>
+                                                    <EuiText><b>{user.name}</b></EuiText>
+                                                    {user.role==="Admin"&&<EuiText><b>Dashboard</b></EuiText>}
+                                                </EuiFlexGroup>
                                                 <EuiFlexGroup alignItems='center'>
                                                     <EuiLink href='/profile'>Chỉnh sửa hồ sơ</EuiLink>
                                                     <EuiButtonEmpty onClick={handleLogout}>Đăng xuất</EuiButtonEmpty>
